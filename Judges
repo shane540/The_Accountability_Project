@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Judicial Accountability — The Accountability Project</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600&display=swap');
+:root{--black:#0a0a0a;--red:#c8001a;--red-dim:#7a0010;--white:#f0ede8;--gray:#1a1a1a;--gold:#d4a017;--green:#00a86b;--blue:#1a6cc8;--border:#2a2a2a}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--black);color:var(--white);font-family:'IBM Plex Sans',sans-serif;min-height:100vh}
+header{border-bottom:2px solid var(--red);padding:.8rem 1.2rem;display:flex;align-items:center;justify-content:space-between;background:var(--black);flex-wrap:wrap;gap:.5rem;position:sticky;top:0;z-index:100}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.1em}
+.logo span{color:var(--red)}
+.nav-links{display:flex;gap:.3rem;flex-wrap:wrap}
+.nav-link{font-family:'IBM Plex Mono',monospace;font-size:10px;color:#666;text-decoration:none;text-transform:uppercase;letter-spacing:.08em;border:1px solid var(--border);padding:.3rem .7rem}
+.nav-link:hover{border-color:var(--red);color:var(--red)}
+.ticker{background:var(--red);padding:.3rem 0;font-family:'IBM Plex Mono',monospace;font-size:10px;white-space:nowrap;overflow:hidden}
+.ticker-inner{display:inline-block;animation:ticker 45s linear infinite;padding-left:100%}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
+main{padding:1.2rem;max-width:1100px;margin:0 auto}
+.intro{background:var(--gray);border:1px solid var(--border);border-left:3px solid var(--red);padding:1rem;margin-bottom:1rem;font-size:12px;line-height:1.7}
+.intro strong{color:var(--red)}.gold{color:var(--gold)}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:.4rem;margin-bottom:1rem}
+.stat-block{background:var(--gray);border:1px solid var(--border);padding:.6rem .8rem}
+.stat-n{font-family:'Bebas Neue',sans-serif;font-size:26px;line-height:1;color:var(--red)}
+.stat-n.gold{color:var(--gold)}.stat-n.green{color:var(--green)}.stat-n.blue{color:var(--blue)}
+.stat-l{font-family:'IBM Plex Mono',monospace;font-size:8px;color:#444;text-transform:uppercase;letter-spacing:.06em}
+.tab-nav{display:flex;gap:.3rem;margin-bottom:1rem;flex-wrap:wrap}
+.tab-btn{background:none;border:1px solid var(--border);color:#888;padding:.4rem .8rem;font-family:'IBM Plex Mono',monospace;font-size:10px;cursor:pointer;text-transform:uppercase;letter-spacing:.07em;transition:all .15s}
+.tab-btn.active,.tab-btn:hover{background:var(--red);border-color:var(--red);color:var(--white)}
+.tab-content{display:none}.tab-content.active{display:block}
+.section-title{font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--red);margin:.8rem 0 .5rem;padding-bottom:.25rem;border-bottom:1px solid var(--red-dim)}
+/* FEDERAL TOOLS */
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:.7rem;margin-bottom:1rem}
+.tool-card{background:var(--gray);border:1px solid var(--border);border-top:2px solid var(--red);padding:1rem;display:flex;flex-direction:column;gap:.5rem}
+.tool-card.gold-top{border-top-color:var(--gold)}
+.tool-card.green-top{border-top-color:var(--green)}
+.tool-card.blue-top{border-top-color:var(--blue)}
+.tool-name{font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:.05em;line-height:1}
+.tool-agency{font-family:'IBM Plex Mono',monospace;font-size:9px;color:#555;text-transform:uppercase;letter-spacing:.07em}
+.tool-desc{font-size:12px;color:#aaa;line-height:1.5;flex:1}
+.tool-links{display:flex;flex-direction:column;gap:.3rem;margin-top:.3rem}
+.tool-link{display:flex;align-items:center;gap:.5rem;text-decoration:none;background:var(--black);border:1px solid var(--border);padding:.45rem .7rem;transition:all .15s}
+.tool-link:hover{border-color:var(--red)}
+.tool-link-icon{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--red);white-space:nowrap;text-transform:uppercase}
+.tool-link-text{color:#aaa;font-size:11px;flex:1}
+.tool-link-url{font-family:'IBM Plex Mono',monospace;font-size:9px;color:#333;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px}
+/* STATE GRID */
+.filter-bar{display:flex;gap:.4rem;margin-bottom:1rem;flex-wrap:wrap}
+.filter-bar select,.filter-bar input{background:var(--gray);border:1px solid var(--border);color:var(--white);padding:.5rem .8rem;font-family:'IBM Plex Mono',monospace;font-size:11px;outline:none;flex:1;min-width:130px}
+.filter-bar select:focus,.filter-bar input:focus{border-color:var(--red)}
+.filter-bar button{background:var(--red);border:none;color:var(--white);padding:.5rem 1rem;font-family:'IBM Plex Mono',monospace;font-size:10px;cursor:pointer;text-transform:uppercase;white-space:nowrap}
+.filter-bar button.ghost{background:var(--gray);border:1px solid var(--border);color:#888}
+.state-grid{display:grid;gap:.5rem}
+.state-card{background:var(--gray);border:1px solid var(--border);border-left:3px solid var(--border);overflow:hidden}
+.state-card.has-recall{border-left-color:var(--green)}
+.state-card.has-retention{border-left-color:var(--gold)}
+.state-card.appt-only{border-left-color:var(--blue)}
+.state-header{display:flex;justify-content:space-between;align-items:center;padding:.7rem 1rem;cursor:pointer;user-select:none}
+.state-header:hover{background:rgba(255,255,255,.02)}
+.state-name{font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:.05em}
+.state-badges{display:flex;gap:.25rem;flex-wrap:wrap}
+.sbadge{font-family:'IBM Plex Mono',monospace;font-size:8px;padding:.12rem .35rem;border:1px solid;text-transform:uppercase;letter-spacing:.06em}
+.sb-recall{border-color:var(--green);color:var(--green)}
+.sb-retention{border-color:var(--gold);color:var(--gold)}
+.sb-appt{border-color:var(--blue);color:var(--blue)}
+.sb-elect{border-color:#888;color:#888}
+.sb-imp{border-color:#555;color:#666}
+.expand-icon{font-family:'IBM Plex Mono',monospace;font-size:12px;color:#444;transition:transform .2s}
+.state-body{display:none;padding:0 1rem .9rem;border-top:1px solid var(--border)}
+.state-body.open{display:block}
+.body-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.7rem}
+.body-block{background:var(--black);border:1px solid var(--border);padding:.7rem}
+.body-title{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--gold);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.3rem}
+.body-text{font-size:11px;color:#888;line-height:1.5}
+.body-text ul{margin:.3rem 0 0 .8rem}
+.body-text li{margin-bottom:.2rem}
+.complaint-link{display:flex;align-items:center;gap:.5rem;text-decoration:none;background:var(--red);padding:.5rem .8rem;margin-top:.5rem;transition:all .15s}
+.complaint-link:hover{background:var(--red-dim)}
+.complaint-link span{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--white);text-transform:uppercase;letter-spacing:.07em}
+.warning{background:rgba(200,0,26,.06);border:1px solid var(--red-dim);padding:.6rem .8rem;font-size:11px;color:#cc8888;line-height:1.5;margin-top:.5rem}
+/* PROCESS STEPS */
+.process-steps{display:grid;gap:.4rem;margin-top:.5rem}
+.pstep{background:var(--black);border:1px solid var(--border);padding:.6rem .8rem;display:grid;grid-template-columns:24px 1fr;gap:.6rem;align-items:start}
+.pstep-num{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--red);line-height:1}
+.pstep-text{font-size:11px;color:#aaa;line-height:1.5}
+/* GROUNDS TABLE */
+.grounds-table{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:1rem}
+.grounds-table th{font-family:'IBM Plex Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:#444;padding:.45rem .6rem;text-align:left;border-bottom:1px solid var(--border);background:var(--black)}
+.grounds-table td{padding:.45rem .6rem;border-bottom:1px solid var(--border);vertical-align:top;color:#aaa}
+.grounds-table tr:hover td{background:rgba(255,255,255,.02)}
+.gtag{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:8px;padding:.1rem .3rem;border:1px solid;text-transform:uppercase;margin:.1rem}
+.gt-corrupt{border-color:var(--red);color:var(--red)}
+.gt-neglect{border-color:var(--gold);color:var(--gold)}
+.gt-conduct{border-color:var(--blue);color:var(--blue)}
+.gt-crime{border-color:#888;color:#888}
+@media(max-width:640px){.stats-row{grid-template-columns:1fr 1fr}.body-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">THE <span>ACCOUNTABILITY</span> PROJECT — <span>JUDICIAL</span></div>
+  <div class="nav-links">
+    <a href="accountability_project.html" class="nav-link">← MAIN</a>
+    <a href="statewide_officers.html" class="nav-link">STATE OFFICERS</a>
+    <a href="federal_officers.html" class="nav-link">FEDERAL</a>
+  </div>
+</header>
+<div class="ticker"><span class="ticker-inner">⚠ FEDERAL: File judicial misconduct at uscourts.gov/judges-judgeships/judicial-conduct-disability &nbsp;&nbsp;&nbsp; ⚡ ALL 50 STATES have judicial conduct commissions — anyone can file &nbsp;&nbsp;&nbsp; ⚠ RETENTION ELECTIONS: Organized campaigns have removed state supreme court justices &nbsp;&nbsp;&nbsp; ⚡ 15 federal judges impeached in U.S. history — 8 removed &nbsp;&nbsp;&nbsp; ⚠ IOWA 2010: Three Supreme Court justices removed via retention election &nbsp;&nbsp;&nbsp;</span></div>
+<main>
+  <div class="intro">
+    <strong>JUDGES ARE DIFFERENT — BUT NOT UNTOUCHABLE</strong><br><br>
+    Federal judges serve for life and can only be removed by impeachment — but <span class="gold">all 50 states have judicial conduct commissions where anyone can file a complaint.</span> State judges face recall elections in 11 states, retention elections in most others, and impeachment in all 50. The Iowa 2010 precedent proved organized campaigns can remove entire supreme courts through retention elections. File the complaint. Organize the campaign. Use every tool simultaneously.
+  </div>
+  <div class="stats-row">
+    <div class="stat-block"><div class="stat-n">50</div><div class="stat-l">States w/ Conduct Commissions</div></div>
+    <div class="stat-block"><div class="stat-n gold">11</div><div class="stat-l">States w/ Judicial Recall</div></div>
+    <div class="stat-block"><div class="stat-n green">38</div><div class="stat-l">States w/ Retention Elections</div></div>
+    <div class="stat-block"><div class="stat-n blue">15</div><div class="stat-l">Federal Judges Impeached Ever</div></div>
+  </div>
+
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="showTab('federal',this)">FEDERAL JUDGES</button>
+    <button class="tab-btn" onclick="showTab('states',this)">STATE JUDGES — ALL 50</button>
+    <button class="tab-btn" onclick="showTab('grounds',this)">GROUNDS FOR REMOVAL</button>
+    <button class="tab-btn" onclick="showTab('process',this)">HOW TO FILE</button>
+  </div>
+
+  <!-- FEDERAL JUDGES TAB -->
+  <div id="tab-federal" class="tab-content active">
+    <div class="warning" style="margin-bottom:1rem">
+      <strong>⚠ FEDERAL JUDGES CANNOT BE RECALLED.</strong> They serve during "good behavior" under Article III. The ONLY constitutional removal mechanism is impeachment by the House and conviction by 2/3 of the Senate. However, misconduct short of removal can be addressed through the Judicial Conduct and Disability Act process — and criminal conduct can be prosecuted while a judge remains on the bench.
+    </div>
+    <p class="section-title">FEDERAL JUDICIAL ACCOUNTABILITY TOOLS</p>
+    <div class="tools-grid">
+      <div class="tool-card">
+        <div class="tool-name">Judicial Conduct Complaint</div>
+        <div class="tool-agency">U.S. Courts — Judicial Council</div>
+        <div class="tool-desc">File misconduct complaints against any federal judge under the Judicial Conduct and Disability Act. Each circuit has a Judicial Council that receives and investigates complaints. Can result in censure, referral to the Special Committee, or referral to the Judicial Conference for impeachment.</div>
+        <div class="tool-links">
+          <a href="https://www.uscourts.gov/judges-judgeships/judicial-conduct-disability" target="_blank" class="tool-link"><span class="tool-link-icon">FILE →</span><span class="tool-link-text">File a Complaint — Federal Courts</span><span class="tool-link-url">uscourts.gov</span></a>
+          <a href="https://www.uscourts.gov/sites/default/files/guide-title28.pdf" target="_blank" class="tool-link"><span class="tool-link-icon">FORM →</span><span class="tool-link-text">Complaint Form (PDF)</span><span class="tool-link-url">uscourts.gov/form</span></a>
+          <a href="https://www.uscourts.gov/judges-judgeships/judicial-conduct-disability/filing-complaint" target="_blank" class="tool-link"><span class="tool-link-icon">GUIDE →</span><span class="tool-link-text">How to File Guide</span><span class="tool-link-url">uscourts.gov/guide</span></a>
+        </div>
+      </div>
+      <div class="tool-card gold-top">
+        <div class="tool-name">Impeachment — House Judiciary</div>
+        <div class="tool-agency">U.S. House of Representatives</div>
+        <div class="tool-desc">The only removal mechanism for federal judges. House Judiciary Committee investigates and recommends. Full House votes to impeach (simple majority). Senate holds trial (2/3 to convict). 15 federal judges have been impeached — 8 convicted and removed.</div>
+        <div class="tool-links">
+          <a href="https://judiciary.house.gov" target="_blank" class="tool-link"><span class="tool-link-icon">CONTACT →</span><span class="tool-link-text">House Judiciary Committee</span><span class="tool-link-url">judiciary.house.gov</span></a>
+          <a href="https://www.house.gov/representatives/find-your-representative" target="_blank" class="tool-link"><span class="tool-link-icon">DEMAND →</span><span class="tool-link-text">Contact Your Representative</span><span class="tool-link-url">house.gov/find-rep</span></a>
+          <a href="https://history.house.gov/Institution/Impeachment/Impeachment-History/" target="_blank" class="tool-link"><span class="tool-link-icon">HISTORY →</span><span class="tool-link-text">Federal Impeachment History</span><span class="tool-link-url">history.house.gov</span></a>
+        </div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-name">DOJ / FBI Criminal Referral</div>
+        <div class="tool-agency">Department of Justice</div>
+        <div class="tool-desc">Judges are not immune from criminal prosecution for conduct outside their judicial duties. Bribery of a federal judge is a federal felony. Report to DOJ Public Integrity Section or FBI. A criminal conviction typically triggers impeachment proceedings.</div>
+        <div class="tool-links">
+          <a href="https://www.justice.gov/criminal/public-integrity" target="_blank" class="tool-link"><span class="tool-link-icon">REPORT →</span><span class="tool-link-text">DOJ Public Integrity</span><span class="tool-link-url">justice.gov/criminal/pis</span></a>
+          <a href="https://tips.fbi.gov" target="_blank" class="tool-link"><span class="tool-link-icon">TIP →</span><span class="tool-link-text">FBI Tip Line</span><span class="tool-link-url">tips.fbi.gov</span></a>
+          <a href="https://oig.justice.gov/hotline" target="_blank" class="tool-link"><span class="tool-link-icon">OIG →</span><span class="tool-link-text">DOJ Inspector General</span><span class="tool-link-url">oig.justice.gov</span></a>
+        </div>
+      </div>
+      <div class="tool-card blue-top">
+        <div class="tool-name">Recusal Motion</div>
+        <div class="tool-agency">28 U.S.C. § 455</div>
+        <div class="tool-desc">Any party in a case can file a motion demanding a judge recuse themselves for bias, conflict of interest, or appearance of impropriety. File in the case record. If denied, appeal to the circuit. Documented recusal refusals strengthen future misconduct complaints.</div>
+        <div class="tool-links">
+          <a href="https://www.law.cornell.edu/uscode/text/28/455" target="_blank" class="tool-link"><span class="tool-link-icon">LAW →</span><span class="tool-link-text">28 U.S.C. § 455 — Recusal</span><span class="tool-link-url">law.cornell.edu</span></a>
+          <a href="https://www.uscourts.gov/judges-judgeships/judicial-conduct-disability" target="_blank" class="tool-link"><span class="tool-link-icon">FILE →</span><span class="tool-link-text">Follow With Conduct Complaint</span><span class="tool-link-url">uscourts.gov</span></a>
+        </div>
+      </div>
+      <div class="tool-card green-top">
+        <div class="tool-name">Supreme Court Ethics Complaint</div>
+        <div class="tool-agency">U.S. Supreme Court (NEW — 2023)</div>
+        <div class="tool-desc">The Supreme Court adopted a Code of Conduct in November 2023 — the last court in the country to do so. Complaints about Supreme Court justices can now be filed under this code. Enforcement mechanism is still developing but sets a public accountability standard.</div>
+        <div class="tool-links">
+          <a href="https://www.supremecourt.gov/about/code_of_conduct.aspx" target="_blank" class="tool-link"><span class="tool-link-icon">CODE →</span><span class="tool-link-text">SCOTUS Code of Conduct</span><span class="tool-link-url">supremecourt.gov</span></a>
+          <a href="https://judiciary.senate.gov" target="_blank" class="tool-link"><span class="tool-link-icon">SENATE →</span><span class="tool-link-text">Senate Judiciary Committee</span><span class="tool-link-url">judiciary.senate.gov</span></a>
+          <a href="https://www.congress.gov/bill/118th-congress/senate-bill/359" target="_blank" class="tool-link"><span class="tool-link-icon">LAW →</span><span class="tool-link-text">Supreme Court Ethics Act</span><span class="tool-link-url">congress.gov</span></a>
+        </div>
+      </div>
+      <div class="tool-card gold-top">
+        <div class="tool-name">Find Your Circuit's Judicial Council</div>
+        <div class="tool-agency">13 Federal Circuit Courts</div>
+        <div class="tool-desc">Each of the 13 federal circuits has its own Judicial Council that receives misconduct complaints. Find which circuit covers your district and file directly with that council for faster processing.</div>
+        <div class="tool-links">
+          <a href="https://www.uscourts.gov/about-federal-courts/court-role-and-structure/court-website-links" target="_blank" class="tool-link"><span class="tool-link-icon">FIND →</span><span class="tool-link-text">Find Your Circuit Court</span><span class="tool-link-url">uscourts.gov/circuits</span></a>
+          <a href="https://www.fjc.gov/history/courts/u.s.-courts-appeals" target="_blank" class="tool-link"><span class="tool-link-icon">MAP →</span><span class="tool-link-text">Circuit Court Map</span><span class="tool-link-url">fjc.gov</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATE JUDGES TAB -->
+  <div id="tab-states" class="tab-content">
+    <div class="filter-bar">
+      <input type="text" id="judge-search" placeholder="Search state..." oninput="filterStates()">
+      <select id="judge-filter" onchange="filterStates()">
+        <option value="">ALL STATES</option>
+        <option value="recall">HAS JUDICIAL RECALL</option>
+        <option value="retention">RETENTION ELECTIONS</option>
+        <option value="elected">ELECTED JUDGES</option>
+        <option value="appointed">APPOINTED JUDGES</option>
+      </select>
+      <button onclick="expandAll()">EXPAND ALL</button>
+      <button onclick="collapseAll()" class="ghost">COLLAPSE</button>
+    </div>
+    <div class="state-grid" id="judge-state-grid"></div>
+  </div>
+
+  <!-- GROUNDS TAB -->
+  <div id="tab-grounds" class="tab-content">
+    <p class="section-title">COMMON GROUNDS FOR JUDICIAL REMOVAL — FEDERAL AND STATE</p>
+    <table class="grounds-table">
+      <thead><tr><th>Ground</th><th>Federal</th><th>Most States</th><th>Examples</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Bribery / Corruption</strong></td><td>✓ Impeachable</td><td>✓ Conduct Commission + Impeach</td><td><div class="gtag gt-corrupt">Criminal</div><div class="gtag gt-corrupt">Impeachable</div></td></tr>
+        <tr><td><strong>Misconduct in Office</strong></td><td>✓ Conduct Complaint</td><td>✓ Primary commission ground</td><td><div class="gtag gt-conduct">Commission</div></td></tr>
+        <tr><td><strong>Willful Neglect of Duty</strong></td><td>✓ Conduct Complaint</td><td>✓ Impeachment + Commission</td><td><div class="gtag gt-neglect">Neglect</div></td></tr>
+        <tr><td><strong>Felony Conviction</strong></td><td>✓ Impeachable + Criminal</td><td>✓ Automatic in some states</td><td><div class="gtag gt-crime">Criminal</div><div class="gtag gt-corrupt">Impeachable</div></td></tr>
+        <tr><td><strong>Bias / Prejudice</strong></td><td>✓ Recusal + Conduct Complaint</td><td>✓ Commission grounds</td><td><div class="gtag gt-conduct">Commission</div><div class="gtag gt-neglect">Recusal</div></td></tr>
+        <tr><td><strong>Ex Parte Communications</strong></td><td>✓ Conduct Complaint</td><td>✓ Code of Judicial Conduct</td><td><div class="gtag gt-conduct">Commission</div></td></tr>
+        <tr><td><strong>Conflict of Interest</strong></td><td>✓ Recusal + Conduct Complaint</td><td>✓ Commission + Recusal</td><td><div class="gtag gt-conduct">Commission</div><div class="gtag gt-neglect">Recusal</div></td></tr>
+        <tr><td><strong>Financial Disclosure Failure</strong></td><td>✓ Conduct Complaint</td><td>Varies by state</td><td><div class="gtag gt-neglect">Disclosure</div></td></tr>
+        <tr><td><strong>Mental/Physical Incapacity</strong></td><td>✓ Disability Petition</td><td>✓ All 50 states</td><td><div class="gtag gt-neglect">Disability</div></td></tr>
+        <tr><td><strong>Intoxication / Substance Abuse</strong></td><td>✓ Conduct Complaint</td><td>✓ Many states explicitly</td><td><div class="gtag gt-conduct">Commission</div></td></tr>
+        <tr><td><strong>Improper Political Activity</strong></td><td>✓ Conduct Complaint</td><td>✓ Code of Judicial Conduct</td><td><div class="gtag gt-conduct">Commission</div></td></tr>
+        <tr><td><strong>Sexual Harassment / Misconduct</strong></td><td>✓ Conduct Complaint</td><td>✓ Commission</td><td><div class="gtag gt-corrupt">Criminal option</div><div class="gtag gt-conduct">Commission</div></td></tr>
+      </tbody>
+    </table>
+    <p class="section-title">WHAT JUDICIAL CONDUCT COMMISSIONS CANNOT DO</p>
+    <div style="background:var(--gray);border:1px solid var(--border);padding:1rem;font-size:12px;color:#888;line-height:1.7">
+      Conduct commissions <strong style="color:var(--white)">cannot</strong> overturn a judge's legal rulings — even bad ones. Disagreement with a legal decision is not misconduct. The correct remedy for wrong rulings is appeal. Commissions handle <strong style="color:var(--white)">conduct</strong> — how a judge behaves — not <strong style="color:var(--white)">legal conclusions</strong> — what a judge decides. If you believe a ruling was legally wrong: appeal. If you believe a judge behaved improperly in reaching it: commission complaint.
+    </div>
+  </div>
+
+  <!-- HOW TO FILE TAB -->
+  <div id="tab-process" class="tab-content">
+    <p class="section-title">HOW TO FILE A JUDICIAL CONDUCT COMPLAINT — STEP BY STEP</p>
+    <div class="process-steps">
+      <div class="pstep"><div class="pstep-num">1</div><div class="pstep-text"><strong style="color:var(--white)">Identify the correct body.</strong> Federal judge → file with the Judicial Council of the circuit where the judge sits (uscourts.gov). State judge → file with your state's judicial conduct commission (find yours in the All 50 States tab). Wrong body = complaint dismissed without review.</div></div>
+      <div class="pstep"><div class="pstep-num">2</div><div class="pstep-text"><strong style="color:var(--white)">Document specific conduct — not rulings.</strong> Commission complaints must allege specific misconduct — what the judge did, when, where, and who witnessed it. "I disagree with the ruling" is not grounds. "The judge had an undisclosed financial relationship with a party in the case" is grounds. Be specific, be factual, include dates.</div></div>
+      <div class="pstep"><div class="pstep-num">3</div><div class="pstep-text"><strong style="color:var(--white)">Gather supporting documentation.</strong> Court transcripts, financial disclosure records, public records, witness statements, news reports, official filings. Every claim should have a document attached. Unsupported allegations are easier to dismiss.</div></div>
+      <div class="pstep"><div class="pstep-num">4</div><div class="pstep-text"><strong style="color:var(--white)">File in writing — use their form.</strong> Every commission has a standard complaint form. Use it. Unformatted complaints get deprioritized. Most commissions accept complaints by mail, some accept online. Keep a copy of everything you submit with a delivery confirmation.</div></div>
+      <div class="pstep"><div class="pstep-num">5</div><div class="pstep-text"><strong style="color:var(--white)">Understand confidentiality.</strong> Most judicial conduct proceedings are confidential until a formal charge is filed. This means your complaint may be dismissed without public notice. Request written acknowledgment of receipt and written notice of any dismissal with the reason stated.</div></div>
+      <div class="pstep"><div class="pstep-num">6</div><div class="pstep-text"><strong style="color:var(--white)">File simultaneously with multiple bodies.</strong> File the conduct commission complaint AND a recusal motion (if still in the case) AND a DOJ referral (if criminal conduct) on the same day. For state judges also file with the state AG if crimes are involved. Multiple simultaneous filings are harder to bury.</div></div>
+      <div class="pstep"><div class="pstep-num">7</div><div class="pstep-text"><strong style="color:var(--white)">Make it public — after filing.</strong> After submitting, publish everything. Issue a press statement. Contact local journalists. The complaint itself is your documentation. "I have filed a formal judicial conduct complaint with the [Circuit/State] alleging..." — that sentence creates accountability the complaint alone may not.</div></div>
+      <div class="pstep"><div class="pstep-num">8</div><div class="pstep-text"><strong style="color:var(--white)">For state judges — organize a retention campaign.</strong> If the judge faces a retention election, an organized opposition campaign is the most powerful tool available. The Iowa 2010 example: three Iowa Supreme Court justices were removed by voters after a coordinated campaign opposing their retention. No litigation required — just votes.</div></div>
+    </div>
+    <div style="background:var(--gray);border:1px solid var(--border);border-left:3px solid var(--gold);padding:1rem;margin-top:1rem;font-size:12px;color:#aaa;line-height:1.7">
+      <strong style="color:var(--gold)">THE IOWA 2010 PRECEDENT</strong><br><br>
+      Three Iowa Supreme Court justices who ruled in favor of same-sex marriage faced a coordinated retention election campaign in 2010. All three were removed by voters — the first time Iowa had ever voted out a Supreme Court justice. This proved that organized retention campaigns can remove judges that conduct commissions and impeachment processes protect. If your target judge faces a retention election: organize, fund, and run the campaign.
+    </div>
+  </div>
+</main>
+
+<script>
+const judgeStateData = [
+  {code:"AL",name:"Alabama",selection:"Partisan Election",hasRecall:false,hasRetention:false,commissionName:"Alabama Judicial Inquiry Commission",commissionUrl:"https://www.ajic.state.al.us",complaintUrl:"https://www.ajic.state.al.us/ComplaintInfo.aspx",impeachGround:"Willful neglect of duty, corruption, incompetency, intemperance, or moral turpitude",impeachVote:"Majority of House; 2/3 of Senate",notes:"Alabama elects judges in partisan elections. Removal mechanisms include conduct commission, impeachment, and the Court of the Judiciary which can remove after commission referral.",otherTools:["Court of the Judiciary — final removal authority","AG criminal prosecution","Retention campaign at next election"]},
+  {code:"AK",name:"Alaska",selection:"Merit Selection + Retention",hasRecall:false,hasRetention:true,retentionFreq:"Every 3-10 years depending on court level",commissionName:"Alaska Commission on Judicial Conduct",commissionUrl:"https://www.ajc.state.ak.us",complaintUrl:"https://www.ajc.state.ak.us/complaints",impeachGround:"Malfeasance in office",impeachVote:"2/3 of Senate (reversed — Senate impeaches in AK)",notes:"Alaska uses merit selection. Judges face retention votes. Conduct commission can recommend suspension or removal to the Supreme Court.",otherTools:["Retention election campaign","Supreme Court removal on commission recommendation","Criminal prosecution"]},
+  {code:"AZ",name:"Arizona",selection:"Mixed (Merit + Partisan)",hasRecall:true,hasRetention:true,retentionFreq:"Every 4-6 years",commissionName:"Arizona Commission on Judicial Conduct",commissionUrl:"https://www.azcourts.gov/azcjc",complaintUrl:"https://www.azcourts.gov/azcjc/How-to-File-a-Complaint",impeachGround:"High crimes, misdemeanors, or malfeasance",impeachVote:"Majority of House; 2/3 of Senate",notes:"Arizona allows recall of judges by voters AND has retention elections for merit-selected judges. Double accountability mechanism.",otherTools:["Recall petition (no grounds required)","Retention election opposition","Impeachment","Criminal prosecution"]},
+  {code:"AR",name:"Arkansas",selection:"Nonpartisan Election",hasRecall:false,hasRetention:false,commissionName:"Arkansas Judicial Discipline & Disability Commission",commissionUrl:"https://www.arkansas.gov/jddc",complaintUrl:"https://www.arkansas.gov/jddc/complaint",impeachGround:"Malfeasance, misfeasance, or willful neglect of duty",impeachVote:"Majority of House; 2/3 of Senate",notes:"Arkansas elects all judges in nonpartisan elections. Removal via conduct commission, impeachment, or address by the General Assembly.",otherTools:["Conduct Commission (primary tool)","Legislative address — concurrent resolution","Criminal prosecution","Electoral challenge at next election"]},
+  {code:"CA",name:"California",selection:"Nonpartisan Election + Retention",hasRecall:true,hasRetention:true,retentionFreq:"Every 12 years (appellate/Supreme Court)",commissionName:"California Commission on Judicial Performance",commissionUrl:"https://cjp.ca.gov",complaintUrl:"https://cjp.ca.gov/file_a_complaint",impeachGround:"Misconduct in office",impeachVote:"2/3 of Assembly; 2/3 of Senate",notes:"California has one of the most powerful conduct commissions — can directly remove judges. Also allows recall by petition AND retention elections for appellate judges.",otherTools:["Commission direct removal power (unique — no impeachment needed)","Recall petition","Retention election opposition","Criminal prosecution"]},
+  {code:"CO",name:"Colorado",selection:"Merit Selection + Retention",hasRecall:false,hasRetention:true,retentionFreq:"Every 2-10 years depending on court level",commissionName:"Colorado Commission on Judicial Discipline",commissionUrl:"https://www.coloradojudicialdiscipline.com",complaintUrl:"https://www.coloradojudicialdiscipline.com/filing-a-complaint",impeachGround:"Misconduct or malfeasance in office",impeachVote:"Majority of House; 2/3 of Senate",notes:"Colorado strengthened its commission in recent years. Retention elections are genuine accountability mechanisms — Colorado voters have rejected judges before.",otherTools:["Conduct Commission","Retention election opposition","Impeachment","Criminal prosecution"]},
+  {code:"CT",name:"Connecticut",selection:"Appointment by Governor + Legislature",hasRecall:false,hasRetention:false,commissionName:"Connecticut Judicial Review Council",commissionUrl:"https://www.jud.ct.gov/jrc",complaintUrl:"https://www.jud.ct.gov/jrc/complaint.htm",impeachGround:"Crimes, misdemeanors, or malfeasance in office",impeachVote:"Majority of House; 2/3 of Senate",notes:"Connecticut judges are appointed. No retention elections. Removal via conduct commission, impeachment, or address. Legislature reconfirms judges every 8 years.",otherTools:["Conduct Commission","Legislative address","Reconfirmation vote — organize opposition","Criminal prosecution"]},
+  {code:"DE",name:"Delaware",selection:"Governor Appointment",hasRecall:false,hasRetention:false,commissionName:"Delaware Court on the Judiciary",commissionUrl:"https://courts.delaware.gov/coj",complaintUrl:"https://courts.delaware.gov/coj/complaintprocess.aspx",impeachGround:"Conviction of crime, misbehavior in office",impeachVote:"Majority of House; 2/3 of Senate",notes:"Delaware appoints judges — unique constitutional requirement for partisan balance on courts. Court on the Judiciary is separate from the conduct commission in most states — it actually hears cases.",otherTools:["Court on the Judiciary — hears removal cases","Criminal prosecution","Impeachment","AG investigation"]},
+  {code:"FL",name:"Florida",selection:"Mixed (Merit + Nonpartisan)",hasRecall:false,hasRetention:true,retentionFreq:"Every 6 years (appellate)",commissionName:"Florida Judicial Qualifications Commission",commissionUrl:"https://www.floridajqc.com",complaintUrl:"https://www.floridajqc.com/complaint",impeachGround:"Misdemeanor in office or mental/physical incapacity",impeachVote:"2/3 of House; 2/3 of Senate",notes:"Florida's JQC is powerful — can investigate and recommend removal to the Supreme Court. Trial court judges face merit retention. Florida Supreme Court justices face retention every 6 years.",otherTools:["JQC can recommend removal to Supreme Court","Retention election opposition","Governor appointment replacement","Criminal prosecution"]},
+  {code:"GA",name:"Georgia",selection:"Nonpartisan Election",hasRecall:false,hasRetention:false,commissionName:"Georgia Judicial Qualifications Commission",commissionUrl:"https://gjqc.com",complaintUrl:"https://gjqc.com/file-a-complaint",impeachGround:"Malfeasance, misfeasance, or neglect of duty",impeachVote:"Majority of House; 2/3 of Senate",notes:"Georgia elects all judges nonpartisanly. Conduct commission can censure, suspend, or remove. Impeachment also available.",otherTools:["JQC direct removal recommendation","Impeachment","Electoral challenge","Criminal prosecution"]},
+  {code:"HI",name:"Hawaii",selection:"Judicial Selection Commission",hasRecall:false,hasRetention:true,retentionFreq:"Every 10 years",commissionName:"Hawaii Commission on Judicial Conduct",commissionUrl:"https://www.courts.state.hi.us/general_information/judicial_conduct_commission",complaintUrl:"https://www.courts.state.hi.us/general_information/judicial_conduct_commission/filing_complaint",impeachGround:"Malfeasance in office or conduct unbecoming",impeachVote:"Majority of House; 2/3 of Senate",notes:"Hawaii's Judicial Selection Commission nominates judges. Senate confirms. Judges face reappointment every 10 years — organize opposition to reappointment.",otherTools:["Conduct Commission","Reappointment opposition (10-year cycle)","Impeachment","Criminal prosecution"]},
+  {code:"ID",name:"Idaho",selection:"Nonpartisan Election",hasRecall:true,hasRetention:false,commissionName:"Idaho Judicial Council",commissionUrl:"https://isc.idaho.gov/judicial-council",complaintUrl:"https://isc.idaho.gov/judicial-council/complaints",impeachGround:"Crimes, misdemeanors, or malfeasance in office",impeachVote:"Majority of House; 2/3 of Senate",notes:"Idaho allows recall of judges AND nonpartisan elections. Judicial Council investigates misconduct and recommends removal to Supreme Court.",otherTools:["Recall petition (no grounds required)","Judicial Council recommendation","Impeachment","Electoral challenge"]},
+  {code:"IL",name:"Illinois",selection:"Partisan Election + Retention",hasRecall:false,hasRetention:true,retentionFreq:"Every 6 years",commissionName:"Illinois Judicial Inquiry Board",commissionUrl:"https://www.illinoisjib.gov",complaintUrl:"https://www.illinoisjib.gov/complaint",impeachGround:"Commission of a crime or misconduct",impeachVote:"Majority of House; 2/3 of Senate",notes:"Illinois elects judges in partisan elections then requires retention every 6 years with a 60% threshold — higher than most states. Failure to get 60% removes the judge.",otherTools:["JIB files charges before Courts Commission","Courts Commission hears removal cases","Retention election opposition (60% threshold)","Criminal prosecution"]},
+  {code:"IN",name:"Indiana",selection:"Partisan Election + Retention",hasRecall:false,hasRetention:true,retentionFreq:"Every 6-10 years",commissionName:"Indiana Commission on Judicial Qualifications",commissionUrl:"https://www.in.gov/ijc",complaintUrl:"https://www.in.gov/ijc/complaint",impeachGround:"Any misdemeanor in office",impeachVote:"Majority of House; 2/3 of Senate",notes:"Indiana Supreme Court justices face retention votes. Commission investigates and can recommend removal to Supreme Court.",otherTools:["Commission recommendation to Supreme Court","Retention election opposition","Impeachment","Criminal prosecution"]},
+  {code:"IA",name:"Iowa",selection:"Merit Selection + Retention",hasRecall:false,hasRetention:true,retentionFreq:"Every 8 years (Supreme Court); 6 years (appellate)",commissionName:"Iowa Commission on Judicial Qualifications",commissionUrl:"https://www.iowacourts.gov/iowa-courts/supreme-court/commission-on-judicial-qualifications",complaintUrl:"https://www.iowacourts.gov/iowa-courts/supreme-court/commission-on-judicial-qualifications/file-complaint",impeachGround:"Crimes, misdemeanors, or malfeasance in office",impeachVote:"Majority of House; majority of Senate",notes:"⚡ IOWA 2010 PRECEDENT: Three Supreme Court justices were removed via retention election after an organized campaign. Most powerful example of retention election accountability in U.S. history. 60% retention threshold.",otherTools:["⚡ RETENTION ELECTION — most powerful tool here","Commission recommendation","Impeachment (low threshold — majority both chambers)","Criminal prosecution"]},
+  {code:"KS",name:"Kansas",selection:"Mixed (Merit + Partisan)",hasRecall:false,hasRetention:true,retentionFreq:"Every 6 years (Supreme Court)",commissionName:"Kansas Commission on Judicial Qualifications",commissionUrl:"https://www.kscourts.org/Kansas-Courts/Kansas-Judicial-Branch/Commission-on-Judicial-Qualifications",complaintUrl:"https://www.kscourts.org/Kansas-Courts/Kansas-Judicial-Branch/Commission-on-Judicial-Qualifications/File-a-Complaint",impeachGround:"High crimes, misdemeanors, or malfeasance",impeachVote:"Majority of House; 2/3 of Senate",notes:"Kansas Supreme Court uses merit selection with retention elections. District court judges elected in partisan elections.",otherTools:["Commission recommendation","Retention election opposition","Impeachment","Electoral challenge"]},
+  {code:"KY",name:"Kentucky",selection:"Nonpartisan Election",hasRecall:false,hasRetention:false,commissionName:"Kentucky Judicial Conduct Commission",commissionUrl:"https://kjcc.ky.gov",complaintUrl:"https://kjcc.ky.gov/how-to-file-a-complaint",impeachGround:"Misdemeanor or malfeasance in office",impeachVote:"Majority of House; 2/3 of Senate",notes:"Kentucky elects all judges nonpartisanly. Commission can censure, suspend, or remove. Removal recommendations go to Supreme Court.",otherTools:["Commission direct removal recommendation","Impeachment","Electoral challenge","Criminal prosecution"]},
+  {code:"LA",name:"Louisiana",selection:"Partisan Election",hasRecall:false,hasRetention:false,commissionName:"Judiciary Commission of Louisiana",commissionUrl:"https://www.judiciarycommission.la.gov",complaintUrl:"https://www.judiciarycommission.la.gov/FileAComplaint",impeachGround:"Willful misconduct relating to official duty, willful neglect, persistent failure to perform duties, or conduct prejudicial to administration of justice",impeachVote:"2/3 of House; 2/3 of Senate",notes:"Louisiana elects all judges in partisan elections. Commission investigates and recommends. Supreme Court makes final removal decision.",otherTools:["Commission recommendation to Supreme Court","Impeachment (high 2/3 threshold)","Electoral challenge","Criminal prosecution"]},
+  {code:"ME",name:"Maine",selection:"Governor Appointment",hasRecall:false,hasRetention:false,commissionName:"Maine Committee on Judicial Responsibility and Disability",commissionUrl:"https://www.courts.maine.gov/courts/sjc/jrd",complaintUrl:"https://www.courts.maine.gov/courts/sjc/jrd/complaint.html",impeachGround:"Crimes, malfeasance, or neglect of duty",impeachVote:"Majority of House; 2/3 of Senate",notes:"Maine appoints all judges. Reappointment every 7 years — organize opposition to reappointment.",otherTools:["Committee recommendation","Legislative address — concurrent resolution","Reappointment opposition (7-year cycle)","Criminal prosecution"]},
+  {code:"MD",name:"Maryland",selection:"Governor Appointment + Retention",hasRecall:false,hasRetention:true,retentionFreq:"Every 10 years",commissionName:"Maryland Commission on Judicial Disabilities",commissionUrl:"https://www.courts.state.md.us/cjd",complaintUrl:"https://www.courts.state.md.us/cjd/howtofilea",impeachGround:"Misdemeanor or malfeasance in office",impeachVote:"Majority of House; 2/3 of Senate",notes:"Maryland's Court of Appeals selects judges by merit; they face retention votes every 10 years. Circuit court judges face contested elections.",otherTools:["Commission recommendation","Retention election opposition","Governor appointment replacement","Criminal prosecution"]},
+  {code:"MA",name:"Massachusetts",selection:"Governor Appointment (to age 70)",hasRecall:false,hasRetention:false,commissionName:"Massachusetts Commission on Judicial Conduct",commissionUrl:"https://www.mass.gov/orgs/commission-on-judicial-conduct",complaintUrl:"https://www.mass.gov/how-to/file-a-complaint-about-a-judge",impeachGround:"Maladministration in office",impeachVote:"Majority of House; 2/3 of Senate",notes:"Massachusetts judges serve until age 70 — no retention elections. Governor appointment via Judicial Nominating Commission. Mandatory retirement at 70 is the built-in term limit.",otherTools:["Commission recommendation to Supreme Court","Legislative address","Impeachment","Criminal prosecution","Mandatory retirement at 70"]},
+  {code:"MI",name:"Michigan",selection:"Nonpartisan Election",hasRecall:true,hasRetention:false,commissionName:"Michigan Judicial Tenure Commission",commissionUrl:"https://www.michigan.gov/jtc",complaintUrl:"https://www.michigan.gov/jtc/complaint-process",impeachGround:"Corrupt conduct or crime",impeachVote:"Majority of House; 2/3 of Senate",notes:"Michigan allows recall of judges AND elects all judges nonpartisanly. JTC is powerful — recommends directly to Supreme Court for removal.",otherTools:["Recall petition","JTC recommendation to Supreme Court","Impeachment","Electoral challenge","Criminal prosecution"]},
+  {code:"MN",name:"Minnesota",selection:"Nonpartisan Election",hasRecall:false,hasRetention:false,commissionName:"Minnesota Board on Judicial Standards",commissionUrl:"https://bjs.mn.gov",complaintUrl:"https://bjs.mn.gov/complaint",impeachGround:"Corrupt conduct or crime or misdemeanor",impeachVote:"Majority of House; 2/3 of Senate",notes:"Minnesota elects all judges nonpartisanly. Board recommends to Supreme Court. Board can also suspend with pay pending investigation.",otherTools:["Board recommendation to Supreme Court","Suspension pending investigation","Impeachment","Electoral challenge","Criminal prosecution"]},
+  {code:"MS",name:"Mississippi",selection:"Nonpartisan Election",hasRecall:false,hasRetention:false,commissionName:"Mississippi Commission on Judicial Performance",commissionUrl:"https://www.cjp.ms.gov",complaintUrl:"https://www.cjp.ms.gov/complaint-process",impeachGround:"Crimes, misdemeanors, or acts of malfeasance",impeachVote:"2/3 of House; 2/3 of Senate",notes:"Mississippi elects all judges nonpartisanly. Commission investigates and can recommend public censure, suspension, or removal.",otherTools:["Commission public censure/removal recommendation","Impeachment (2/3 both chambers)","Electoral challenge","Criminal prosecution"]},
+  {code:"MO",name:"Missouri",selection:"Mixed (Merit + Nonpartisan)",hasRecall:false,hasRetention:true,retentionFreq:"Every 12 years (Supreme Court); 6-12 years others",commissionName:"Missouri Commission on Retirement, Removal and Discipline",commissionUrl:"https://www.courts.mo.gov/page.jsp?id=297",complaintUrl:"https://www.courts.mo.gov/file.jsp?id=12688",impeachGround:"Crime, misconduct, habitual drunkenness, willful neglect, or corruption",impeachVote:"Majority of House; 5/6 of Senate (extremely high)",notes:"Missouri's Plan (merit selection) is the national model. Supreme Court justices face retention every 12 years. 5/6 Senate conviction threshold makes impeachment nearly impossible.",otherTools:["Commission recommendation","Retention election opposition (primary effective tool)","Impeachment (5/6 threshold — very difficult)","Criminal prosecution"]},
+  {code:"MT",name:"Montana",selection:"Nonpartisan Election",hasRecall:true,hasRetention:false,commissionName:"Montana Judicial Standards Commission",commissionUrl:"https://judicialstandards.mt.gov",complaintUrl:"https://judicialstandards.mt.gov/complaint",impeachGround:"Crimes, misdemeanors, violations of oath, misconduct",impeachVote:"Majority of House; 2/3 of Senate",notes:"Montana allows recall of judges AND elects all judges nonpartisanly. Commission recommends to Supreme Court.",otherTools:["Recall petition","Commission recommendation","Impeachment","Electoral challenge","Criminal prosecution"]},
+  {code:"NE",name:"Nebraska",selection:"Merit Selection + Retention",hasRecall:false,hasRetention:true,retentionFreq:"Every 6 years",commissionName:"Nebraska Commission on Judicial Qualifications",commissionUrl:"https://supremecourt.nebraska.gov/about/cjq",complaintUrl:"https://supremecourt.nebraska.gov/about/cjq/complaint-process",impeachGround:"Crimes, misdemeanors, or malfeasance",impeachVote:"Unicameral — majority + 2/3 (same body)",notes:"Nebraska merit selects then uses retention elections. Unique unicameral legislature handles impeachment. Commission recommends to Supreme Court.",otherTools:["Commission recommendation","Retention election opposition","Unicameral impeachment","Criminal prosecution"]},
+  {code:"NV",name:"Nevada",selection:"Nonpartisan Election",hasRecall:true,hasRetention:false,commissionName:"Nevada Commission on Judicial Discipline",commissionUrl:"https://cjd.nv.gov",complaintUrl:"https://cjd.nv.gov/complaint",impeachGround:"Crimes, misdemeanors, or malfeasance",impeachVote:"Majority of Assembly; 2/3 of Senate",notes:"Nevada allows recall of judges AND elects them nonpartisanly. Commission can directly impose discipline including removal.",otherTools:["Recall petition","Commission direct discipline","Impeachment","Electoral challenge","Criminal prosecution"]},
+  {code:"NH",name:"New Hampshire",selection:"Governor + Council Appointment",hasRecall:false,hasRetention:false,commissionName:"New Hampshire Judicial Conduct Committee",commissionUrl:"https://www.courts.nh.gov/resources/committees/judicial-conduct-committee",complaintUrl:"https://www.courts.nh.gov/resources/committees/judicial-conduct-committee/file-complaint",impeachGround:"Bribery, corruption, malpractice, or maladministration",impeachVote:"Majority of House; 2/3 of Senate",notes:"New Hampshire appoints via Governor + Executive Council. Judges serve until age 70. Executive Council could be used to pressure appointments/reappointments.",otherTools:["Conduct Committee recommendation","Governor + Council oversight","Impeachment","Criminal prosecution","Mandatory retirement at 70"]},
+  {code:"NJ",name:"New Jersey",selection:"Governor + Senate Appointment",hasRecall:false,hasRetention:true,retentionFreq:"Reappointment after 7 years = tenure until 70",commissionName:"New Jersey Advisory Committee on Judicial Conduct",commissionUrl:"https://www.njcourts.gov/attorneys/judicial-conduct",complaintUrl:"https://www.njcourts.gov/attorneys/judicial-conduct/file-complaint",impeachGround:"Misdemeanor, misconduct in office, or willful neglect",impeachVote:"Majority of Assembly; 2/3 of Senate",notes:"New Jersey judges serve 7 years then must be reappointed for tenure until age 70. The reappointment vote is an accountability mechanism — organize opposition.",otherTools:["Committee recommendation to Supreme Court","Reappointment opposition (7-year checkpoint)","Legislative impeachment","Criminal prosecution"]},
+  {code:"NM",name:"New Mexico",selection:"Partisan Election + Retention",hasRecall:false,hasRetention:true,retentionFreq:"Every 8 years",commissionName:"New Mexico Judicial Standards Commission",commissionUrl:"https://jsc.state.nm.us",complaintUrl:"https://jsc.state.nm.us/complaint-process",impeachGround:"Crimes, misdemeanors, or malfeasance",impeachVote:"Majority of House; 2/3 of Senate",notes:"New Mexico uses partisan elections initially, then retention elections. Commission recommends to Supreme Court.",otherTools:["Commission recommendation","Retention election opposition","Impeachment","Criminal prosecution"]},
+  {code:"NY",name:"New York",selection:"Partisan Election",hasRecall:false,hasRetention:false,commissionName:"New York State Commission on Judicial Conduct",commissionUrl:"https://cjc.ny.gov",complaintUrl:"https://cjc.ny.gov/complaint.htm",impeachGround:"Misconduct or malversation in office",impeachVote:"Majority of Assembly; 2/3 of Court for the Trial of Impeachments",notes:"New York's Commission on Judicial Conduct is one of the most active in the country — publicly publishes determinations. NY elects judges in partisan elections. Unique impeachment court includes Senate + Court of Appeals judges.",otherTools:["Commission public determinations (searchable)","Impeachment court","Electoral challenge","Criminal prosecution — SDNY/EDNY aggressive on judicial corruption"]},
+  {code:"NC",name:"North Carolina",selection:"Partisan Election",hasRecall:false,hasRetention:false,commissionName:"North Carolina Judicial Standards Commission",commissionUrl:"https://www.nccourts.gov/courts/judicial-standards-commission",complaintUrl:"https://www.nccourts.gov/courts/judicial-standards-commission/file-complaint",impeachGround:"Willful neglect, corruption, incompetency, or unfitness",impeachVote:"Majority of House; 2/3 of Senate",notes:"NC recently switched back to partisan judicial elections. Commission investigates and recommends to Supreme Court.",otherTools:["Commission recommendation","Impeachment","Electoral challenge","Criminal prosecution"]},
+  {code:"ND",name:"North Dakota",selection:"Nonpartisan Election",hasRecall:false,hasRetention:false,commissionName:"North Dakota Judicial Conduct Commission",commissionUrl:"https://www.ndcourts.gov/court/boards/jcc",complaintUrl:"https://www.ndcourts.gov/court/boards/jcc/complaint",impeachGround:"Crimes, misdemeanors, or malfeasance",impeachVote:"Majority of House; 2/3 of Senate",notes:"ND elects judges nonpartisanly. Commission recommends to Supreme Court.",otherTools:["Commission recommendation","Impeachment","Electoral challenge","Criminal prosecution"]},
+  {code:"OH",name:"Ohio",selection:"Nonpartisan Election",hasRecall:false,hasRetention:false,commissionName:"Ohio Board of Professional Conduct (judicial section)",commissionUrl:"https://www.bpc.ohio.gov",complaintUrl:"https://www.bpc.ohio.gov/for-the-public/filing-a-complaint",impeachGround:"Misdemeanor in office",impeachVote:"Majority of House; 2/3 of Senate",notes:"Ohio elects all judges nonpartisanly. Very broad 'misdemeanor in office' impeachment standard. Board of Professional Conduct handles judicial ethics.",otherTools:["Board of Professional Conduct complaint","Impeachment (broad grounds)","Electoral challenge","Criminal prosecution"]},
+  {code:"OK",name:"Oklahoma",selection:"Nonpartisan Election + Retention",hasRecall:false,hasRetention:true,retentionFreq:"Every 6 years",commissionName:"Oklahoma Council on Judicial Complaints",commissionUrl:"https://www.oscn.net/applications/oscn/Index.asp?ftdb=STOKST12&level=1",complaintUrl:"https://www.oscn.net/applications/oscn/Index.asp?ftdb=STOKST12",impeachGround:"Willful neglect, corruption, incompetency, or moral turpitude",impeachVote:"Majority of House; 2/3 of Senate",notes:"Oklahoma uses nonpartisan elections for district courts then retention for appellate. Council investigates and recommends.",otherTools:["Council recommendation","Retention election opposition","Impeachment","Electoral challenge"]},
+  {code:"OR",name:"Oregon",selection:"Nonpartisan Election",hasRecall:true,hasRetention:false,commissionName:"Oregon Commission on Judicial Fitness and Disability",commissionUrl:"https://www.oregon.gov/cjfd",complaintUrl:"https://www.oregon.gov/cjfd/pages/complaint.aspx",impeachGround:"Newly available post-Measure 115 (2024)",impeachVote:"Majority of House; 2/3 of Senate (NEW 2024)",notes:"Oregon added impeachment in November 2024 (Measure 115). Prior to this, recall was the only legislative removal tool. Both are now available simultaneously.",otherTools:["Recall petition (no grounds required)","NEW: Impeachment (post-2024)","Commission recommendation","Electoral challenge","Criminal prosecution"]},
+  {code:"PA",name:"Pennsylvania",selection:"Partisan Election + Retention",hasRecall:false,hasRetention:true,retentionFreq:"Every 10 years",commissionName:"Pennsylvania Court of Judicial Discipline",commissionUrl:"https://www.pacourts.us/courts/court-of-judicial-discipline",complaintUrl:"https://www.pacourts.us/courts/court-of-judicial-discipline/complaints",impeachGround:"Misbehavior in office or in private capacity",impeachVote:"Majority of House; 2/3 of Senate",notes:"Pennsylvania has a separate Court of Judicial Discipline — a full judicial court that hears removal cases, not just a commission. Broad 'private capacity' grounds for impeachment.",otherTools:["Court of Judicial Discipline (full court — powerful)","Retention election opposition (10-year cycle)","Impeachment (broad grounds)","Criminal prosecution — PA AG active on judicial corruption"]},
+  {code:"RI",name:"Rhode Island",selection:"Governor Appointment",hasRecall:false,hasRetention:false,commissionName:"Rhode Island Commission on Judicial Tenure and Discipline",commissionUrl:"https://www.courts.ri.gov/PublicInterest/JudicialTenure",complaintUrl:"https://www.courts.ri.gov/PublicInterest/JudicialTenure/complaint.aspx",impeachGround:"Corrupt or criminal conduct",impeachVote:"Majority of House; 2/3 of Senate",notes:"Rhode Island appoints all judges. No retention elections. Commission recommendation goes to Supreme Court.",otherTools:["Commission recommendation","Impeachment","Criminal prosecution","AG investigation"]},
+  {code:"SC",name:"South Carolina",selection:"Legislative Election",hasRecall:false,hasRetention:false,commissionName:"South Carolina Commission on Judicial Conduct",commissionUrl:"https://www.sccourts.org/judicialConduct",complaintUrl:"https://www.sccourts.org/judicialConduct/complaintProcess.cfm",impeachGround:"Willful neglect, corruption, incompetency, or unfitness",impeachVote:"2/3 of House; 2/3 of Senate",notes:"South Carolina is unique — the Legislature ELECTS judges in joint session. This means legislative lobbying/organizing is the key accountability tool. Judges are reelected by the Legislature every 6-10 years.",otherTools:["Lobby legislature against reelection (primary tool)","Commission recommendation to Supreme Court","Impeachment (2/3 both chambers — high bar)","Criminal prosecution"]},
+  {code:"SD",name:"South Dakota",selection:"Nonpartisan Election + Retention",hasRecall:false,hasRetention:true,retentionFreq:"Every 8 years",commissionName:"South Dakota Judicial Qualifications Commission",commissionUrl:"https://ujs.sd.gov/Supreme_Court/JudicialQualifications.aspx",complaintUrl:"https://ujs.sd.gov/Supreme_Court/JudicialQualifications.aspx",impeachGround:"Crimes, misdemeanors, or malfeasance",impeachVote:"Majority of House; 2/3 of Senate",notes:"South Dakota uses nonpartisan elections for trial courts and retention elections for appellate.",otherTools:["Commission recommendation","Retention election opposition","Impeachment","Electoral challenge","Criminal prosecution"]},
+  {code:"TN",name:"Tennessee",selection:"Governor Appointment + Retention",hasRecall:false,hasRetention:true,retentionFreq:"Every 8 years",commissionName:"Tennessee Board of Judicial Conduct",commissionUrl:"https://www.tncourts.gov/boards-commissions/court-judiciary/about",complaintUrl:"https://www.tncourts.gov/boards-commissions/court-judiciary/file-complaint",impeachGround:"Crimes, misdemeanors, or malfeasance",impeachVote:"Majority of House; 2/3 of Senate",notes:"Tennessee's AG is appointed by the Supreme Court — creating a unique dynamic. Appellate judges face retention votes. Board investigates and recommends.",otherTools:["Board recommendation to Court of Judiciary","Retention election opposition","Impeachment","Criminal prosecution"]},
+  {code:"TX",name:"Texas",selection:"Partisan Election",hasRecall:false,hasRetention:false,commissionName:"Texas State Commission on Judicial Conduct",commissionUrl:"https://www.scjc.texas.gov",complaintUrl:"https://www.scjc.texas.gov/complaints/how-to-file-a-complaint",impeachGround:"Willful neglect, corruption, incompetency, or moral turpitude",impeachVote:"Majority of House; 2/3 of Senate",notes:"Texas elects all judges in partisan elections — including the Supreme Court. Commission is an independent state agency. Electoral campaigns are the most powerful accountability tool in Texas given partisan election system.",otherTools:["Commission (independent state agency)","Partisan electoral challenge","Impeachment","Criminal prosecution","Texas Rangers investigation"]},
+  {code:"UT",name:"Utah",selection:"Governor Appointment + Retention",hasRecall:false,hasRetention:true,retentionFreq:"Every 6-10 years",commissionName:"Utah Judicial Conduct Commission",commissionUrl:"https://jcc.utah.gov",complaintUrl:"https://jcc.utah.gov/compliant-form",impeachGround:"High crimes, misdemeanors, or malfeasance",impeachVote:"Majority of House; 2/3 of Senate",notes:"Utah merit selects then requires retention elections. Commission recommends to Supreme Court. Unique judicial performance evaluation system published before each retention election.",otherTools:["Commission recommendation","Retention election opposition","Judicial performance evaluations — public","Impeachment","Criminal prosecution"]},
+  {code:"VT",name:"Vermont",selection:"Governor Appointment + Legislative Review",hasRecall:false,hasRetention:false,commissionName:"Vermont Judicial Conduct Board",commissionUrl:"https://www.vermontjudiciary.org/administration/boards-and-committees/judicial-conduct-board",complaintUrl:"https://www.vermontjudiciary.org/administration/boards-and-committees/judicial-conduct-board/complaints",impeachGround:"Maladministration, corruption, delinquency, or malfeasance",impeachVote:"Majority of House; 2/3 of Senate",notes:"Vermont judges face legislative review for reappointment every 6 years. This is a genuine legislative accountability checkpoint — organize opposition to reappointment.",otherTools:["Board recommendation","Legislative reappointment opposition (6-year cycle)","Impeachment","Criminal prosecution"]},
+  {code:"VA",name:"Virginia",selection:"Legislative Election",hasRecall:false,hasRetention:false,commissionName:"Virginia Judicial Inquiry and Review Commission",commissionUrl:"https://www.jirc.virginia.gov",complaintUrl:"https://www.jirc.virginia.gov/complaint.html",impeachGround:"Malfeasance, neglect of duty, or other high crimes",impeachVote:"Majority of House; 2/3 of Senate",notes:"Virginia is the other state where the Legislature elects judges — in joint session every 8 years. This makes legislative lobbying the most powerful tool. Commission investigates and recommends to Supreme Court.",otherTools:["Lobby legislature against reelection (primary tool — 8-year cycle)","Commission recommendation","Impeachment","Criminal prosecution"]},
+  {code:"WA",name:"Washington",selection:"Nonpartisan Election",hasRecall:true,hasRetention:false,commissionName:"Washington State Commission on Judicial Conduct",commissionUrl:"https://cjc.wa.gov",complaintUrl:"https://cjc.wa.gov/complaint-process",impeachGround:"Malfeasance, misfeasance, or violation of oath",impeachVote:"Majority of House; 2/3 of Senate",notes:"Washington allows recall of judges AND elects them nonpartisanly. Commission can censure, suspend (with or without pay), or remove.",otherTools:["Recall petition (court-reviewed for legal sufficiency)","Commission direct removal","Impeachment","Electoral challenge","Criminal prosecution"]},
+  {code:"WV",name:"West Virginia",selection:"Partisan Election",hasRecall:false,hasRetention:false,commissionName:"West Virginia Judicial Investigation Commission",commissionUrl:"https://www.courtswv.gov/legal-community/jic",complaintUrl:"https://www.courtswv.gov/legal-community/jic/complaint",impeachGround:"Malfeasance, incompetence, neglect, or gross immorality",impeachVote:"Majority of House; 2/3 of Senate",notes:"West Virginia has used impeachment — all four Supreme Court justices were impeached in 2018 (three resigned, one acquitted, one convicted). Proof the mechanism works when misuse is documented.",otherTools:["Commission recommendation","Impeachment (used in 2018 — all 4 justices)","Electoral challenge","Criminal prosecution"]},
+  {code:"WI",name:"Wisconsin",selection:"Nonpartisan Election",hasRecall:true,hasRetention:false,commissionName:"Wisconsin Judicial Commission",commissionUrl:"https://www.wicourts.gov/courts/offices/judicialcommission.htm",complaintUrl:"https://www.wicourts.gov/courts/offices/judicialcommission.htm",impeachGround:"Corrupt conduct or crime",impeachVote:"Majority of Assembly; 2/3 of Senate",notes:"Wisconsin allows recall of judges AND elects them nonpartisanly. Commission files charges before Court of Appeals panel. Notable: in 2012 the Wisconsin Supreme Court dismissed a case for want of quorum when justices recused en masse from misconduct proceedings.",otherTools:["Recall petition (no grounds required)","Commission charges to Court of Appeals panel","Impeachment","Electoral challenge","Criminal prosecution"]},
+  {code:"WY",name:"Wyoming",selection:"Governor Appointment + Retention",hasRecall:false,hasRetention:true,retentionFreq:"Every 8 years",commissionName:"Wyoming Commission on Judicial Conduct and Ethics",commissionUrl:"https://www.courts.state.wy.us/courts/commission-on-judicial-conduct-and-ethics",complaintUrl:"https://www.courts.state.wy.us/courts/commission-on-judicial-conduct-and-ethics/complaint-form",impeachGround:"High crimes, misdemeanors, or malfeasance",impeachVote:"Majority of House; 2/3 of Senate",notes:"Wyoming merit selects then requires retention elections. Commission recommends to Supreme Court.",otherTools:["Commission recommendation","Retention election opposition","Impeachment","Criminal prosecution"]}
+];
+
+let filteredJudges = [...judgeStateData];
+
+function renderJudgeStates(){
+  const g = document.getElementById('judge-state-grid');
+  g.innerHTML = filteredJudges.map(s => `
+    <div class="state-card ${s.hasRecall?'has-recall':s.hasRetention?'has-retention':'appt-only'}" id="jcard-${s.code}">
+      <div class="state-header" onclick="toggleJudge('${s.code}')">
+        <div style="display:flex;align-items:center;gap:.7rem;flex-wrap:wrap">
+          <div class="state-name">${s.name}</div>
+          <div class="state-badges">
+            <span class="sbadge sb-elect">${s.selection.split(' ')[0]}</span>
+            ${s.hasRecall?'<span class="sbadge sb-recall">⚡ RECALL</span>':''}
+            ${s.hasRetention?'<span class="sbadge sb-retention">RETENTION</span>':''}
+            <span class="sbadge sb-imp">IMPEACH</span>
+          </div>
+        </div>
+        <span class="expand-icon" id="jicon-${s.code}">▼</span>
+      </div>
+      <div class="state-body" id="jbody-${s.code}">
+        <div class="body-grid">
+          <div class="body-block">
+            <div class="body-title">Judicial Selection Method</div>
+            <div class="body-text">${s.selection}</div>
+          </div>
+          <div class="body-block">
+            <div class="body-title">Conduct Commission</div>
+            <div class="body-text">${s.commissionName}</div>
+          </div>
+          <div class="body-block">
+            <div class="body-title">Impeachment Grounds</div>
+            <div class="body-text">${s.impeachGround}</div>
+          </div>
+          <div class="body-block">
+            <div class="body-title">Impeachment Vote</div>
+            <div class="body-text">${s.impeachVote}</div>
+          </div>
+          ${s.hasRetention?`<div class="body-block"><div class="body-title">Retention Frequency</div><div class="body-text">${s.retentionFreq}</div></div>`:''}
+          <div class="body-block" style="${s.hasRetention?'':'grid-column:1/-1'}">
+            <div class="body-title">All Available Tools</div>
+            <div class="body-text"><ul>${s.otherTools.map(t=>`<li>${t}</li>`).join('')}</ul></div>
+          </div>
+          <div class="body-block" style="grid-column:1/-1">
+            <div class="body-title">Key Notes</div>
+            <div class="body-text">${s.notes}</div>
+          </div>
+        </div>
+        <a href="${s.complaintUrl}" target="_blank" class="complaint-link">
+          <span>FILE JUDICIAL CONDUCT COMPLAINT — ${s.name.toUpperCase()} →</span>
+        </a>
+        <a href="${s.commissionUrl}" target="_blank" class="complaint-link" style="background:var(--gray-light,#222);margin-top:.3rem">
+          <span>${s.commissionName} →</span>
+        </a>
+      </div>
+    </div>`).join('');
+}
+
+function toggleJudge(code){
+  const body = document.getElementById('jbody-'+code);
+  const icon = document.getElementById('jicon-'+code);
+  body.classList.toggle('open');
+  icon.textContent = body.classList.contains('open') ? '▲' : '▼';
+}
+
+function expandAll(){ filteredJudges.forEach(s=>{ document.getElementById('jbody-'+s.code)?.classList.add('open'); const i=document.getElementById('jicon-'+s.code); if(i) i.textContent='▲'; }); }
+function collapseAll(){ filteredJudges.forEach(s=>{ document.getElementById('jbody-'+s.code)?.classList.remove('open'); const i=document.getElementById('jicon-'+s.code); if(i) i.textContent='▼'; }); }
+
+function filterStates(){
+  const q = document.getElementById('judge-search').value.toLowerCase();
+  const f = document.getElementById('judge-filter').value;
+  filteredJudges = judgeStateData.filter(s => {
+    const matchQ = !q || s.name.toLowerCase().includes(q) || s.code.toLowerCase().includes(q);
+    const matchF = !f ||
+      (f==='recall' && s.hasRecall) ||
+      (f==='retention' && s.hasRetention) ||
+      (f==='elected' && s.selection.includes('Election')) ||
+      (f==='appointed' && (s.selection.includes('Appointment') || s.selection.includes('Merit')));
+    return matchQ && matchF;
+  });
+  renderJudgeStates();
+}
+
+function showTab(name, btn){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  if(btn) btn.classList.add('active');
+}
+
+renderJudgeStates();
+</script>
+</body>
+</html>
