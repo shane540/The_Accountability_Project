@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Statewide Officer Removal — The Accountability Project</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600&display=swap');
+:root{--black:#0a0a0a;--red:#c8001a;--red-dim:#7a0010;--white:#f0ede8;--gray:#1a1a1a;--gold:#d4a017;--green:#00a86b;--blue:#1a6cc8;--border:#2a2a2a}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--black);color:var(--white);font-family:'IBM Plex Sans',sans-serif;min-height:100vh}
+header{border-bottom:2px solid var(--red);padding:.8rem 1.2rem;display:flex;align-items:center;justify-content:space-between;background:var(--black);flex-wrap:wrap;gap:.5rem}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.1em}
+.logo span{color:var(--red)}
+.back-link{font-family:'IBM Plex Mono',monospace;font-size:10px;color:#666;text-decoration:none;text-transform:uppercase;letter-spacing:.08em;border:1px solid var(--border);padding:.3rem .7rem}
+.back-link:hover{border-color:var(--red);color:var(--red)}
+main{padding:1.2rem;max-width:1100px;margin:0 auto}
+.intro{background:var(--gray);border:1px solid var(--border);border-left:3px solid var(--red);padding:1rem;margin-bottom:1.2rem;font-size:12px;line-height:1.7}
+.intro strong{color:var(--red)}
+.intro .gold{color:var(--gold)}
+.filters{display:flex;gap:.4rem;margin-bottom:1.2rem;flex-wrap:wrap}
+.filters select,.filters input{background:var(--gray);border:1px solid var(--border);color:var(--white);padding:.55rem .9rem;font-family:'IBM Plex Mono',monospace;font-size:11px;outline:none;flex:1;min-width:140px}
+.filters select:focus,.filters input:focus{border-color:var(--red)}
+.filters button{background:var(--red);border:none;color:var(--white);padding:.55rem 1rem;font-family:'IBM Plex Mono',monospace;font-size:10px;cursor:pointer;text-transform:uppercase;letter-spacing:.08em;white-space:nowrap}
+.state-grid{display:grid;gap:.6rem}
+.state-card{background:var(--gray);border:1px solid var(--border);border-left:3px solid var(--border);overflow:hidden}
+.state-card.has-recall{border-left-color:var(--green)}
+.state-card.no-recall{border-left-color:var(--red)}
+.state-header{display:flex;justify-content:space-between;align-items:center;padding:.8rem 1rem;cursor:pointer;user-select:none}
+.state-header:hover{background:rgba(255,255,255,.03)}
+.state-name{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.05em}
+.state-badges{display:flex;gap:.3rem;flex-wrap:wrap}
+.sbadge{font-family:'IBM Plex Mono',monospace;font-size:8px;padding:.15rem .4rem;border:1px solid;text-transform:uppercase;letter-spacing:.06em}
+.sbadge-recall{border-color:var(--green);color:var(--green)}
+.sbadge-norecall{border-color:#444;color:#666}
+.sbadge-imp{border-color:var(--gold);color:var(--gold)}
+.expand-icon{font-family:'IBM Plex Mono',monospace;font-size:12px;color:#555;transition:transform .2s}
+.state-body{display:none;padding:0 1rem 1rem;border-top:1px solid var(--border)}
+.state-body.open{display:block}
+.tools-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.8rem}
+.tool-block{background:var(--black);border:1px solid var(--border);padding:.7rem}
+.tool-title{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--gold);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.3rem}
+.tool-body{font-size:11px;color:#888;line-height:1.5}
+.tool-body ul{margin:.3rem 0 0 .8rem}
+.tool-body li{margin-bottom:.2rem}
+.officers-list{display:flex;flex-wrap:wrap;gap:.25rem;margin:.5rem 0}
+.officer-tag{font-family:'IBM Plex Mono',monospace;font-size:9px;padding:.15rem .4rem;border:1px solid var(--border);color:#777;text-transform:uppercase}
+.section-label{font-family:'IBM Plex Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--red);margin:.7rem 0 .4rem;padding-bottom:.25rem;border-bottom:1px solid var(--red-dim)}
+.warning-box{background:rgba(200,0,26,.08);border:1px solid var(--red-dim);padding:.6rem .8rem;margin-top:.5rem;font-size:11px;color:#cc8888;line-height:1.5}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:.4rem;margin-bottom:1.2rem}
+.stat-block{background:var(--gray);border:1px solid var(--border);padding:.6rem .8rem}
+.stat-n{font-family:'Bebas Neue',sans-serif;font-size:26px;line-height:1}
+.stat-n.red{color:var(--red)}.stat-n.gold{color:var(--gold)}.stat-n.green{color:var(--green)}
+.stat-l{font-family:'IBM Plex Mono',monospace;font-size:8px;color:#444;text-transform:uppercase;letter-spacing:.06em}
+@media(max-width:600px){.tools-grid{grid-template-columns:1fr}.stats-row{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">THE <span>ACCOUNTABILITY</span> PROJECT — <span>STATEWIDE OFFICERS</span></div>
+  <a href="accountability_project.html" class="back-link">← BACK TO MAIN APP</a>
+</header>
+<main>
+  <div class="intro">
+    <strong>REMOVING STATEWIDE ELECTED OFFICERS — ALL 50 STATES</strong><br><br>
+    Every state has mechanisms to remove statewide elected officers — governors, lieutenant governors, attorneys general, secretaries of state, treasurers, auditors, and more. <span class="gold">19 states allow recall elections for statewide officers. All 50 states have impeachment.</span> Virginia uses a court process. Some states allow legislative address removal without a full impeachment trial.<br><br>
+    Select your state. Know your tools. Use them all simultaneously. <strong>Punching from every direction at once is how the cage gets broken.</strong>
+  </div>
+  <div class="stats-row">
+    <div class="stat-block"><div class="stat-n green">19</div><div class="stat-l">States w/ Statewide Recall</div></div>
+    <div class="stat-block"><div class="stat-n gold">50</div><div class="stat-l">States w/ Impeachment</div></div>
+    <div class="stat-block"><div class="stat-n red">11</div><div class="stat-l">States: Recall Only Local</div></div>
+    <div class="stat-block"><div class="stat-n">2</div><div class="stat-l">Governors Ever Recalled</div></div>
+  </div>
+  <div class="filters">
+    <input type="text" id="state-search" placeholder="Search state name..." oninput="filterStates()">
+    <select id="filter-recall" onchange="filterStates()">
+      <option value="">ALL STATES</option>
+      <option value="recall">HAS STATEWIDE RECALL</option>
+      <option value="norecall">NO STATEWIDE RECALL</option>
+    </select>
+    <button onclick="expandAll()">EXPAND ALL</button>
+    <button onclick="collapseAll()" style="background:var(--gray);border:1px solid var(--border)">COLLAPSE ALL</button>
+  </div>
+  <div class="state-grid" id="state-grid"></div>
+</main>
+<script>
+const stateData = [
+  {code:"AL",name:"Alabama",hasRecall:false,recallNote:"No statewide recall. Local officials only in some municipalities.",
+   officers:["Governor","Lieutenant Governor","Attorney General","State Auditor","Secretary of State","State Treasurer","Superintendent of Education","Commissioner of Agriculture","Supreme Court Justices"],
+   impeachGround:"Willful neglect of duty, corruption in office, incompetency, intemperance, or moral turpitude while in office",
+   impeachVote:"House majority to impeach; 2/3 of Senate to convict",
+   impeachNote:"Lieutenant Governor presides unless they are the one being impeached.",
+   ethicsBody:"Alabama Ethics Commission — ethics.alabama.gov",
+   agPower:"Governor can suspend officers pending investigation",
+   otherTools:["Grand jury investigation","State AG prosecution","Federal DOJ referral","Public pressure + media exposure"]},
+
+  {code:"AK",name:"Alaska",hasRecall:true,
+   recallSigs:"25% of votes in last election",recallTime:"No time limit",recallGrounds:"Neglect of duties, incapacity, felony conviction, or failure to file disclosures",recallFiling:"Alaska Division of Elections",
+   officers:["Governor","Lieutenant Governor","Attorney General (appointed)","All civil state officers"],
+   impeachGround:"All civil officers subject to impeachment",
+   impeachVote:"2/3 of Senate to impeach; 2/3 of House to convict",
+   impeachNote:"Alaska is unusual — Senate impeaches, House convicts (reversed from most states). Supreme Court justice presides.",
+   ethicsBody:"Alaska Public Offices Commission — doa.alaska.gov/apoc",
+   otherTools:["Recall election (19 states)","DOJ referral","Federal prosecution"]},
+
+  {code:"AZ",name:"Arizona",hasRecall:true,
+   recallSigs:"25% of votes in last election",recallTime:"120 days",recallGrounds:"No specific grounds required",recallFiling:"Arizona Secretary of State",
+   officers:["Governor","All state and judicial officers except justices of courts not of record"],
+   impeachGround:"High crimes, misdemeanors, or malfeasance in office",
+   impeachVote:"House majority to impeach; 2/3 of elected senators to convict",
+   impeachNote:"Chief Justice of Supreme Court presides at trial.",
+   ethicsBody:"Arizona Secretary of State — azsos.gov",
+   otherTools:["Recall petition (no grounds required)","AG prosecution","Federal charges","Public campaign"]},
+
+  {code:"AR",name:"Arkansas",hasRecall:false,recallNote:"No recall provisions in Arkansas for any level of government.",
+   officers:["Governor","Lieutenant Governor","Secretary of State","Treasurer","Auditor","Attorney General","Land Commissioner"],
+   impeachGround:"High crimes and misdemeanors in office",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict",
+   impeachNote:"Arkansas AG can be impeached by the same legislature they may be advising.",
+   ethicsBody:"Arkansas Ethics Commission — arkansasethics.com",
+   otherTools:["Legislative impeachment","AG prosecution","Federal DOJ referral","Grand jury"]},
+
+  {code:"CA",name:"California",hasRecall:true,
+   recallSigs:"12% of votes in last gubernatorial election (governor); varies by office",recallTime:"160 days",recallGrounds:"No specific grounds required",recallFiling:"California Secretary of State",
+   officers:["Governor","Lieutenant Governor","Secretary of State","Controller","Treasurer","Attorney General","Insurance Commissioner","Superintendent of Public Instruction","Board of Equalization members"],
+   impeachGround:"Not commonly used — recall is the primary tool",
+   impeachVote:"N/A — California relies on recall rather than impeachment for executive officers",
+   impeachNote:"California is unusual in not having a strong impeachment tradition for executives. Recall is the primary removal mechanism.",
+   ethicsBody:"California Fair Political Practices Commission — fppc.ca.gov",
+   otherTools:["Recall election (primary tool)","AG prosecution","Federal charges","Grand jury indictment"]},
+
+  {code:"CO",name:"Colorado",hasRecall:true,
+   recallSigs:"25% of active registered voters in district",recallTime:"60 days",recallGrounds:"No specific grounds required",recallFiling:"Colorado Secretary of State",
+   officers:["Governor","Lieutenant Governor","Secretary of State","Attorney General","Treasurer","All elected state officers"],
+   impeachGround:"Misconduct in office",
+   impeachVote:"House majority to impeach; 2/3 of Senate to convict",
+   ethicsBody:"Colorado Independent Ethics Commission — colorado.gov/iec",
+   otherTools:["Recall petition (no grounds required)","IEC complaint","AG prosecution","Federal charges"]},
+
+  {code:"CT",name:"Connecticut",hasRecall:false,recallNote:"No recall provisions in Connecticut for state officers.",
+   officers:["Governor","Lieutenant Governor","Secretary of State","Treasurer","Comptroller","Attorney General"],
+   impeachGround:"Crimes, misdemeanors, or malfeasance in office",
+   impeachVote:"House majority to impeach; 2/3 of Senate to convict",
+   ethicsBody:"Office of State Ethics — ct.gov/ethics",
+   otherTools:["Legislative impeachment","Governor removal power","AG prosecution","Federal charges"]},
+
+  {code:"DE",name:"Delaware",hasRecall:false,recallNote:"No recall provisions in Delaware.",
+   officers:["Governor","Lieutenant Governor","Attorney General","State Treasurer","Insurance Commissioner","Auditor"],
+   impeachGround:"Corruption, malfeasance, or misdemeanor in office",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict",
+   ethicsBody:"Public Integrity Commission — pie.delaware.gov",
+   otherTools:["Legislative impeachment","AG prosecution","Federal DOJ referral","Inspector General"]},
+
+  {code:"FL",name:"Florida",hasRecall:false,recallNote:"No recall for state officers. Municipal officials only.",
+   officers:["Governor","Lieutenant Governor","Attorney General","Chief Financial Officer","Commissioner of Agriculture"],
+   impeachGround:"Misdemeanor in office, corruption, physical or mental incapacity",
+   impeachVote:"2/3 of House to impeach; 2/3 of Senate to convict",
+   impeachNote:"Governor can also SUSPEND officers for specified grounds — suspension reviewed by Senate.",
+   ethicsBody:"Florida Commission on Ethics — ethics.state.fl.us",
+   agPower:"Governor has specific suspension power for malfeasance, misfeasance, neglect of duty, or commission of a felony",
+   otherTools:["Governor suspension power (powerful in FL)","Legislative impeachment","FDLE investigation","Federal charges"]},
+
+  {code:"GA",name:"Georgia",hasRecall:true,
+   recallSigs:"30% of registered voters in district",recallTime:"90 days",recallGrounds:"Malfeasance, misconduct, violation of oath, failure to perform duties, misappropriation of public property",recallFiling:"Georgia Secretary of State",
+   officers:["Governor","Lieutenant Governor","Secretary of State","Attorney General","State School Superintendent","Commissioner of Insurance","Commissioner of Agriculture","Commissioner of Labor"],
+   impeachGround:"Malfeasance, misfeasance, or neglect of duty in office",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict",
+   ethicsBody:"Georgia Government Transparency and Campaign Finance Commission — ethics.ga.gov",
+   otherTools:["Recall election","Legislative impeachment","AG prosecution","Federal charges","GBI investigation"]},
+
+  {code:"HI",name:"Hawaii",hasRecall:false,recallNote:"No statewide recall law. Hawaii County allows local recall only.",
+   officers:["Governor","Lieutenant Governor","Attorney General (appointed)","Board of Education"],
+   impeachGround:"Malfeasance in office or conduct unbecoming an officer",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict",
+   ethicsBody:"State Ethics Commission — ethics.hawaii.gov",
+   otherTools:["Legislative impeachment","AG prosecution","Federal charges","Public pressure"]},
+
+  {code:"ID",name:"Idaho",hasRecall:true,
+   recallSigs:"20% of registered voters in district",recallTime:"60 days",recallGrounds:"No specific grounds required",recallFiling:"Idaho Secretary of State",
+   officers:["Governor","Lieutenant Governor","Secretary of State","State Controller","State Treasurer","Attorney General","Superintendent of Public Instruction"],
+   impeachGround:"Crimes, misdemeanors, or malfeasance in office",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict",
+   ethicsBody:"No standalone ethics commission — handled through AG office",
+   otherTools:["Recall petition","Legislative impeachment","AG prosecution","Federal charges"]},
+
+  {code:"IL",name:"Illinois",hasRecall:true,
+   recallSigs:"15% of total votes in last gubernatorial election from 25+ of 102 counties",recallTime:"150 days",recallGrounds:"Official misconduct (GOVERNOR ONLY)",recallFiling:"Illinois State Board of Elections",
+   officers:["Governor (recall available)","Lieutenant Governor","Attorney General","Secretary of State","Comptroller","Treasurer (impeachment only for non-governor)"],
+   impeachGround:"Cause including commission of a crime",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict",
+   impeachNote:"Illinois has impeached a governor before — Rod Blagojevich was impeached and removed in 2009.",
+   ethicsBody:"Illinois Executive Ethics Commission — illinois.gov/eec",
+   otherTools:["Recall (Governor only)","Legislative impeachment (all)","Inspector General offices","AG prosecution","Federal charges — Illinois has active US Attorneys for corruption"]},
+
+  {code:"IN",name:"Indiana",hasRecall:false,recallNote:"No recall provisions in Indiana.",
+   officers:["Governor","Lieutenant Governor","Secretary of State","Auditor","Treasurer","Attorney General","Superintendent of Public Instruction"],
+   impeachGround:"Any misdemeanor in office",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict",
+   agPower:"Governor can remove officers for specific causes under Indiana Code",
+   ethicsBody:"Indiana Ethics Commission — in.gov/ig",
+   otherTools:["Governor removal power","Legislative impeachment","AG prosecution","Federal charges"]},
+
+  {code:"IA",name:"Iowa",hasRecall:false,recallNote:"No recall provisions in Iowa.",
+   officers:["Governor","Lieutenant Governor","Secretary of State","Auditor","Treasurer","Secretary of Agriculture","Attorney General"],
+   impeachGround:"Crimes, misdemeanors, or malfeasance in office",
+   impeachVote:"Majority of House to impeach; majority of Senate to convict",
+   ethicsBody:"Iowa Ethics and Campaign Disclosure Board — ethics.iowa.gov",
+   otherTools:["Legislative impeachment","Governor removal power","AG prosecution","Federal charges"]},
+
+  {code:"KS",name:"Kansas",hasRecall:true,
+   recallSigs:"40% of votes cast in last election",recallTime:"90 days",recallGrounds:"Conviction of felony, misconduct in office, incompetence, or failure to perform duties",recallFiling:"Kansas Secretary of State",
+   officers:["Governor","Lieutenant Governor","Secretary of State","Attorney General","State Treasurer","Commissioner of Insurance"],
+   impeachGround:"High crimes and misdemeanors or any misdemeanor in office",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict",
+   ethicsBody:"Kansas Governmental Ethics Commission — ethics.ks.gov",
+   otherTools:["Recall election (high threshold)","Legislative impeachment","AG prosecution","Federal charges"]},
+
+  {code:"KY",name:"Kentucky",hasRecall:false,recallNote:"No recall provisions in Kentucky.",
+   officers:["Governor","Lieutenant Governor","Secretary of State","Attorney General","State Treasurer","Auditor","Commissioner of Agriculture"],
+   impeachGround:"Misdemeanor or malfeasance in office",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict",
+   ethicsBody:"Executive Branch Ethics Commission — ethics.ky.gov",
+   otherTools:["Legislative impeachment","Governor removal power","AG prosecution","Federal charges","KSP Special Investigations"]},
+
+  {code:"LA",name:"Louisiana",hasRecall:true,
+   recallSigs:"33.3% of registered voters",recallTime:"180 days",recallGrounds:"No specific grounds required",recallFiling:"Louisiana Secretary of State",
+   officers:["Governor","Lieutenant Governor","Secretary of State","Attorney General","Treasurer","Commissioner of Agriculture","Commissioner of Insurance","Superintendent of Education"],
+   impeachGround:"Incompetency, corruption, favoritism, extortion, oppression in office, or gross misconduct",
+   impeachVote:"2/3 of House to impeach; 2/3 of Senate to convict",
+   ethicsBody:"Louisiana Board of Ethics — ethics.la.gov",
+   otherTools:["Recall election","Legislative impeachment","AG prosecution","Federal charges — active EDLA US Attorneys"]},
+
+  {code:"ME",name:"Maine",hasRecall:false,recallNote:"No statewide recall law in Maine.",
+   officers:["Governor","Secretary of State (elected by Legislature)","Attorney General (elected by Legislature)","State Treasurer (elected by Legislature)","Auditor (elected by Legislature)"],
+   impeachGround:"Crimes, malfeasance, or neglect of duty",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict",
+   impeachNote:"Maine's AG, Secretary of State, and Treasurer are elected by the Legislature, not voters — unique removal dynamic.",
+   ethicsBody:"Commission on Governmental Ethics — maine.gov/ethics",
+   otherTools:["Legislative impeachment","Legislative vote to remove (for legislature-elected officers)","AG prosecution","Federal charges"]},
+
+  {code:"MD",name:"Maryland",hasRecall:false,recallNote:"No recall provisions in Maryland.",
+   officers:["Governor","Lieutenant Governor","Attorney General","Comptroller","Secretary of State (appointed)"],
+   impeachGround:"Misdemeanor or malfeasance in office",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict",
+   agPower:"Governor can remove or suspend officers in Maryland for cause",
+   ethicsBody:"State Ethics Commission — ethics.maryland.gov",
+   otherTools:["Governor suspension/removal power","Legislative impeachment","AG prosecution","Federal charges — active USAO-MD"]},
+
+  {code:"MA",name:"Massachusetts",hasRecall:false,recallNote:"No statewide recall law in Massachusetts.",
+   officers:["Governor","Lieutenant Governor","Attorney General","Secretary of State","Treasurer","Auditor"],
+   impeachGround:"Maladministration in office",
+   impeachVote:"Majority of House; 2/3 of Senate",
+   impeachNote:"Massachusetts has a strong 'address' mechanism — both chambers can address the Governor to remove officers without full impeachment.",
+   ethicsBody:"State Ethics Commission — ethics.state.ma.us",
+   otherTools:["Legislative address (unique to MA)","Legislative impeachment","AG prosecution","Federal charges"]},
+
+  {code:"MI",name:"Michigan",hasRecall:true,
+   recallSigs:"25% of votes cast in last gubernatorial election in district",recallTime:"90 days",recallGrounds:"Reason must be factual and clear — not a policy disagreement",recallFiling:"Michigan Bureau of Elections / County Clerk",
+   officers:["Governor","Lieutenant Governor","Secretary of State","Attorney General","All elected state officers"],
+   impeachGround:"Corrupt conduct in office, or crime or misdemeanor",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict",
+   ethicsBody:"Michigan Bureau of Elections — michigan.gov/sos",
+   otherTools:["Recall election","Legislative impeachment","AG prosecution","Federal charges","Michigan State Police investigations"]},
+
+  {code:"MN",name:"Minnesota",hasRecall:true,
+   recallSigs:"25% of votes in last general election for the office",recallTime:"90 days",recallGrounds:"Serious malfeasance or nonfeasance in office, or felony conviction",recallFiling:"Minnesota Secretary of State",
+   officers:["Governor","Lieutenant Governor","Secretary of State","Attorney General","State Auditor"],
+   impeachGround:"Corrupt conduct or crime or misdemeanor in office",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict",
+   ethicsBody:"Campaign Finance and Public Disclosure Board — cfb.mn.gov",
+   otherTools:["Recall election (grounds required)","Legislative impeachment","AG prosecution","Federal charges","BCA investigation"]},
+
+  {code:"MS",name:"Mississippi",hasRecall:false,recallNote:"No recall provisions in Mississippi.",
+   officers:["Governor","Lieutenant Governor","Secretary of State","Attorney General","State Treasurer","Auditor","Insurance Commissioner","Commissioner of Agriculture","Superintendent of Education"],
+   impeachGround:"Crimes, misdemeanors, or acts of malfeasance or misfeasance",
+   impeachVote:"2/3 of House to impeach; 2/3 of Senate to convict",
+   ethicsBody:"Mississippi Ethics Commission — ethics.state.ms.us",
+   otherTools:["Legislative impeachment","AG prosecution","Federal charges"]},
+
+  {code:"MO",name:"Missouri",hasRecall:false,recallNote:"No statewide recall law. Some cities allow local recall only.",
+   officers:["Governor","Lieutenant Governor","Secretary of State","State Auditor","State Treasurer","Attorney General"],
+   impeachGround:"Crime, misconduct, habitual drunkenness, willful neglect, or corruption in office",
+   impeachVote:"Majority of House to impeach; 5/6 of Senate to convict (very high threshold)",
+   impeachNote:"Missouri's 5/6 Senate conviction threshold is one of the highest in the country — very difficult to remove.",
+   ethicsBody:"Missouri Ethics Commission — mec.mo.gov",
+   otherTools:["Legislative impeachment (high bar)","Governor removal power","AG prosecution","Federal charges"]},
+
+  {code:"MT",name:"Montana",hasRecall:true,
+   recallSigs:"10% of votes in last election (15% for Governor)",recallTime:"No time limit",recallGrounds:"Physical/mental unfitness, incompetence, violation of oath, official misconduct, felony conviction",recallFiling:"Montana Secretary of State",
+   officers:["Governor","Lieutenant Governor","Secretary of State","Attorney General","State Auditor","Superintendent of Public Instruction","All statewide elected officers"],
+   impeachGround:"Crimes, misdemeanors, violations of oath, or misconduct in office",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict",
+   ethicsBody:"Commissioner of Political Practices — politicalpractices.mt.gov",
+   otherTools:["Recall election","Legislative impeachment","AG prosecution","Federal charges"]},
+
+  {code:"NE",name:"Nebraska",hasRecall:false,recallNote:"No statewide recall for state officers. Some municipalities allow local recall.",
+   officers:["Governor","Lieutenant Governor","Secretary of State","State Treasurer","Attorney General","State Auditor"],
+   impeachGround:"Crimes, misdemeanors, or malfeasance in office",
+   impeachVote:"Unicameral Legislature — majority to impeach, 2/3 to convict (same body)",
+   impeachNote:"Nebraska has a unique unicameral legislature — one chamber handles both impeachment and conviction.",
+   ethicsBody:"Nebraska Accountability and Disclosure Commission — nadc.nebraska.gov",
+   otherTools:["Unicameral impeachment process","AG prosecution","Federal charges"]},
+
+  {code:"NV",name:"Nevada",hasRecall:true,
+   recallSigs:"25% of votes in last election",recallTime:"90 days",recallGrounds:"No specific grounds required",recallFiling:"Nevada Secretary of State / County Clerk",
+   officers:["Governor","Lieutenant Governor","Secretary of State","State Treasurer","State Controller","Attorney General"],
+   impeachGround:"Crimes, misdemeanors, or malfeasance in office",
+   impeachVote:"Majority of Assembly to impeach; 2/3 of Senate to convict",
+   ethicsBody:"Nevada Commission on Ethics — nvethics.gov",
+   otherTools:["Recall election","Legislative impeachment","AG prosecution","Federal charges"]},
+
+  {code:"NH",name:"New Hampshire",hasRecall:false,recallNote:"No recall provisions in New Hampshire. Courts have ruled against recall even in municipal charters.",
+   officers:["Governor","Executive Council (5 elected members — unique to NH)","Attorney General (appointed by Governor w/ Council consent)","Secretary of State (elected by Legislature)","State Treasurer (elected by Legislature)"],
+   impeachGround:"Bribery, corruption, malpractice, or maladministration",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict",
+   impeachNote:"New Hampshire's Executive Council is unique — 5 elected members who must approve many governor's actions. They can be impeached separately.",
+   ethicsBody:"Attorney General's Office handles ethics — doj.nh.gov",
+   otherTools:["Legislative impeachment","Governor and Council mutual oversight","AG prosecution","Federal charges"]},
+
+  {code:"NJ",name:"New Jersey",hasRecall:true,
+   recallSigs:"25% of registered voters in district",recallTime:"320 days (state); 160 days (local)",recallGrounds:"No specific grounds required",recallFiling:"New Jersey Secretary of State",
+   officers:["Governor","All elected state officers"],
+   impeachGround:"Misdemeanor, misconduct in office, or willful neglect of duty",
+   impeachVote:"Majority of Assembly to impeach; 2/3 of Senate to convict",
+   ethicsBody:"New Jersey Election Law Enforcement Commission — elec.state.nj.us",
+   otherTools:["Recall election","Legislative impeachment","AG prosecution","Federal charges — USAO-NJ is historically aggressive on corruption"]},
+
+  {code:"NM",name:"New Mexico",hasRecall:false,recallNote:"No recall for state officers. Local officials may be recalled in some municipalities.",
+   officers:["Governor","Lieutenant Governor","Secretary of State","State Auditor","State Treasurer","Attorney General","Commissioner of Public Lands","Superintendent of Public Instruction"],
+   impeachGround:"Crimes, misdemeanors, or malfeasance in office",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict",
+   ethicsBody:"New Mexico Ethics Commission — nmethics.gov",
+   otherTools:["Legislative impeachment","AG prosecution","Federal charges"]},
+
+  {code:"NY",name:"New York",hasRecall:false,recallNote:"No recall provisions in New York at any level.",
+   officers:["Governor","Lieutenant Governor","Attorney General","Comptroller","Secretary of State (appointed)"],
+   impeachGround:"Misconduct or malversation in office",
+   impeachVote:"Majority of Assembly to impeach; 2/3 of Court for the Trial of Impeachments (Senate + Court of Appeals judges) to convict",
+   impeachNote:"New York's impeachment court includes both senators and Court of Appeals judges — unique hybrid court. NY has actually used this — Governor Andrew Cuomo resigned in 2021 before the Assembly could impeach.",
+   ethicsBody:"New York JCOPE — jcope.ny.gov (being restructured as of 2022)",
+   otherTools:["Legislative impeachment (Assembly impeaches)","NY AG public corruption unit (historically very active)","SDNY/EDNY federal prosecution","Public pressure — NY media market is relentless","Governor resignation under pressure (Cuomo precedent)"]},
+
+  {code:"NC",name:"North Carolina",hasRecall:false,recallNote:"No recall provisions in North Carolina.",
+   officers:["Governor","Lieutenant Governor","Secretary of State","State Auditor","State Treasurer","Attorney General","Superintendent of Public Instruction","Commissioner of Agriculture","Commissioner of Labor","Commissioner of Insurance"],
+   impeachGround:"Crimes, misdemeanors, malfeasance or corruption in office, or willful neglect of duty",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict",
+   ethicsBody:"NC State Ethics Commission — ethics.nc.gov",
+   otherTools:["Legislative impeachment","AG prosecution","Federal charges","State Bureau of Investigation"]},
+
+  {code:"ND",name:"North Dakota",hasRecall:true,
+   recallSigs:"25% of votes in last election",recallTime:"90 days",recallGrounds:"No specific grounds required",recallFiling:"North Dakota Secretary of State",
+   officers:["Governor","Lieutenant Governor","Secretary of State","Attorney General","State Treasurer","State Auditor","Tax Commissioner","Insurance Commissioner","Superintendent of Public Instruction","Agriculture Commissioner","Labor Commissioner","Public Service Commissioners"],
+   impeachGround:"Crimes, misdemeanors, or malfeasance in office",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict",
+   impeachNote:"North Dakota is the ONLY state to have successfully recalled a Governor — Lynn Frazier in 1921.",
+   ethicsBody:"ND Secretary of State ethics division — sos.nd.gov",
+   otherTools:["Recall election (historically used)","Legislative impeachment","AG prosecution","Federal charges"]},
+
+  {code:"OH",name:"Ohio",hasRecall:false,recallNote:"Ohio has NO recall for state officers. Local officials only.",
+   officers:["Governor","Lieutenant Governor","Secretary of State","State Auditor","State Treasurer","Attorney General"],
+   impeachGround:"Misdemeanor in office",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict",
+   impeachNote:"Ohio's broad 'misdemeanor in office' standard is relatively easy to meet compared to other states.",
+   agPower:"Governor can suspend officers in Ohio for cause pending investigation",
+   ethicsBody:"Ohio Ethics Commission — ethics.ohio.gov",
+   otherTools:["Legislative impeachment (broad grounds)","Governor suspension power","AG prosecution","Federal charges","Ohio Inspector General — ohioig.gov"]},
+
+  {code:"OK",name:"Oklahoma",hasRecall:false,recallNote:"No statewide recall law in Oklahoma.",
+   officers:["Governor","Lieutenant Governor","Secretary of State","State Auditor","State Treasurer","Attorney General","Superintendent of Public Instruction","Commissioner of Agriculture","Commissioner of Labor","Commissioner of Insurance","Corporation Commissioners"],
+   impeachGround:"Willful neglect of duty, corruption in office, habitual drunkenness, incompetency, or any offense involving moral turpitude",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict",
+   ethicsBody:"Oklahoma Ethics Commission — ethics.ok.gov",
+   otherTools:["Legislative impeachment","AG prosecution","Federal charges","OSBI investigation"]},
+
+  {code:"OR",name:"Oregon",hasRecall:true,
+   recallSigs:"15% of votes in last election",recallTime:"90 days",recallGrounds:"No specific grounds required (must have served 6 months)",recallFiling:"Oregon Secretary of State",
+   officers:["Governor","Secretary of State","State Treasurer","Attorney General","Labor Commissioner","All elected statewide officers"],
+   impeachGround:"Oregon passed Measure 115 in November 2024 — now has impeachment for the first time in state history",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict (new process post-2024)",
+   impeachNote:"Oregon was the LAST state to add impeachment — passed November 2024. Prior to this, recall was the only legislative removal tool.",
+   ethicsBody:"Oregon Government Ethics Commission — oregon.gov/ogec",
+   otherTools:["Recall election (primary historic tool)","NEW: Legislative impeachment (post-2024)","AG prosecution","Federal charges"]},
+
+  {code:"PA",name:"Pennsylvania",hasRecall:false,recallNote:"No recall provisions in Pennsylvania at any level.",
+   officers:["Governor","Lieutenant Governor","Attorney General","Auditor General","State Treasurer"],
+   impeachGround:"Misbehavior in office or in their private capacity, or any misdemeanor",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict",
+   impeachNote:"Pennsylvania's broad 'private capacity' language means officials can be impeached for misconduct outside their official duties.",
+   ethicsBody:"State Ethics Commission — ethics.pa.gov",
+   otherTools:["Legislative impeachment (broad grounds)","AG public corruption unit (historically active)","Federal charges — EDPA and WDPA","Grand jury — PA uses this frequently"]},
+
+  {code:"RI",name:"Rhode Island",hasRecall:true,
+   recallSigs:"15% of registered voters",recallTime:"90 days",recallGrounds:"Violation of oath, incompetence, neglect of duty, or corruption",recallFiling:"Rhode Island Secretary of State",
+   officers:["Governor","Lieutenant Governor","Secretary of State","Attorney General","General Treasurer"],
+   impeachGround:"Corrupt or otherwise criminal conduct",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict",
+   ethicsBody:"Rhode Island Ethics Commission — ethics.ri.gov",
+   otherTools:["Recall election","Legislative impeachment","AG prosecution","Federal charges"]},
+
+  {code:"SC",name:"South Carolina",hasRecall:false,recallNote:"No recall provisions in South Carolina.",
+   officers:["Governor","Lieutenant Governor","Secretary of State","State Treasurer","Attorney General","Comptroller General","Superintendent of Education","Commissioner of Agriculture","Adjutant General","Commissioner of Insurance"],
+   impeachGround:"Willful neglect of duty, serious crimes, corruption, incompetence, or unfitness for office",
+   impeachVote:"2/3 of House to impeach; 2/3 of Senate to convict",
+   ethicsBody:"SC State Ethics Commission — ethics.sc.gov",
+   otherTools:["Legislative impeachment (high threshold)","AG prosecution","Federal charges","SLED investigation"]},
+
+  {code:"SD",name:"South Dakota",hasRecall:true,
+   recallSigs:"25% of votes in last election",recallTime:"90 days",recallGrounds:"No specific grounds required",recallFiling:"South Dakota Secretary of State",
+   officers:["Governor","Lieutenant Governor","Secretary of State","State Auditor","State Treasurer","Attorney General","Commissioner of School and Public Lands","Superintendent of Public Instruction","Commissioner of Agriculture","Public Utilities Commissioners"],
+   impeachGround:"Crimes, misdemeanors, or malfeasance in office",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict",
+   ethicsBody:"SD Government Accountability Board — sdsob.sd.gov",
+   otherTools:["Recall election","Legislative impeachment","AG prosecution","Federal charges"]},
+
+  {code:"TN",name:"Tennessee",hasRecall:false,recallNote:"No recall provisions in Tennessee.",
+   officers:["Governor","Secretary of State (elected by Legislature)","State Treasurer (elected by Legislature)","Comptroller (elected by Legislature)","Attorney General (appointed by Supreme Court — unique)"],
+   impeachGround:"Crimes, misdemeanors, or malfeasance in office",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict",
+   impeachNote:"Tennessee's AG is appointed by the Supreme Court, not elected — unique removal dynamic. The Court could theoretically remove the AG.",
+   ethicsBody:"Tennessee Ethics Commission — tn.gov/ethics",
+   otherTools:["Legislative impeachment","Governor removal power","AG prosecution (if not AG being targeted)","Federal charges"]},
+
+  {code:"TX",name:"Texas",hasRecall:false,recallNote:"No statewide recall law. Some home-rule cities allow local recall only.",
+   officers:["Governor","Lieutenant Governor","Attorney General","Comptroller","Land Commissioner","Agriculture Commissioner","Railroad Commissioners","State Board of Education"],
+   impeachGround:"Crimes, misdemeanors, or corrupt conduct in office",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict",
+   impeachNote:"Texas actually impeached AG Ken Paxton in 2023 — he was acquitted by the Senate. Shows the process works and is used.",
+   ethicsBody:"Texas Ethics Commission — ethics.state.tx.us",
+   otherTools:["Legislative impeachment (used in 2023)","Governor removal power for cause","AG prosecution (if not AG being targeted)","Federal charges","Texas Rangers corruption unit","Special grand juries"]},
+
+  {code:"UT",name:"Utah",hasRecall:false,recallNote:"No statewide recall for state officers. Limited local recall in some jurisdictions.",
+   officers:["Governor","Lieutenant Governor","Attorney General","State Treasurer","State Auditor"],
+   impeachGround:"High crimes, misdemeanors, or malfeasance in office",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict",
+   ethicsBody:"Utah Independent Legislative Ethics Commission — le.utah.gov/lrgsc/uthethics.htm",
+   otherTools:["Legislative impeachment","Governor removal/suspension power","AG prosecution","Federal charges"]},
+
+  {code:"VT",name:"Vermont",hasRecall:false,recallNote:"No statewide recall law. Some towns allow recall of selectboard members only.",
+   officers:["Governor","Lieutenant Governor","Secretary of State","State Treasurer","Auditor","Attorney General"],
+   impeachGround:"Maladministration, corruption, delinquency, or malfeasance in office",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict",
+   ethicsBody:"Vermont Ethics Commission — vermontethics.gov",
+   otherTools:["Legislative impeachment","AG prosecution","Federal charges"]},
+
+  {code:"VA",name:"Virginia",hasRecall:true,
+   recallSigs:"COURT PROCESS — no petition required",recallTime:"Court scheduled",recallGrounds:"Neglect of duty, misuse of office, or incompetence with material adverse effect on conduct of office",recallFiling:"Virginia Circuit Court",
+   officers:["Governor","Lieutenant Governor","Attorney General","All elected state officers"],
+   impeachGround:"Malfeasance in office, corruption, neglect of duty, or other high crimes",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict",
+   impeachNote:"Virginia has BOTH a court-based recall process AND impeachment — two separate legal paths. The circuit court recall is potentially faster.",
+   ethicsBody:"Virginia Conflict of Interest and Ethics Advisory Council — ethics.dls.virginia.gov",
+   otherTools:["Circuit Court removal process (potentially fastest)","Legislative impeachment","AG prosecution","Federal charges"]},
+
+  {code:"WA",name:"Washington",hasRecall:true,
+   recallSigs:"25% of votes in last general election",recallTime:"270 days",recallGrounds:"Malfeasance, misfeasance, or violation of oath of office",recallFiling:"Washington Secretary of State / Superior Court",
+   officers:["Governor","Lieutenant Governor","Secretary of State","State Treasurer","State Auditor","Attorney General","Superintendent of Public Instruction","Commissioner of Public Lands","Insurance Commissioner"],
+   impeachGround:"High crimes and misdemeanors or malfeasance in office",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict",
+   impeachNote:"Washington requires Superior Court review BEFORE recall signatures can be collected — adds a legal sufficiency check.",
+   ethicsBody:"Washington State Executive Ethics Board — ethics.wa.gov",
+   otherTools:["Recall election (court-reviewed)","Legislative impeachment","AG prosecution","Federal charges"]},
+
+  {code:"WV",name:"West Virginia",hasRecall:false,recallNote:"No recall provisions in West Virginia.",
+   officers:["Governor","Secretary of State","State Auditor","State Treasurer","Attorney General","Commissioner of Agriculture"],
+   impeachGround:"Malfeasance, incompetence, gross immorality, or neglect of duty",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict",
+   ethicsBody:"WV Ethics Commission — ethics.wv.gov",
+   otherTools:["Legislative impeachment","Governor removal power","AG prosecution","Federal charges"]},
+
+  {code:"WI",name:"Wisconsin",hasRecall:true,
+   recallSigs:"25% of votes cast in last election for governor in the district",recallTime:"60 days",recallGrounds:"No specific grounds required (must have served 1 year)",recallFiling:"Wisconsin Elections Commission",
+   officers:["Governor","Lieutenant Governor","Secretary of State","State Treasurer","Attorney General","Superintendent of Public Instruction","All elected state officers"],
+   impeachGround:"Corrupt conduct in office, or crime or misdemeanor",
+   impeachVote:"Majority of Assembly to impeach; 2/3 of Senate to convict",
+   impeachNote:"Wisconsin has one of the shortest recall windows — 60 days — but no grounds required. Governor Scott Walker survived a recall in 2012.",
+   ethicsBody:"Wisconsin Ethics Commission — ethics.wi.gov",
+   otherTools:["Recall election (60 days — fast)","Legislative impeachment","AG prosecution","Federal charges","Wisconsin DOJ Division of Criminal Investigation"]},
+
+  {code:"WY",name:"Wyoming",hasRecall:false,recallNote:"No statewide recall law. Some municipalities allow recall under charter.",
+   officers:["Governor","Secretary of State","State Auditor","State Treasurer","Superintendent of Public Instruction","Attorney General (appointed)"],
+   impeachGround:"High crimes, misdemeanors, or malfeasance in office",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict",
+   ethicsBody:"Wyoming Ethics and Lobbying Commission — wyoleg.gov",
+   otherTools:["Legislative impeachment","Governor removal power","AG prosecution (if not AG being targeted)","Federal charges"]}
+];
+
+let filtered=[...stateData];
+
+function renderStates(){
+  const g=document.getElementById('state-grid');
+  g.innerHTML=filtered.map(s=>`
+    <div class="state-card ${s.hasRecall?'has-recall':'no-recall'}" id="card-${s.code}">
+      <div class="state-header" onclick="toggle('${s.code}')">
+        <div style="display:flex;align-items:center;gap:.8rem">
+          <div class="state-name">${s.name}</div>
+          <div class="state-badges">
+            ${s.hasRecall?'<span class="sbadge sbadge-recall">⚡ RECALL</span>':'<span class="sbadge sbadge-norecall">NO RECALL</span>'}
+            <span class="sbadge sbadge-imp">IMPEACH</span>
+            ${s.code==='VA'?'<span class="sbadge" style="border-color:#4a9eff;color:#4a9eff">COURT REMOVAL</span>':''}
+          </div>
+        </div>
+        <span class="expand-icon" id="icon-${s.code}">▼</span>
+      </div>
+      <div class="state-body" id="body-${s.code}">
+        <p class="section-label">STATEWIDE OFFICERS COVERED</p>
+        <div class="officers-list">${s.officers.map(o=>`<span class="officer-tag">${o}</span>`).join('')}</div>
+        
+        ${s.hasRecall?`
+        <p class="section-label">RECALL PROCESS</p>
+        <div class="tools-grid">
+          ${s.recallGrounds?`<div class="tool-block"><div class="tool-title">Grounds Required</div><div class="tool-body">${s.recallGrounds}</div></div>`:''}
+          ${s.recallSigs?`<div class="tool-block"><div class="tool-title">Signatures Required</div><div class="tool-body">${s.recallSigs}</div></div>`:''}
+          ${s.recallTime?`<div class="tool-block"><div class="tool-title">Collection Window</div><div class="tool-body">${s.recallTime}</div></div>`:''}
+          ${s.recallFiling?`<div class="tool-block"><div class="tool-title">File With</div><div class="tool-body">${s.recallFiling}</div></div>`:''}
+        </div>`:`
+        <div class="warning-box">⚠ ${s.recallNote}</div>`}
+        
+        <p class="section-label">IMPEACHMENT PROCESS</p>
+        <div class="tools-grid">
+          <div class="tool-block"><div class="tool-title">Grounds for Impeachment</div><div class="tool-body">${s.impeachGround}</div></div>
+          <div class="tool-block"><div class="tool-title">Vote Required</div><div class="tool-body">${s.impeachVote}</div></div>
+          ${s.impeachNote?`<div class="tool-block" style="grid-column:1/-1"><div class="tool-title">⚡ Key Note</div><div class="tool-body">${s.impeachNote}</div></div>`:''}
+        </div>
+        
+        <p class="section-label">ADDITIONAL REMOVAL TOOLS</p>
+        <div class="tools-grid">
+          <div class="tool-block"><div class="tool-title">Ethics Body</div><div class="tool-body">${s.ethicsBody}</div></div>
+          ${s.agPower?`<div class="tool-block"><div class="tool-title">Governor/Executive Power</div><div class="tool-body">${s.agPower}</div></div>`:''}
+          <div class="tool-block" style="grid-column:1/-1"><div class="tool-title">All Available Tools</div><div class="tool-body"><ul>${s.otherTools.map(t=>`<li>${t}</li>`).join('')}</ul></div></div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function toggle(code){
+  const body=document.getElementById('body-'+code);
+  const icon=document.getElementById('icon-'+code);
+  const isOpen=body.classList.contains('open');
+  body.classList.toggle('open');
+  icon.textContent=isOpen?'▼':'▲';
+}
+
+function expandAll(){filtered.forEach(s=>{const b=document.getElementById('body-'+s.code);const i=document.getElementById('icon-'+s.code);if(b){b.classList.add('open');i.textContent='▲';}})}
+function collapseAll(){filtered.forEach(s=>{const b=document.getElementById('body-'+s.code);const i=document.getElementById('icon-'+s.code);if(b){b.classList.remove('open');i.textContent='▼';}})}
+
+function filterStates(){
+  const q=document.getElementById('state-search').value.toLowerCase();
+  const r=document.getElementById('filter-recall').value;
+  filtered=stateData.filter(s=>{
+    const matchQ=!q||s.name.toLowerCase().includes(q)||s.code.toLowerCase().includes(q);
+    const matchR=!r||(r==='recall'&&s.hasRecall)||(r==='norecall'&&!s.hasRecall);
+    return matchQ&&matchR;
+  });
+  renderStates();
+}
+
+renderStates();
+</script>
+</body>
+</html>

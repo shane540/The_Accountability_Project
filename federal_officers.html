@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Federal Officers Accountability — The Accountability Project</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600&display=swap');
+:root{--black:#0a0a0a;--red:#c8001a;--red-dim:#7a0010;--white:#f0ede8;--gray:#1a1a1a;--gold:#d4a017;--green:#00a86b;--blue:#1a6cc8;--border:#2a2a2a}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--black);color:var(--white);font-family:'IBM Plex Sans',sans-serif;min-height:100vh}
+header{border-bottom:2px solid var(--red);padding:.8rem 1.2rem;display:flex;align-items:center;justify-content:space-between;background:var(--black);flex-wrap:wrap;gap:.5rem;position:sticky;top:0;z-index:100}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.1em}
+.logo span{color:var(--red)}
+.nav-links{display:flex;gap:.3rem;flex-wrap:wrap}
+.nav-link{font-family:'IBM Plex Mono',monospace;font-size:10px;color:#666;text-decoration:none;text-transform:uppercase;letter-spacing:.08em;border:1px solid var(--border);padding:.3rem .7rem}
+.nav-link:hover{border-color:var(--red);color:var(--red)}
+.ticker{background:var(--red);padding:.3rem 0;font-family:'IBM Plex Mono',monospace;font-size:10px;white-space:nowrap;overflow:hidden}
+.ticker-inner{display:inline-block;animation:ticker 40s linear infinite;padding-left:100%}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
+main{padding:1.2rem;max-width:1100px;margin:0 auto}
+.intro{background:var(--gray);border:1px solid var(--border);border-left:3px solid var(--red);padding:1rem;margin-bottom:1rem;font-size:12px;line-height:1.7}
+.intro strong{color:var(--red)}.intro .gold{color:var(--gold)}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:.4rem;margin-bottom:1rem}
+.stat-block{background:var(--gray);border:1px solid var(--border);padding:.6rem .8rem}
+.stat-n{font-family:'Bebas Neue',sans-serif;font-size:26px;line-height:1;color:var(--red)}
+.stat-l{font-family:'IBM Plex Mono',monospace;font-size:8px;color:#444;text-transform:uppercase;letter-spacing:.06em}
+.section-title{font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--red);margin:.8rem 0 .5rem;padding-bottom:.25rem;border-bottom:1px solid var(--red-dim)}
+/* TABS */
+.tab-nav{display:flex;gap:.3rem;margin-bottom:1rem;flex-wrap:wrap}
+.tab-btn{background:none;border:1px solid var(--border);color:#888;padding:.4rem .8rem;font-family:'IBM Plex Mono',monospace;font-size:10px;cursor:pointer;text-transform:uppercase;letter-spacing:.07em;transition:all .15s}
+.tab-btn.active,.tab-btn:hover{background:var(--red);border-color:var(--red);color:var(--white)}
+.tab-content{display:none}.tab-content.active{display:block}
+/* TOOL CARDS */
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:.7rem;margin-bottom:1rem}
+.tool-card{background:var(--gray);border:1px solid var(--border);border-top:2px solid var(--red);padding:1rem;display:flex;flex-direction:column;gap:.5rem}
+.tool-card.gold-top{border-top-color:var(--gold)}
+.tool-card.green-top{border-top-color:var(--green)}
+.tool-card.blue-top{border-top-color:var(--blue)}
+.tool-name{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.05em;line-height:1}
+.tool-agency{font-family:'IBM Plex Mono',monospace;font-size:9px;color:#555;text-transform:uppercase;letter-spacing:.07em}
+.tool-desc{font-size:12px;color:#aaa;line-height:1.5;flex:1}
+.tool-tags{display:flex;flex-wrap:wrap;gap:.25rem}
+.tool-tag{font-family:'IBM Plex Mono',monospace;font-size:8px;padding:.15rem .4rem;border:1px solid var(--border);color:#666;text-transform:uppercase}
+.tool-tag.active{border-color:var(--gold);color:var(--gold)}
+.tool-links{display:flex;flex-direction:column;gap:.3rem;margin-top:.3rem}
+.tool-link{display:flex;align-items:center;gap:.5rem;text-decoration:none;background:var(--black);border:1px solid var(--border);padding:.5rem .7rem;transition:all .15s;font-size:11px}
+.tool-link:hover{border-color:var(--red)}
+.tool-link-icon{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--red);white-space:nowrap;text-transform:uppercase;letter-spacing:.05em}
+.tool-link-text{color:#aaa;font-size:11px}
+.tool-link-url{font-family:'IBM Plex Mono',monospace;font-size:9px;color:#444;margin-left:auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px}
+/* STRATEGY SECTION */
+.strategy-grid{display:grid;gap:.6rem}
+.strategy-step{background:var(--gray);border:1px solid var(--border);padding:.9rem;display:grid;grid-template-columns:40px 1fr;gap:.8rem;align-items:start}
+.step-num{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--red);line-height:1}
+.step-title{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.3rem}
+.step-body{font-size:12px;color:#aaa;line-height:1.5}
+/* OFFICER TABLE */
+.officer-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:1rem}
+.officer-table th{font-family:'IBM Plex Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#555;padding:.5rem .7rem;text-align:left;border-bottom:1px solid var(--border);background:var(--black)}
+.officer-table td{padding:.5rem .7rem;border-bottom:1px solid var(--border);vertical-align:top}
+.officer-table tr:hover td{background:rgba(255,255,255,.02)}
+.officer-name{font-weight:600;color:var(--white)}
+.officer-tools{display:flex;flex-wrap:wrap;gap:.2rem}
+.otag{font-family:'IBM Plex Mono',monospace;font-size:8px;padding:.1rem .3rem;border:1px solid var(--border);color:#666;text-transform:uppercase}
+.otag-imp{border-color:#555;color:#888}
+.otag-exp{border-color:var(--gold);color:var(--gold)}
+.otag-eth{border-color:var(--blue);color:var(--blue)}
+.otag-doj{border-color:var(--red);color:var(--red)}
+/* WARNING BOX */
+.warn-box{background:rgba(200,0,26,.06);border:1px solid var(--red-dim);padding:.8rem;margin-bottom:1rem;font-size:12px;color:#cc8888;line-height:1.6}
+.warn-box strong{color:var(--red)}
+/* FILTER BAR */
+.filter-bar{display:flex;gap:.4rem;margin-bottom:1rem;flex-wrap:wrap}
+.filter-bar select,.filter-bar input{background:var(--gray);border:1px solid var(--border);color:var(--white);padding:.5rem .8rem;font-family:'IBM Plex Mono',monospace;font-size:11px;outline:none;flex:1;min-width:140px}
+.filter-bar select:focus,.filter-bar input:focus{border-color:var(--red)}
+.filter-bar button{background:var(--red);border:none;color:var(--white);padding:.5rem 1rem;font-family:'IBM Plex Mono',monospace;font-size:10px;cursor:pointer;text-transform:uppercase;white-space:nowrap}
+/* CHECKLIST */
+.checklist{display:grid;gap:.4rem}
+.check-item{background:var(--gray);border:1px solid var(--border);padding:.7rem;display:flex;gap:.8rem;align-items:flex-start}
+.check-box{width:16px;height:16px;border:1px solid var(--border);cursor:pointer;flex-shrink:0;margin-top:2px;background:var(--black)}
+.check-box.checked{background:var(--red);border-color:var(--red)}
+.check-text{font-size:12px;color:#aaa;line-height:1.5}
+.check-text strong{color:var(--white)}
+@media(max-width:640px){.stats-row{grid-template-columns:1fr 1fr}.tools-grid{grid-template-columns:1fr}.strategy-step{grid-template-columns:30px 1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">THE <span>ACCOUNTABILITY</span> PROJECT — <span>FEDERAL OFFICERS</span></div>
+  <div class="nav-links">
+    <a href="accountability_project.html" class="nav-link">← MAIN</a>
+    <a href="statewide_officers.html" class="nav-link">STATE OFFICERS</a>
+  </div>
+</header>
+<div class="ticker"><span class="ticker-inner">⚠ STOCK ACT: Unreported trades — track at efts.house.gov &nbsp;&nbsp;&nbsp; ⚡ FEC COMPLAINT: File at fec.gov/help-candidates-and-committees/filing-complaints &nbsp;&nbsp;&nbsp; ⚠ DOJ TIP: Report corruption at justice.gov/criminal/public-integrity &nbsp;&nbsp;&nbsp; ⚡ SEC WHISTLEBLOWER: Up to 30% financial reward — sec.gov/whistleblower &nbsp;&nbsp;&nbsp; ⚠ FBI TIP: tips.fbi.gov — anonymous submissions accepted &nbsp;&nbsp;&nbsp; ⚡ IRS FORM 211: 15-30% award for tax fraud — irs.gov/compliance/whistleblower-informant-award &nbsp;&nbsp;&nbsp;</span></div>
+<main>
+  <div class="intro">
+    <strong>FEDERAL OFFICIALS CANNOT BE RECALLED — BUT THEY CAN BE REMOVED</strong><br><br>
+    The U.S. Constitution provides no recall mechanism for federal officials. Courts have ruled state recall laws do not apply to Congress members. However the Constitution and federal law provide <span class="gold">12 distinct legal mechanisms</span> to remove, investigate, prosecute, or sanction federal officials. Every tool below is legal, documented, and has successfully been used. <strong>File simultaneously. Make it public. Don't stop.</strong>
+  </div>
+  <div class="stats-row">
+    <div class="stat-block"><div class="stat-n">12</div><div class="stat-l">Removal Tools</div></div>
+    <div class="stat-block"><div class="stat-n" style="color:var(--gold)">536</div><div class="stat-l">Federal Officials Covered</div></div>
+    <div class="stat-block"><div class="stat-n" style="color:var(--green)">$0</div><div class="stat-l">Cost to File Most Complaints</div></div>
+    <div class="stat-block"><div class="stat-n">30%</div><div class="stat-l">Max SEC Reward</div></div>
+  </div>
+
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="showTab('tools',this)">ALL TOOLS</button>
+    <button class="tab-btn" onclick="showTab('congress',this)">CONGRESS</button>
+    <button class="tab-btn" onclick="showTab('executive',this)">EXECUTIVE</button>
+    <button class="tab-btn" onclick="showTab('strategy',this)">STRATEGY</button>
+    <button class="tab-btn" onclick="showTab('checklist',this)">ACTION CHECKLIST</button>
+  </div>
+
+  <!-- ALL TOOLS TAB -->
+  <div id="tab-tools" class="tab-content active">
+    <div class="filter-bar">
+      <input type="text" id="tool-search" placeholder="Search tools..." oninput="filterTools()">
+      <select id="tool-filter" onchange="filterTools()">
+        <option value="">ALL TYPES</option>
+        <option value="removal">REMOVAL</option>
+        <option value="financial">FINANCIAL</option>
+        <option value="criminal">CRIMINAL</option>
+        <option value="ethics">ETHICS</option>
+      </select>
+    </div>
+    <div class="tools-grid" id="tools-grid"></div>
+  </div>
+
+  <!-- CONGRESS TAB -->
+  <div id="tab-congress" class="tab-content">
+    <div class="warn-box"><strong>⚠ RECALL NOT AVAILABLE:</strong> Federal courts have consistently ruled that state recall laws do not apply to Members of Congress. The Constitution sets the exclusive qualifications for congressional service. However, Congress has its own powerful removal and accountability mechanisms.</div>
+    <p class="section-title">MEMBERS OF CONGRESS — REMOVAL MECHANISMS</p>
+    <table class="officer-table">
+      <thead><tr><th>Mechanism</th><th>Who Can Initiate</th><th>Threshold</th><th>Notes</th><th>Tools Available</th></tr></thead>
+      <tbody>
+        <tr><td class="officer-name">Expulsion</td><td>Any member</td><td>2/3 of the chamber</td><td>No presidential signature required. No judicial review. Most direct removal tool.</td><td><div class="officer-tools"><span class="otag otag-exp">Demand via Ethics Committee</span></div></td></tr>
+        <tr><td class="officer-name">Censure</td><td>Any member</td><td>Simple majority</td><td>Public rebuke — does not remove but creates political pressure. Has forced resignations.</td><td><div class="officer-tools"><span class="otag otag-eth">File with Ethics Committee</span></div></td></tr>
+        <tr><td class="officer-name">Ethics Investigation</td><td>Citizens or Members</td><td>Committee decision</td><td>House and Senate Ethics Committees investigate and recommend action.</td><td><div class="officer-tools"><span class="otag otag-eth">File complaint online</span></div></td></tr>
+        <tr><td class="officer-name">Criminal Prosecution</td><td>DOJ / US Attorney</td><td>Grand jury indictment</td><td>Members lose immunity for crimes committed outside legislative duties. Has removed members.</td><td><div class="officer-tools"><span class="otag otag-doj">DOJ Public Integrity</span></div></td></tr>
+        <tr><td class="officer-name">FEC Complaint</td><td>Any person</td><td>FEC majority vote</td><td>Campaign finance violations. Civil and criminal referral possible. No cost to file.</td><td><div class="officer-tools"><span class="otag otag-doj">File at fec.gov</span></div></td></tr>
+        <tr><td class="officer-name">STOCK Act Violation</td><td>Any person</td><td>Ethics Committee</td><td>Members must report trades within 45 days. Public database tracks compliance.</td><td><div class="officer-tools"><span class="otag otag-eth">Track + report</span></div></td></tr>
+        <tr><td class="officer-name">Resignation Under Pressure</td><td>Public pressure</td><td>N/A</td><td>Coordinated public exposure has forced resignations historically. Effective when combined with legal filings.</td><td><div class="officer-tools"><span class="otag">Organize + publicize</span></div></td></tr>
+      </tbody>
+    </table>
+    <div class="tools-grid">
+      <div class="tool-card gold-top">
+        <div class="tool-name">House Ethics Committee</div>
+        <div class="tool-agency">U.S. House of Representatives</div>
+        <div class="tool-desc">File complaints about House members for financial impropriety, abuse of power, or rules violations. Citizens have standing. You do not need a lawyer or a sponsoring member.</div>
+        <div class="tool-links">
+          <a href="https://ethics.house.gov/contact/complaint-information" target="_blank" class="tool-link"><span class="tool-link-icon">FILE →</span><span class="tool-link-text">File a Complaint</span><span class="tool-link-url">ethics.house.gov</span></a>
+          <a href="https://ethics.house.gov/sites/ethics.house.gov/files/documents/Outside%20Complaint%20Form%20Final.pdf" target="_blank" class="tool-link"><span class="tool-link-icon">PDF →</span><span class="tool-link-text">Complaint Form (PDF)</span><span class="tool-link-url">ethics.house.gov/form</span></a>
+          <a href="https://ethics.house.gov" target="_blank" class="tool-link"><span class="tool-link-icon">INFO →</span><span class="tool-link-text">Committee Homepage</span><span class="tool-link-url">ethics.house.gov</span></a>
+        </div>
+      </div>
+      <div class="tool-card gold-top">
+        <div class="tool-name">Senate Ethics Committee</div>
+        <div class="tool-agency">U.S. Senate</div>
+        <div class="tool-desc">File complaints about Senators for misconduct, financial violations, or abuse of power. The Select Committee on Ethics investigates and can recommend expulsion.</div>
+        <div class="tool-links">
+          <a href="https://www.ethics.senate.gov/public/index.cfm/investigative-subcommittee" target="_blank" class="tool-link"><span class="tool-link-icon">FILE →</span><span class="tool-link-text">Investigative Process</span><span class="tool-link-url">ethics.senate.gov</span></a>
+          <a href="https://www.ethics.senate.gov/public/index.cfm/filings" target="_blank" class="tool-link"><span class="tool-link-icon">TRACK →</span><span class="tool-link-text">Financial Disclosures</span><span class="tool-link-url">ethics.senate.gov/filings</span></a>
+          <a href="https://www.ethics.senate.gov" target="_blank" class="tool-link"><span class="tool-link-icon">INFO →</span><span class="tool-link-text">Committee Homepage</span><span class="tool-link-url">ethics.senate.gov</span></a>
+        </div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-name">STOCK Act Tracker</div>
+        <div class="tool-agency">House / Senate Financial Disclosures</div>
+        <div class="tool-desc">Track stock trades filed by Congress members. Unreported trades within 45 days are violations. Public database — searchable by member name. Report violations to Ethics Committee.</div>
+        <div class="tool-links">
+          <a href="https://efts.house.gov/LATEST/search-by-date" target="_blank" class="tool-link"><span class="tool-link-icon">TRACK →</span><span class="tool-link-text">House Trade Disclosures</span><span class="tool-link-url">efts.house.gov</span></a>
+          <a href="https://efts.senate.gov/public/" target="_blank" class="tool-link"><span class="tool-link-icon">TRACK →</span><span class="tool-link-text">Senate Financial Disclosures</span><span class="tool-link-url">efts.senate.gov</span></a>
+          <a href="https://www.quiverquant.com/sources/congress" target="_blank" class="tool-link"><span class="tool-link-icon">TOOL →</span><span class="tool-link-text">Congress Trading Tracker</span><span class="tool-link-url">quiverquant.com</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXECUTIVE TAB -->
+  <div id="tab-executive" class="tab-content">
+    <p class="section-title">EXECUTIVE BRANCH OFFICERS — REMOVAL MECHANISMS</p>
+    <table class="officer-table">
+      <thead><tr><th>Officer</th><th>Primary Removal</th><th>Secondary Tools</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td class="officer-name">President</td><td>Impeachment (House + 2/3 Senate)</td><td><div class="officer-tools"><span class="otag otag-imp">25th Amendment</span><span class="otag otag-eth">Ethics / OGE</span></div></td><td>25th Amendment (VP + Cabinet majority) for incapacity. Has never been successfully used for removal.</td></tr>
+        <tr><td class="officer-name">Vice President</td><td>Impeachment</td><td><div class="officer-tools"><span class="otag otag-imp">Impeachment</span><span class="otag otag-doj">DOJ</span></div></td><td>VP has never been impeached. Spiro Agnew resigned 1973 facing criminal charges.</td></tr>
+        <tr><td class="officer-name">Cabinet Secretaries</td><td>Presidential removal OR Impeachment</td><td><div class="officer-tools"><span class="otag otag-imp">Impeachment</span><span class="otag otag-doj">OIG</span><span class="otag otag-eth">OSC</span></div></td><td>President can fire cabinet secretaries. Congress can impeach. Agency IGs investigate wrongdoing.</td></tr>
+        <tr><td class="officer-name">Federal Judges</td><td>Impeachment ONLY</td><td><div class="officer-tools"><span class="otag otag-imp">Judiciary Committee</span><span class="otag otag-doj">Criminal charges</span></div></td><td>Federal judges serve during "good behavior." Only removal is impeachment. 15 judges impeached in U.S. history, 8 convicted.</td></tr>
+        <tr><td class="officer-name">Independent Agency Heads</td><td>Varies by statute + Impeachment</td><td><div class="officer-tools"><span class="otag otag-doj">OIG</span><span class="otag otag-eth">OGE</span></div></td><td>Some agencies (FEC, FTC) have for-cause removal protections. Others serve at presidential pleasure.</td></tr>
+        <tr><td class="officer-name">U.S. Attorneys</td><td>Presidential removal</td><td><div class="officer-tools"><span class="otag otag-doj">DOJ OIG</span><span class="otag otag-imp">Senate pressure</span></div></td><td>Serve at pleasure of the President. Senate confirmation required for appointment — confirmation hearings create accountability.</td></tr>
+      </tbody>
+    </table>
+    <div class="tools-grid">
+      <div class="tool-card">
+        <div class="tool-name">DOJ Public Integrity Section</div>
+        <div class="tool-agency">U.S. Department of Justice</div>
+        <div class="tool-desc">Primary unit for prosecuting corrupt elected and appointed officials. Handles bribery, FARA violations, extortion, fraud, and abuse of power by federal officials.</div>
+        <div class="tool-links">
+          <a href="https://www.justice.gov/criminal/public-integrity" target="_blank" class="tool-link"><span class="tool-link-icon">REPORT →</span><span class="tool-link-text">Public Integrity Section</span><span class="tool-link-url">justice.gov/criminal/pis</span></a>
+          <a href="https://www.justice.gov/contact" target="_blank" class="tool-link"><span class="tool-link-icon">CONTACT →</span><span class="tool-link-text">DOJ Contact Page</span><span class="tool-link-url">justice.gov/contact</span></a>
+          <a href="https://oig.justice.gov/hotline" target="_blank" class="tool-link"><span class="tool-link-icon">OIG →</span><span class="tool-link-text">DOJ Inspector General Hotline</span><span class="tool-link-url">oig.justice.gov/hotline</span></a>
+        </div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-name">Office of Government Ethics</div>
+        <div class="tool-agency">OGE — Executive Branch Ethics</div>
+        <div class="tool-desc">Oversees ethics compliance for all executive branch employees. Handles financial disclosures, conflicts of interest, and post-employment restrictions for executive officials.</div>
+        <div class="tool-links">
+          <a href="https://www.oge.gov/web/OGE.nsf/Resources/Contacting+the+OGE" target="_blank" class="tool-link"><span class="tool-link-icon">CONTACT →</span><span class="tool-link-text">Contact OGE</span><span class="tool-link-url">oge.gov</span></a>
+          <a href="https://efts.house.gov" target="_blank" class="tool-link"><span class="tool-link-icon">TRACK →</span><span class="tool-link-text">Financial Disclosures Database</span><span class="tool-link-url">efts.house.gov</span></a>
+          <a href="https://www.oge.gov" target="_blank" class="tool-link"><span class="tool-link-icon">INFO →</span><span class="tool-link-text">OGE Homepage</span><span class="tool-link-url">oge.gov</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STRATEGY TAB -->
+  <div id="tab-strategy" class="tab-content">
+    <p class="section-title">HOW TO PUNCH FROM EVERY DIRECTION SIMULTANEOUSLY</p>
+    <div class="strategy-grid">
+      <div class="strategy-step">
+        <div class="step-num">1</div>
+        <div>
+          <div class="step-title">Document Everything First</div>
+          <div class="step-body">Pull all public records before filing anything. FEC filings at <a href="https://www.fec.gov/data" target="_blank" style="color:var(--gold)">fec.gov/data</a>, financial disclosures at <a href="https://efts.house.gov" target="_blank" style="color:var(--gold)">efts.house.gov</a>, voting records at <a href="https://www.congress.gov" target="_blank" style="color:var(--gold)">congress.gov</a>, lobbying reports at <a href="https://lda.senate.gov/system/public" target="_blank" style="color:var(--gold)">lda.senate.gov</a>, OpenSecrets donor data at <a href="https://www.opensecrets.org" target="_blank" style="color:var(--gold)">opensecrets.org</a>. Build the case before you file.</div>
+        </div>
+      </div>
+      <div class="strategy-step">
+        <div class="step-num">2</div>
+        <div>
+          <div class="step-title">File Simultaneously — Same Day</div>
+          <div class="step-body">File FEC complaint AND Ethics Committee complaint AND DOJ tip on the same day. Multiple concurrent investigations create pressure from every direction. File SEC whistleblower report if financial crimes involved. File IRS Form 211 if tax fraud involved. They cannot make all of them disappear simultaneously.</div>
+        </div>
+      </div>
+      <div class="strategy-step">
+        <div class="step-num">3</div>
+        <div>
+          <div class="step-title">Publish Everything You Filed</div>
+          <div class="step-body">After filing, publish the complaint documents. Send to local press, national press, and post publicly. The FEC complaint is public record. The Ethics complaint is public record. "I have filed a formal complaint with the House Ethics Committee and the FEC regarding..." — that sentence alone creates pressure. Sunlight does what courts can't.</div>
+        </div>
+      </div>
+      <div class="strategy-step">
+        <div class="step-num">4</div>
+        <div>
+          <div class="step-title">Track the STOCK Act Yourself</div>
+          <div class="step-body">Check <a href="https://efts.house.gov/LATEST/search-by-date" target="_blank" style="color:var(--gold)">efts.house.gov</a> monthly. Any trade not reported within 45 days is a violation. Document it. File it with the Ethics Committee. This is one of the easiest provable violations — the date is public record, the trade is public record, the deadline is the law.</div>
+        </div>
+      </div>
+      <div class="strategy-step">
+        <div class="step-num">5</div>
+        <div>
+          <div class="step-title">Use FARA as the Weapon It Is</div>
+          <div class="step-body">Foreign Agent Registration Act violations are federal felonies. Check FARA registrations at <a href="https://efts.fara.gov" target="_blank" style="color:var(--gold)">efts.fara.gov</a>. If a politician or their staff received money from foreign interests without registering — that's a crime. Report to DOJ National Security Division at <a href="https://www.justice.gov/nsd-fara" target="_blank" style="color:var(--gold)">justice.gov/nsd-fara</a>.</div>
+        </div>
+      </div>
+      <div class="strategy-step">
+        <div class="step-num">6</div>
+        <div>
+          <div class="step-title">Coordinate and Organize</div>
+          <div class="step-body">One complaint from one person is easy to ignore. One hundred coordinated complaints filed on the same day from organized constituents is impossible to ignore. Connect with others in the district. Split the work — one person files FEC, one files Ethics, one files DOJ, one handles press. The system is built to suppress individuals. It cannot suppress an organized coordinated effort.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTION CHECKLIST TAB -->
+  <div id="tab-checklist" class="tab-content">
+    <p class="section-title">ACTION CHECKLIST — FEDERAL OFFICIAL ACCOUNTABILITY</p>
+    <p style="font-size:12px;color:#666;margin-bottom:.8rem;line-height:1.6">Use this checklist to track your accountability campaign. Check items as you complete them. Start with documentation — always document before you file.</p>
+    <div class="checklist" id="checklist-items"></div>
+  </div>
+
+</main>
+
+<script>
+const allTools = [
+  {name:"Impeachment",agency:"U.S. House & Senate",type:"removal",desc:"House votes to impeach by simple majority. Senate holds trial — 2/3 required to convict and remove. Applies to President, VP, all civil officers including federal judges. File demand with your House Representative.",color:"red",tags:["Removal","Constitutional"],links:[{label:"FILE →",text:"Contact Your House Rep",url:"https://www.house.gov/representatives/find-your-representative"},{label:"INFO →",text:"Impeachment History",url:"https://history.house.gov/Institution/Impeachment/Impeachment-History/"},{label:"GUIDE →",text:"How Impeachment Works",url:"https://constitution.congress.gov/browse/essay/artII-S4-1-1/ALDE_00001053/"}]},
+  {name:"Congressional Expulsion",agency:"House / Senate Ethics",type:"removal",desc:"Each chamber can expel its own members by 2/3 vote. No presidential signature required. No judicial review. File formal demands with the relevant Ethics Committee members and leadership.",color:"gold",tags:["Removal","Constitutional","No Cost"],links:[{label:"HOUSE →",text:"House Ethics Committee",url:"https://ethics.house.gov/contact/complaint-information"},{label:"SENATE →",text:"Senate Ethics Committee",url:"https://www.ethics.senate.gov"},{label:"FORM →",text:"Complaint Form (PDF)",url:"https://ethics.house.gov/sites/ethics.house.gov/files/documents/Outside%20Complaint%20Form%20Final.pdf"}]},
+  {name:"FEC Complaint",agency:"Federal Election Commission",type:"financial",desc:"File campaign finance violations — illegal donations, PAC violations, foreign contributions, unreported expenditures. Civil and criminal referral possible. No cost to file. No lawyer required.",color:"red",tags:["Financial","No Cost","Anonymous Option"],links:[{label:"FILE →",text:"File a Complaint Online",url:"https://www.fec.gov/help-candidates-and-committees/filing-complaints-and-requesting-adv-ops/"},{label:"DATA →",text:"FEC Campaign Finance Data",url:"https://www.fec.gov/data/"},{label:"GUIDE →",text:"Enforcement Process Guide",url:"https://www.fec.gov/legal-resources/enforcement/"}]},
+  {name:"House Ethics Committee",agency:"U.S. House of Representatives",type:"ethics",desc:"File complaints about House members for financial impropriety, abuse of power, or rules violations. Citizens have standing to file without a lawyer or sponsoring member.",color:"gold",tags:["Ethics","No Cost","Citizens Welcome"],links:[{label:"FILE →",text:"File a Complaint",url:"https://ethics.house.gov/contact/complaint-information"},{label:"FORM →",text:"Complaint Form PDF",url:"https://ethics.house.gov/sites/ethics.house.gov/files/documents/Outside%20Complaint%20Form%20Final.pdf"},{label:"INFO →",text:"Ethics Committee Homepage",url:"https://ethics.house.gov"}]},
+  {name:"Senate Ethics Committee",agency:"U.S. Senate",type:"ethics",desc:"File complaints about Senators for misconduct, financial violations, or abuse of power. The Select Committee on Ethics investigates and can recommend expulsion.",color:"gold",tags:["Ethics","No Cost","Citizens Welcome"],links:[{label:"FILE →",text:"Investigative Process",url:"https://www.ethics.senate.gov/public/index.cfm/investigative-subcommittee"},{label:"DISC →",text:"Financial Disclosures",url:"https://efts.senate.gov/public/"},{label:"INFO →",text:"Ethics Committee",url:"https://www.ethics.senate.gov"}]},
+  {name:"DOJ Public Integrity",agency:"U.S. Department of Justice",type:"criminal",desc:"Primary unit prosecuting corrupt elected and appointed officials. Handles bribery, FARA violations, extortion, fraud. Report public corruption at any level of government.",color:"red",tags:["Criminal","Federal Crimes","Corruption"],links:[{label:"REPORT →",text:"Public Integrity Section",url:"https://www.justice.gov/criminal/public-integrity"},{label:"TIP →",text:"DOJ Tips & Leads",url:"https://tips.fbi.gov"},{label:"OIG →",text:"DOJ Inspector General",url:"https://oig.justice.gov/hotline"}]},
+  {name:"FBI Tip Line",agency:"Federal Bureau of Investigation",type:"criminal",desc:"Report public corruption directly to the FBI. Dedicated Public Corruption unit. Anonymous tips accepted. Your local field office may handle faster than national tip line.",color:"red",tags:["Criminal","Anonymous OK","Federal"],links:[{label:"TIP →",text:"FBI Tips Online",url:"https://tips.fbi.gov"},{label:"LOCAL →",text:"Find Your FBI Field Office",url:"https://www.fbi.gov/contact-us/field-offices"},{label:"INFO →",text:"FBI Public Corruption Unit",url:"https://www.fbi.gov/investigate/public-corruption"}]},
+  {name:"SEC Whistleblower",agency:"Securities & Exchange Commission",type:"financial",desc:"Report insider trading, securities fraud, and STOCK Act violations. Financial rewards of 10-30% of sanctions collected. Anonymous filing available. No minimum threshold for filing.",color:"green",tags:["Financial","10-30% Reward","Anonymous OK"],links:[{label:"FILE →",text:"Submit a Tip to SEC",url:"https://www.sec.gov/tcr"},{label:"INFO →",text:"Whistleblower Program",url:"https://www.sec.gov/whistleblower"},{label:"TRACK →",text:"Congress Trade Tracker",url:"https://efts.house.gov/LATEST/search-by-date"}]},
+  {name:"STOCK Act Violations",agency:"House / Senate Ethics",type:"financial",desc:"Members must report stock trades within 45 days. Failure is a civil penalty. Public database tracks all reported trades. Check monthly and report violations to the Ethics Committee.",color:"gold",tags:["Financial","Public Data","Easy to Prove"],links:[{label:"TRACK →",text:"House Trade Disclosures",url:"https://efts.house.gov/LATEST/search-by-date"},{label:"TRACK →",text:"Senate Disclosures",url:"https://efts.senate.gov/public/"},{label:"TOOL →",text:"Congress Trading Tracker",url:"https://www.quiverquant.com/sources/congress"}]},
+  {name:"FARA Violations",agency:"DOJ National Security Division",type:"criminal",desc:"Unregistered foreign lobbying is a federal felony. Check FARA registrations. Report violations to DOJ National Security Division. This has successfully prosecuted sitting officials.",color:"red",tags:["Criminal","Foreign Lobbying","Felony"],links:[{label:"CHECK →",text:"FARA Registration Database",url:"https://efts.fara.gov"},{label:"REPORT →",text:"FARA Unit — DOJ",url:"https://www.justice.gov/nsd-fara"},{label:"FILE →",text:"Report FARA Violation",url:"https://www.justice.gov/nsd/national-security-division-report-violations"}]},
+  {name:"GAO / Inspector General",agency:"Government Accountability Office",type:"ethics",desc:"Report waste, fraud, and abuse of federal funds. GAO reports go to Congress and are public. Each agency has an IG — find yours and file directly.",color:"blue",tags:["Ethics","Fraud","Waste"],links:[{label:"REPORT →",text:"GAO FraudNet",url:"https://www.gao.gov/about/fraudnet"},{label:"FIND →",text:"Find Your Agency IG",url:"https://www.ignet.gov/content/inspectors-general-directory"},{label:"HOTLINE →",text:"IG Hotline Directory",url:"https://www.oversight.gov/report-fraud"}]},
+  {name:"IRS Whistleblower",agency:"Internal Revenue Service",type:"financial",desc:"Report tax fraud and financial crimes by politicians or their donors. Awards of 15-30% of collected proceeds. File IRS Form 211 for violations over $2M.",color:"green",tags:["Financial","15-30% Reward","Tax Fraud"],links:[{label:"FILE →",text:"IRS Whistleblower Program",url:"https://www.irs.gov/compliance/whistleblower-informant-award"},{label:"FORM →",text:"IRS Form 211 (PDF)",url:"https://www.irs.gov/pub/irs-pdf/f211.pdf"},{label:"INFO →",text:"How to Submit a Claim",url:"https://www.irs.gov/compliance/whistleblower-informant-award"}]}
+];
+
+const checklistItems = [
+  {id:"cl1",text:"<strong>Pull FEC donor records</strong> for your target — fec.gov/data — document all contributions, dates, and amounts"},
+  {id:"cl2",text:"<strong>Check financial disclosures</strong> — efts.house.gov or efts.senate.gov — look for conflicts of interest and undisclosed holdings"},
+  {id:"cl3",text:"<strong>Check STOCK Act compliance</strong> — any trade not reported within 45 days is a violation — document with dates"},
+  {id:"cl4",text:"<strong>Check FARA registrations</strong> — efts.fara.gov — verify no unregistered foreign lobbying connections"},
+  {id:"cl5",text:"<strong>Pull lobbying disclosure reports</strong> — lda.senate.gov — cross-reference with voting record"},
+  {id:"cl6",text:"<strong>Compare voting record with donor list</strong> — congress.gov for votes — look for patterns"},
+  {id:"cl7",text:"<strong>File FEC complaint</strong> — fec.gov — if campaign finance violations found"},
+  {id:"cl8",text:"<strong>File Ethics Committee complaint</strong> — ethics.house.gov or ethics.senate.gov — for any ethics violations"},
+  {id:"cl9",text:"<strong>Submit FBI tip</strong> — tips.fbi.gov — for bribery, corruption, or criminal conduct"},
+  {id:"cl10",text:"<strong>File DOJ Public Integrity report</strong> — justice.gov/criminal/public-integrity — for public corruption"},
+  {id:"cl11",text:"<strong>File SEC whistleblower report</strong> — sec.gov/tcr — if insider trading or securities violations found"},
+  {id:"cl12",text:"<strong>Submit IRS Form 211</strong> — if tax fraud suspected — irs.gov/compliance/whistleblower-informant-award"},
+  {id:"cl13",text:"<strong>File FARA violation report</strong> — justice.gov/nsd-fara — if unregistered foreign lobbying found"},
+  {id:"cl14",text:"<strong>Contact your state AG</strong> — report any state-level crimes to your state attorney general"},
+  {id:"cl15",text:"<strong>Publish everything</strong> — after filing, make all complaints and evidence public — send to local and national press"},
+  {id:"cl16",text:"<strong>Coordinate with others</strong> — organize your district — simultaneous filing from multiple complainants is exponentially more effective"},
+  {id:"cl17",text:"<strong>Demand primary challenger</strong> — find, recruit, and support a primary challenger in the next election cycle"},
+  {id:"cl18",text:"<strong>Track investigation status</strong> — follow up monthly — file FOIA requests if needed — keep the pressure on"}
+];
+
+let filteredTools = [...allTools];
+const checked = new Set();
+
+function renderTools(){
+  document.getElementById('tools-grid').innerHTML = filteredTools.map(t=>`
+    <div class="tool-card ${t.color==='gold'?'gold-top':t.color==='green'?'green-top':t.color==='blue'?'blue-top':''}">
+      <div class="tool-name">${t.name}</div>
+      <div class="tool-agency">${t.agency}</div>
+      <div class="tool-desc">${t.desc}</div>
+      <div class="tool-tags">${t.tags.map(tag=>`<span class="tool-tag ${tag.includes('Reward')||tag.includes('Cost')||tag.includes('Anonymous')?'active':''}">${tag}</span>`).join('')}</div>
+      <div class="tool-links">${t.links.map(l=>`<a href="${l.url}" target="_blank" class="tool-link"><span class="tool-link-icon">${l.label}</span><span class="tool-link-text">${l.text}</span><span class="tool-link-url">${l.url.replace('https://','')}</span></a>`).join('')}</div>
+    </div>`).join('');
+}
+
+function filterTools(){
+  const q = document.getElementById('tool-search').value.toLowerCase();
+  const type = document.getElementById('tool-filter').value;
+  filteredTools = allTools.filter(t=>{
+    const matchQ = !q || t.name.toLowerCase().includes(q) || t.desc.toLowerCase().includes(q) || t.agency.toLowerCase().includes(q);
+    const matchT = !type || t.type === type;
+    return matchQ && matchT;
+  });
+  renderTools();
+}
+
+function renderChecklist(){
+  document.getElementById('checklist-items').innerHTML = checklistItems.map(item=>`
+    <div class="check-item" id="item-${item.id}">
+      <div class="check-box ${checked.has(item.id)?'checked':''}" onclick="toggleCheck('${item.id}')"></div>
+      <div class="check-text">${item.text}</div>
+    </div>`).join('');
+}
+
+function toggleCheck(id){
+  if(checked.has(id)) checked.delete(id);
+  else checked.add(id);
+  const box = document.querySelector(`#item-${id} .check-box`);
+  if(box) box.classList.toggle('checked', checked.has(id));
+}
+
+function showTab(name, btn){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  if(btn) btn.classList.add('active');
+}
+
+renderTools();
+renderChecklist();
+</script>
+</body>
+</html>

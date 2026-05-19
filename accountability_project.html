@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Accountability Project</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600&display=swap');
+:root{--black:#0a0a0a;--red:#c8001a;--red-dim:#7a0010;--white:#f0ede8;--gray:#1a1a1a;--gray-light:#2a2a2a;--gold:#d4a017;--green:#00a86b;--blue:#1a6cc8;--border:#2a2a2a}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--black);color:var(--white);font-family:'IBM Plex Sans',sans-serif;min-height:100vh;overflow-x:hidden}
+header{border-bottom:2px solid var(--red);padding:.8rem 1.2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--black);z-index:100;gap:.8rem;flex-wrap:wrap}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:.1em;white-space:nowrap}
+.logo span{color:var(--red)}
+nav{display:flex;gap:.3rem;flex-wrap:wrap}
+nav button{background:none;border:1px solid var(--border);color:var(--white);padding:.35rem .7rem;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;cursor:pointer;transition:all .15s;text-transform:uppercase}
+nav button:hover,nav button.active{background:var(--red);border-color:var(--red)}
+.ticker{background:var(--red);padding:.3rem 0;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;white-space:nowrap;overflow:hidden}
+.ticker-inner{display:inline-block;animation:ticker 50s linear infinite;padding-left:100%}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
+main{padding:1.2rem;max-width:1200px;margin:0 auto}
+.tab{display:none}.tab.active{display:block}
+.search-row{display:flex;gap:.4rem;margin-bottom:1.2rem;flex-wrap:wrap}
+.search-row input,.search-row select{background:var(--gray);border:1px solid var(--border);color:var(--white);padding:.55rem .9rem;font-family:'IBM Plex Mono',monospace;font-size:11px;outline:none;flex:1;min-width:120px}
+.search-row input:focus,.search-row select:focus{border-color:var(--red)}
+.search-row button{background:var(--red);border:none;color:var(--white);padding:.55rem 1rem;font-family:'IBM Plex Mono',monospace;font-size:10px;cursor:pointer;text-transform:uppercase;letter-spacing:.08em;white-space:nowrap}
+.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:.4rem;margin-bottom:1.2rem}
+.stats-card{background:var(--gray);border:1px solid var(--border);padding:.7rem .9rem}
+.stats-num{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--red);line-height:1}
+.stats-label{font-family:'IBM Plex Mono',monospace;font-size:8px;color:#555;text-transform:uppercase;letter-spacing:.06em}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:.8rem}
+.card{background:var(--gray);border:1px solid var(--border);border-left:3px solid var(--red);padding:1rem;cursor:pointer;transition:all .15s}
+.card:hover{border-left-color:var(--gold);transform:translateY(-1px);box-shadow:0 4px 20px rgba(200,0,26,.15)}
+.card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem}
+.card-name{font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:.05em;line-height:1.1}
+.badges{display:flex;gap:.25rem;flex-wrap:wrap;justify-content:flex-end}
+.badge{font-family:'IBM Plex Mono',monospace;font-size:8px;padding:.15rem .4rem;border:1px solid;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap}
+.badge-D{border-color:var(--blue);color:var(--blue)}.badge-R{border-color:var(--red);color:var(--red)}.badge-I{border-color:var(--gold);color:var(--gold)}.badge-federal{border-color:#555;color:#888}.badge-state{border-color:#333;color:#666}.badge-recall{border-color:var(--gold);color:var(--gold)}
+.card-meta{font-family:'IBM Plex Mono',monospace;font-size:9px;color:#555;margin-bottom:.7rem;text-transform:uppercase}
+.card-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.3rem}
+.stat{background:var(--black);padding:.35rem;text-align:center;border:1px solid var(--border)}
+.stat-value{font-family:'Bebas Neue',sans-serif;font-size:16px;display:block;line-height:1}
+.red{color:var(--red)}.gold{color:var(--gold)}.green{color:var(--green)}
+.stat-label{font-family:'IBM Plex Mono',monospace;font-size:7px;color:#444;text-transform:uppercase;letter-spacing:.05em}
+.detail{display:none}.detail.active{display:block}
+.back-btn{background:none;border:1px solid var(--border);color:var(--white);padding:.4rem .9rem;font-family:'IBM Plex Mono',monospace;font-size:10px;cursor:pointer;margin-bottom:1rem;text-transform:uppercase}
+.back-btn:hover{border-color:var(--red);color:var(--red)}
+.detail-header{display:grid;grid-template-columns:1fr auto;gap:1rem;margin-bottom:1rem;padding-bottom:.8rem;border-bottom:1px solid var(--border)}
+.detail-name{font-family:'Bebas Neue',sans-serif;font-size:38px;letter-spacing:.05em;line-height:1}
+.threat-meter{text-align:right}
+.threat-label{font-family:'IBM Plex Mono',monospace;font-size:8px;color:#555;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:.2rem}
+.threat-value{font-family:'Bebas Neue',sans-serif;font-size:38px;color:var(--red);line-height:1}
+.section-title{font-family:'IBM Plex Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:var(--red);margin-bottom:.6rem;padding-bottom:.25rem;border-bottom:1px solid var(--red-dim)}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:.8rem}
+.detail-section{background:var(--gray);border:1px solid var(--border);padding:.9rem}
+.donor-item{display:flex;justify-content:space-between;align-items:center;padding:.4rem 0;border-bottom:1px solid var(--border);font-size:12px}
+.donor-item:last-child{border-bottom:none}
+.donor-name{font-weight:600}
+.donor-amount{font-family:'IBM Plex Mono',monospace;color:var(--gold);font-size:10px}
+.donor-industry{font-size:9px;color:#555;font-family:'IBM Plex Mono',monospace}
+.violation-item{padding:.55rem 0;border-bottom:1px solid var(--border)}
+.violation-item:last-child{border-bottom:none}
+.violation-type{font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--red);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.15rem}
+.violation-desc{font-size:11px;margin-bottom:.15rem;line-height:1.4}
+.violation-date{font-family:'IBM Plex Mono',monospace;font-size:8px;color:#444}
+.tag{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:8px;padding:.15rem .4rem;border:1px solid var(--border);color:#777;margin:.15rem .15rem 0 0;text-transform:uppercase;letter-spacing:.04em}
+.tag-active{border-color:var(--red);color:var(--red)}
+.action-btns{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.8rem}
+.action-btn{background:var(--red);border:none;color:var(--white);padding:.6rem 1.2rem;font-family:'IBM Plex Mono',monospace;font-size:10px;cursor:pointer;text-transform:uppercase;letter-spacing:.1em;font-weight:600}
+.action-btn:hover{background:var(--red-dim)}
+.action-btn.gold-btn{background:var(--gold);color:var(--black)}
+.action-btn.gold-btn:hover{background:#b8880e}
+.federal-panel{background:var(--gray);border:1px solid var(--border);border-left:3px solid var(--gold);padding:.9rem;margin-bottom:.8rem}
+.federal-panel p{font-size:11px;color:#888;line-height:1.6;margin-bottom:.6rem}
+.federal-tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.4rem;margin-top:.6rem}
+.federal-tool{background:var(--black);border:1px solid var(--border);padding:.7rem;cursor:pointer;transition:all .15s;text-decoration:none;display:block}
+.federal-tool:hover{border-color:var(--gold)}
+.federal-tool-title{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.25rem}
+.federal-tool-desc{font-size:10px;color:#666;line-height:1.4}
+.recall-intro{background:var(--gray);border:1px solid var(--border);border-left:3px solid var(--gold);padding:1rem;margin-bottom:1.2rem;font-size:12px;line-height:1.7}
+.recall-intro strong{color:var(--gold)}
+.recall-filters{display:flex;gap:.4rem;margin-bottom:1.2rem;flex-wrap:wrap}
+.recall-filters select{background:var(--gray);border:1px solid var(--border);color:var(--white);padding:.55rem .9rem;font-family:'IBM Plex Mono',monospace;font-size:11px;outline:none;cursor:pointer;flex:1;min-width:140px}
+.recall-filters select:focus{border-color:var(--gold)}
+.recall-filters button{background:var(--gold);border:none;color:var(--black);padding:.55rem 1.2rem;font-family:'IBM Plex Mono',monospace;font-size:10px;cursor:pointer;text-transform:uppercase;letter-spacing:.08em;font-weight:600;white-space:nowrap}
+.recall-info{display:none}.recall-info.active{display:block}
+.recall-requirements{background:var(--gray);border:1px solid var(--border);border-left:3px solid var(--red);padding:.9rem;margin-bottom:.8rem}
+.req-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:.4rem;margin-top:.7rem}
+.req-item{background:var(--black);padding:.55rem .7rem;border:1px solid var(--border)}
+.req-label{font-family:'IBM Plex Mono',monospace;font-size:8px;color:#444;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.15rem}
+.req-value{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--white);font-weight:600;line-height:1.4}
+.recall-steps{display:grid;gap:.6rem;margin-bottom:.8rem}
+.step{background:var(--gray);border:1px solid var(--border);padding:.7rem .9rem;display:grid;grid-template-columns:32px 1fr;gap:.7rem;align-items:start}
+.step-num{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--red);line-height:1}
+.step-title{font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--gold);margin-bottom:.25rem}
+.step-desc{font-size:11px;line-height:1.5;color:#aaa}
+.no-recall-box{background:var(--gray);border:1px solid var(--border);border-left:3px solid #333;padding:1rem;margin-bottom:.8rem}
+.alt-tools{display:grid;gap:.4rem;margin-top:.6rem}
+.alt-tool{background:var(--black);border:1px solid var(--border);padding:.7rem}
+.alt-tool-title{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.25rem}
+.alt-tool-desc{font-size:11px;color:#666;line-height:1.5}
+.report-form{background:var(--gray);border:1px solid var(--border);padding:1.2rem;max-width:600px}
+.form-group{margin-bottom:.8rem}
+.form-label{font-family:'IBM Plex Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:#666;display:block;margin-bottom:.3rem}
+.form-input,.form-select,.form-textarea{width:100%;background:var(--black);border:1px solid var(--border);color:var(--white);padding:.55rem .9rem;font-family:'IBM Plex Sans',sans-serif;font-size:12px;outline:none}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--red)}
+.form-textarea{min-height:80px;resize:vertical}
+.submit-btn{background:var(--red);border:none;color:var(--white);padding:.7rem 1.8rem;font-family:'IBM Plex Mono',monospace;font-size:10px;cursor:pointer;text-transform:uppercase;letter-spacing:.1em;font-weight:600;width:100%;margin-top:.4rem}
+.submit-btn:hover{background:var(--red-dim)}
+.success-msg{background:var(--gray);border:1px solid var(--green);border-left:3px solid var(--green);padding:.9rem;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--green);display:none;margin-top:.8rem;line-height:1.5}
+.fed-tab-intro{background:var(--gray);border:1px solid var(--border);border-left:3px solid var(--red);padding:1rem;margin-bottom:1.2rem;font-size:12px;line-height:1.7}
+.fed-tab-intro strong{color:var(--red)}
+@media(max-width:640px){.detail-grid{grid-template-columns:1fr}.stats-bar{grid-template-columns:1fr 1fr}.detail-name{font-size:26px}.federal-tools-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">THE <span>ACCOUNTABILITY</span> PROJECT</div>
+  <nav>
+    <button class="active" onclick="showTab('track',this)">TRACK</button>
+    <button onclick="showTab('recall',this)">RECALL</button>
+    <button onclick="showTab('report',this)">REPORT</button>
+    <button onclick="showTab('federal',this)">FEDERAL</button>
+    <a href="statewide_officers.html" style="background:none;border:1px solid #2a2a2a;color:#888;padding:.35rem .7rem;font-family:IBM Plex Mono,monospace;font-size:10px;text-transform:uppercase;letter-spacing:.08em;text-decoration:none;" target="_self">STATE OFFICERS ↗</a>
+    <a href="federal_officers.html" style="background:none;border:1px solid #2a2a2a;color:#888;padding:.35rem .7rem;font-family:IBM Plex Mono,monospace;font-size:10px;text-transform:uppercase;letter-spacing:.08em;text-decoration:none;" target="_self">FEDERAL ↗</a>
+  </nav>
+</header>
+<div class="ticker"><span class="ticker-inner">⚠ VIOLATION FILED: Sen. R. Haines (TX) — DOJ Investigation Active &nbsp;&nbsp;&nbsp; ⚡ RECALL ACTIVE: Rep. T. Morrison (OH-12) — 847 signatures collected &nbsp;&nbsp;&nbsp; ⚠ DONOR ALERT: PharmaCorp PAC — $2.4M to 14 legislators &nbsp;&nbsp;&nbsp; ⚠ FEC COMPLAINT: Campaign finance violation — AZ District 3 &nbsp;&nbsp;&nbsp; ⚡ RECALL ACTIVE: CA — petition approved for circulation &nbsp;&nbsp;&nbsp; ⚠ STOCK ACT: 3 unreported trades — Senate Finance Committee &nbsp;&nbsp;&nbsp; ⚠ INSIDER TRADING: SEC referral — energy sector, 2 senators &nbsp;&nbsp;&nbsp;</span></div>
+<main>
+  <!-- TRACK TAB -->
+  <div id="tab-track" class="tab active">
+    <div id="list-view">
+      <div class="stats-bar">
+        <div class="stats-card"><div class="stats-num" id="stat-total">6</div><div class="stats-label">Politicians Tracked</div></div>
+        <div class="stats-card"><div class="stats-num red" id="stat-violations">28</div><div class="stats-label">Total Violations</div></div>
+        <div class="stats-card"><div class="stats-num gold" id="stat-recalls">1</div><div class="stats-label">Active Recalls</div></div>
+        <div class="stats-card"><div class="stats-num" id="stat-donors">$25.8M</div><div class="stats-label">Donor Money Tracked</div></div>
+      </div>
+      <div class="search-row">
+        <input type="text" id="search-input" placeholder="Search name, state, office..." oninput="filterCards()">
+        <select id="filter-party" onchange="filterCards()"><option value="">ALL PARTIES</option><option value="D">DEMOCRAT</option><option value="R">REPUBLICAN</option><option value="I">INDEPENDENT</option></select>
+        <select id="filter-level" onchange="filterCards()"><option value="">ALL LEVELS</option><option value="federal">FEDERAL</option><option value="state">STATE</option></select>
+        <button onclick="filterCards()">FILTER</button>
+      </div>
+      <div class="grid" id="card-grid"></div>
+    </div>
+    <div id="detail-view" class="detail">
+      <button class="back-btn" onclick="showList()">← BACK TO LIST</button>
+      <div id="detail-content"></div>
+    </div>
+  </div>
+  <!-- RECALL TAB -->
+  <div id="tab-recall" class="tab">
+    <div class="recall-intro">
+      <strong>YOUR LEGAL RIGHT TO REMOVE ELECTED OFFICIALS</strong><br><br>
+      39 states allow recall of elected officials at some level. 19 states allow recall of state officers. Federal officials cannot be recalled by state law — but they CAN be impeached, expelled, or removed via ethics proceedings. Select your state to get the exact legal playbook. Every tool here is legitimate, documented, and legal.
+      <br><br><strong>They built the cage. We found the key.</strong>
+    </div>
+    <div class="recall-filters">
+      <select id="recall-state"><option value="">SELECT YOUR STATE</option><option value="AL">Alabama</option><option value="AK">Alaska</option><option value="AZ">Arizona</option><option value="AR">Arkansas</option><option value="CA">California</option><option value="CO">Colorado</option><option value="CT">Connecticut</option><option value="DE">Delaware</option><option value="FL">Florida</option><option value="GA">Georgia</option><option value="HI">Hawaii</option><option value="ID">Idaho</option><option value="IL">Illinois</option><option value="IN">Indiana</option><option value="IA">Iowa</option><option value="KS">Kansas</option><option value="KY">Kentucky</option><option value="LA">Louisiana</option><option value="ME">Maine</option><option value="MD">Maryland</option><option value="MA">Massachusetts</option><option value="MI">Michigan</option><option value="MN">Minnesota</option><option value="MS">Mississippi</option><option value="MO">Missouri</option><option value="MT">Montana</option><option value="NE">Nebraska</option><option value="NV">Nevada</option><option value="NH">New Hampshire</option><option value="NJ">New Jersey</option><option value="NM">New Mexico</option><option value="NY">New York</option><option value="NC">North Carolina</option><option value="ND">North Dakota</option><option value="OH">Ohio</option><option value="OK">Oklahoma</option><option value="OR">Oregon</option><option value="PA">Pennsylvania</option><option value="RI">Rhode Island</option><option value="SC">South Carolina</option><option value="SD">South Dakota</option><option value="TN">Tennessee</option><option value="TX">Texas</option><option value="UT">Utah</option><option value="VT">Vermont</option><option value="VA">Virginia</option><option value="WA">Washington</option><option value="WV">West Virginia</option><option value="WI">Wisconsin</option><option value="WY">Wyoming</option></select>
+      <button onclick="showRecallInfo()">GET PLAYBOOK</button>
+    </div>
+    <div id="recall-info" class="recall-info"></div>
+  </div>
+  <!-- REPORT TAB -->
+  <div id="tab-report" class="tab">
+    <div class="report-form">
+      <p class="section-title">SUBMIT A VIOLATION REPORT</p>
+      <p style="font-size:11px;color:#777;margin-bottom:1.2rem;line-height:1.6">All submissions reviewed before publishing. Include documentation. Reports cross-referenced with public records. Anonymous submissions accepted and protected.</p>
+      <div class="form-group"><label class="form-label">Politician Name *</label><input type="text" class="form-input" id="pol-name" placeholder="Full legal name"></div>
+      <div class="form-group"><label class="form-label">State *</label><select class="form-select" id="pol-state"><option value="">Select state</option><option>Alabama</option><option>Alaska</option><option>Arizona</option><option>Arkansas</option><option>California</option><option>Colorado</option><option>Connecticut</option><option>Delaware</option><option>Florida</option><option>Georgia</option><option>Hawaii</option><option>Idaho</option><option>Illinois</option><option>Indiana</option><option>Iowa</option><option>Kansas</option><option>Kentucky</option><option>Louisiana</option><option>Maine</option><option>Maryland</option><option>Massachusetts</option><option>Michigan</option><option>Minnesota</option><option>Mississippi</option><option>Missouri</option><option>Montana</option><option>Nebraska</option><option>Nevada</option><option>New Hampshire</option><option>New Jersey</option><option>New Mexico</option><option>New York</option><option>North Carolina</option><option>North Dakota</option><option>Ohio</option><option>Oklahoma</option><option>Oregon</option><option>Pennsylvania</option><option>Rhode Island</option><option>South Carolina</option><option>South Dakota</option><option>Tennessee</option><option>Texas</option><option>Utah</option><option>Vermont</option><option>Virginia</option><option>Washington</option><option>West Virginia</option><option>Wisconsin</option><option>Wyoming</option></select></div>
+      <div class="form-group"><label class="form-label">Office *</label><input type="text" class="form-input" id="pol-office" placeholder="e.g. U.S. Senator, State Representative, Mayor"></div>
+      <div class="form-group"><label class="form-label">Violation Type *</label><select class="form-select" id="viol-type"><option value="">Select type</option><option>Campaign Finance Violation</option><option>Undisclosed Donor / Conflict of Interest</option><option>Ethics Violation</option><option>Bribery / Corruption</option><option>Abuse of Power</option><option>Perjury / False Statement</option><option>Failure to Disclose Financial Holdings</option><option>Misuse of Public Funds</option><option>STOCK Act Violation (Insider Trading)</option><option>FARA Violation (Foreign Lobbying)</option><option>Whistleblower Retaliation</option><option>Other</option></select></div>
+      <div class="form-group"><label class="form-label">Description *</label><textarea class="form-textarea" id="viol-desc" placeholder="Describe the violation in detail. Include dates, locations, amounts, witnesses, and any other relevant information. Be specific."></textarea></div>
+      <div class="form-group"><label class="form-label">Evidence / Source Links</label><input type="text" class="form-input" id="viol-evidence" placeholder="URLs, document references, public record sources, filing numbers"></div>
+      <div class="form-group"><label class="form-label">Suggested Legal Action</label><select class="form-select" id="viol-action"><option value="">Select recommended action</option><option>FEC Complaint</option><option>Ethics Committee Complaint</option><option>DOJ Referral</option><option>SEC Whistleblower Report</option><option>State Ethics Commission</option><option>Recall Petition</option><option>IRS Whistleblower</option><option>CFPB Complaint</option><option>Other</option></select></div>
+      <div class="form-group"><label class="form-label">Your Name (Optional — Anonymous if blank)</label><input type="text" class="form-input" id="reporter-name" placeholder="Leave blank to submit anonymously"></div>
+      <button class="submit-btn" onclick="submitReport()">SUBMIT VIOLATION REPORT</button>
+      <div class="success-msg" id="success-msg">✓ REPORT SUBMITTED — Under review. Cross-referencing public records. If your report contains evidence of federal crimes, consider also filing directly with the DOJ Public Integrity Section at justice.gov/criminal/public-integrity</div>
+    </div>
+  </div>
+  <!-- FEDERAL TOOLS TAB -->
+  <div id="tab-federal" class="tab">
+    <div class="fed-tab-intro">
+      <strong>FEDERAL OFFICIALS CANNOT BE RECALLED — BUT THEY CAN BE REMOVED</strong><br><br>
+      The U.S. Constitution provides no recall mechanism for federal officials. Courts have consistently ruled that state recall laws do not apply to Congress members. However, the Constitution and federal law provide powerful alternative tools. Every one of these is legal, documented, and has successfully removed officials from office.
+      <br><br>Use them all. Simultaneously. From every direction.
+    </div>
+    <p class="section-title">REMOVAL AND ACCOUNTABILITY TOOLS</p>
+    <div class="federal-tools-grid" id="federal-tools-grid"></div>
+    <br>
+    <div style="background:var(--gray);border:1px solid var(--border);border-left:3px solid var(--red);padding:1rem;margin-top:.8rem">
+      <p class="section-title">HOW TO PUNCH FROM EVERY DIRECTION SIMULTANEOUSLY</p>
+      <div style="display:grid;gap:.5rem;margin-top:.5rem">
+        <div style="background:var(--black);border:1px solid var(--border);padding:.7rem">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--gold);text-transform:uppercase;margin-bottom:.3rem">Step 1 — Document Everything</div>
+          <div style="font-size:11px;color:#aaa;line-height:1.5">Gather all public records: FEC filings, financial disclosures, voting records, lobbying reports, court records. Everything is public. Use PACER, FEC.gov, OpenSecrets, and your state's campaign finance portal.</div>
+        </div>
+        <div style="background:var(--black);border:1px solid var(--border);padding:.7rem">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--gold);text-transform:uppercase;margin-bottom:.3rem">Step 2 — File Simultaneously</div>
+          <div style="font-size:11px;color:#aaa;line-height:1.5">File FEC complaint AND Ethics Committee complaint AND DOJ referral on the same day. Multiple concurrent investigations create pressure from every direction. They can't make all of them disappear.</div>
+        </div>
+        <div style="background:var(--black);border:1px solid var(--border);padding:.7rem">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--gold);text-transform:uppercase;margin-bottom:.3rem">Step 3 — Make It Public</div>
+          <div style="font-size:11px;color:#aaa;line-height:1.5">File complaints then publish them. Send to local press. Post the receipts. Public pressure combined with legal proceedings is exponentially more effective than either alone. Sunlight is the best disinfectant.</div>
+        </div>
+        <div style="background:var(--black);border:1px solid var(--border);padding:.7rem">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--gold);text-transform:uppercase;margin-bottom:.3rem">Step 4 — Organize Locally</div>
+          <div style="font-size:11px;color:#aaa;line-height:1.5">Connect with others in the district. Coordinate recall petitions (state officials), primary challenges, and donor pressure campaigns simultaneously. The system can suppress one person. It cannot suppress an organized community filing from every legal angle.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<script>
+// Inline recall data and politicians
+const recallData = {
+  AL:{name:"Alabama",hasStateRecall:false,hasLocalRecall:true,notes:"No recall for state officers. Local officials only in some municipalities under home rule charters.",altTools:["State Ethics Commission complaint: ethics.alabama.gov","Legislative impeachment process","Attorney General prosecution","Federal DOJ referral for corruption"]},
+  AK:{name:"Alaska",hasStateRecall:true,hasLocalRecall:true,grounds:"Neglect of duties, physical/mental incapacity, conviction of felony, or failure to file financial disclosures",signatures:"25% of votes cast in last election for the office",timeframe:"No time limit specified",filing:"Alaska Division of Elections",steps:["File application with Alaska Division of Elections stating specific legal grounds","Division reviews grounds for legal sufficiency within 30 days","If approved, collect 25% of votes cast in last election — no time limit","Submit completed petition for verification — 30 days to certify","Recall election held within 60 days of certification"]},
+  AZ:{name:"Arizona",hasStateRecall:true,hasLocalRecall:true,grounds:"No specific grounds required — any reason sufficient",signatures:"25% of votes cast in last election for the office",timeframe:"120 days",filing:"Arizona Secretary of State",steps:["File recall petition with Secretary of State — no grounds required","Begin collecting signatures — 25% of last election votes within 120 days","Submit to Secretary of State for verification","Recall election scheduled within 80-120 days of certification"]},
+  AR:{name:"Arkansas",hasStateRecall:false,hasLocalRecall:false,notes:"No recall provisions under Arkansas law for any level of government.",altTools:["Legislative impeachment process","Arkansas Ethics Commission: arkansasethics.com","Attorney General prosecution for official misconduct","Federal DOJ referral"]},
+  CA:{name:"California",hasStateRecall:true,hasLocalRecall:true,grounds:"No specific grounds required",signatures:"12% of votes in last gubernatorial election for governor; varies by office",timeframe:"160 days",filing:"California Secretary of State",steps:["File Notice of Intention with Secretary of State — include 200-word grounds statement","Proponents publish notice in newspaper of general circulation","Collect required signatures within 160 days","Submit to county election officials for signature verification — 30 days","If certified, recall election held within 60-80 days"]},
+  CO:{name:"Colorado",hasStateRecall:true,hasLocalRecall:true,grounds:"No specific grounds required",signatures:"25% of active registered voters in the district",timeframe:"60 days",filing:"Colorado Secretary of State",steps:["Submit petition format to Secretary of State for approval","Collect signatures from 25% of active registered voters in district within 60 days","Submit to county clerk for verification — 15 business days","Recall election held — ballots include removal question and replacement candidates simultaneously"]},
+  CT:{name:"Connecticut",hasStateRecall:false,hasLocalRecall:true,notes:"No statewide recall law. Some municipalities allow recall under home rule charters — check your city/town charter.",altTools:["Legislative impeachment","Office of State Ethics: ethics.ct.gov","Governor removal power for cause","Attorney General prosecution"]},
+  DE:{name:"Delaware",hasStateRecall:false,hasLocalRecall:false,notes:"No recall provisions under Delaware law at any level.",altTools:["Legislative impeachment","Attorney General prosecution","Federal DOJ referral","Electoral challenge at next election"]},
+  FL:{name:"Florida",hasStateRecall:false,hasLocalRecall:true,grounds:"Malfeasance, misfeasance, neglect of duty, drunkenness, incompetence, or permanent inability to perform duties",notes:"Recall only available for municipal officials. NOT available for state officers, county commissioners, or state legislators.",filing:"County Supervisor of Elections",steps:["Verify target is a municipal official — state officials CANNOT be recalled","File petition with Supervisor of Elections stating specific legal grounds","Collect 15% of registered voters in municipality within 30 days","Submit for verification — recall election held if certified"]},
+  GA:{name:"Georgia",hasStateRecall:true,hasLocalRecall:true,grounds:"Act of malfeasance or misconduct while in office; violation of oath of office; failure to perform duties; willful misuse of public property",signatures:"30% of registered voters in the district",timeframe:"90 days",filing:"Georgia Secretary of State",steps:["File recall application stating specific legal grounds — grounds are reviewed for sufficiency","Grounds reviewed and approved before signature collection can begin","Collect 30% of registered voters in district within 90 days","Submit for verification","Recall election held if certified"]},
+  HI:{name:"Hawaii",hasStateRecall:false,hasLocalRecall:true,notes:"No statewide recall law. Hawaii County allows recall under county charter. Check your county charter.",altTools:["State Ethics Commission: ethics.hawaii.gov","Legislative removal process","Prosecutorial referral","Attorney General complaint"]},
+  ID:{name:"Idaho",hasStateRecall:true,hasLocalRecall:true,grounds:"No specific grounds required",signatures:"20% of registered voters in the district",timeframe:"60 days",filing:"Idaho Secretary of State",steps:["File petition with Secretary of State","Collect 20% of registered voters in district within 60 days","Submit for verification — 20 days to certify","Recall election held within 40 days of certification"]},
+  IL:{name:"Illinois",hasStateRecall:true,hasLocalRecall:true,grounds:"GOVERNOR ONLY — requires 'official misconduct'. Other state officers cannot be recalled.",signatures:"15% of total votes cast in last gubernatorial election from at least 25 of 102 counties",timeframe:"150 days",filing:"Illinois State Board of Elections",steps:["IMPORTANT: Only the Governor can be recalled under Illinois law — not legislators","Petition must allege official misconduct specifically","Collect signatures from at least 25 different counties totaling 15% of last gubernatorial vote within 150 days","Submit to State Board of Elections for verification","Recall election held if certified"]},
+  IN:{name:"Indiana",hasStateRecall:false,hasLocalRecall:false,notes:"No recall provisions under Indiana law at any level.",altTools:["Governor removal power for cause","Legislative impeachment process","Indiana Ethics Commission: in.gov/ig","Federal DOJ referral"]},
+  IA:{name:"Iowa",hasStateRecall:false,hasLocalRecall:false,notes:"No recall provisions under Iowa law.",altTools:["Legislative removal process","Iowa Ethics and Campaign Disclosure Board: ethics.iowa.gov","Attorney General prosecution","Federal charges"]},
+  KS:{name:"Kansas",hasStateRecall:true,hasLocalRecall:true,grounds:"Conviction of felony, misconduct in office, incompetence, or failure to perform duties",signatures:"40% of votes cast in last election for the office",timeframe:"90 days",filing:"Kansas Secretary of State",steps:["File petition stating specific legal grounds — grounds reviewed for sufficiency","Must meet one of the four statutory grounds","Collect 40% of votes from last election within 90 days — high threshold","Submit for verification","Recall election held if certified"]},
+  KY:{name:"Kentucky",hasStateRecall:false,hasLocalRecall:false,notes:"No recall provisions under Kentucky law.",altTools:["Legislative impeachment","Attorney General prosecution","Kentucky Executive Branch Ethics Commission","Federal charges for corruption"]},
+  LA:{name:"Louisiana",hasStateRecall:true,hasLocalRecall:true,grounds:"No specific grounds required",signatures:"33.3% of registered voters in the district",timeframe:"180 days",filing:"Louisiana Secretary of State",steps:["File petition with Secretary of State","Collect signatures equal to 33.3% of registered voters within 180 days","Submit for verification","Recall election scheduled if certified"]},
+  ME:{name:"Maine",hasStateRecall:false,hasLocalRecall:true,notes:"No statewide recall law. Some municipalities allow local recall under home rule charters.",altTools:["Legislative removal process","Maine Ethics Commission: mainecampaignfinance.gov","Attorney General prosecution","Federal referral"]},
+  MD:{name:"Maryland",hasStateRecall:false,hasLocalRecall:false,notes:"No recall provisions under Maryland law at any level.",altTools:["Governor removal power for cause","Legislative impeachment","State Ethics Commission: ethics.maryland.gov","DOJ referral for corruption"]},
+  MA:{name:"Massachusetts",hasStateRecall:false,hasLocalRecall:true,notes:"No statewide recall law. Some municipalities allow recall under home rule charters — check your city charter.",altTools:["State Ethics Commission: ethics.state.ma.us","Legislative removal process","Attorney General prosecution","Federal prosecution"]},
+  MI:{name:"Michigan",hasStateRecall:true,hasLocalRecall:true,grounds:"Reason must be factual and clear — cannot be solely a policy disagreement",signatures:"25% of votes cast in last gubernatorial election in the district",timeframe:"90 days",filing:"Michigan Bureau of Elections / County Clerk",steps:["File recall petition with county clerk","Board of State Canvassers reviews recall language within 20 days — must be factual, clear, and not merely a policy disagreement","If approved, collect 25% of gubernatorial votes in district within 90 days","Submit to county clerk for verification — 10 days","Recall election held within 60-90 days if certified"]},
+  MN:{name:"Minnesota",hasStateRecall:true,hasLocalRecall:true,grounds:"Serious malfeasance or nonfeasance in office, or conviction of a felony",signatures:"25% of votes cast in last general election for the office",timeframe:"90 days",filing:"Minnesota Secretary of State",steps:["File petition alleging specific grounds — malfeasance, nonfeasance, or felony conviction","Court reviews grounds for legal sufficiency before signature collection","Collect 25% of votes from last election within 90 days","Submit for verification","Recall election held if certified"]},
+  MS:{name:"Mississippi",hasStateRecall:false,hasLocalRecall:false,notes:"No recall provisions under Mississippi law.",altTools:["Legislative impeachment","Attorney General prosecution","Mississippi Ethics Commission: ethics.state.ms.us","Federal DOJ referral"]},
+  MO:{name:"Missouri",hasStateRecall:false,hasLocalRecall:true,notes:"No statewide recall law. Some cities allow recall under charter provisions.",altTools:["Governor removal power","Legislative impeachment","Missouri Ethics Commission: mec.mo.gov","Federal prosecution"]},
+  MT:{name:"Montana",hasStateRecall:true,hasLocalRecall:true,grounds:"Physical or mental lack of fitness, incompetence, violation of oath, official misconduct, or conviction of felony",signatures:"10% of votes cast in last election (15% for Governor)",timeframe:"No time limit",filing:"Montana Secretary of State",steps:["File petition stating specific legal grounds — grounds reviewed for legal sufficiency","Collect 10% of votes (15% for Governor) from last election — no time limit","Submit for verification","Recall election scheduled if certified"]},
+  NE:{name:"Nebraska",hasStateRecall:false,hasLocalRecall:true,notes:"No statewide recall for state officers. Some municipalities allow local recall under charter.",altTools:["Legislative removal by two-thirds vote","Nebraska Accountability and Disclosure Commission: nadc.nebraska.gov","Attorney General prosecution","Federal referral"]},
+  NV:{name:"Nevada",hasStateRecall:true,hasLocalRecall:true,grounds:"No specific grounds required",signatures:"25% of votes cast in last election for the office",timeframe:"90 days",filing:"Nevada Secretary of State / County Clerk",steps:["File notice with Secretary of State or county clerk","Begin collecting signatures — 25% of votes in last election within 90 days","Submit for verification","Recall election called within 30 days of certification"]},
+  NH:{name:"New Hampshire",hasStateRecall:false,hasLocalRecall:false,notes:"No recall provisions. Courts have ruled against recall even in municipal charters. No legal recall path exists in NH.",altTools:["Governor removal power","Legislature removal process","NH Attorney General corruption unit","Federal prosecution"]},
+  NJ:{name:"New Jersey",hasStateRecall:true,hasLocalRecall:true,grounds:"No specific grounds required",signatures:"25% of registered voters in the district",timeframe:"320 days (state officers); 160 days (local officials)",filing:"New Jersey Secretary of State",steps:["File petition with Secretary of State","Collect 25% of registered voters in district — 320 days for state officials, 160 days for local officials","Submit for verification — 30 days","Recall election held within 60 days of certification"]},
+  NM:{name:"New Mexico",hasStateRecall:false,hasLocalRecall:true,grounds:"Incompetence, malfeasance, or gross misconduct in office — local officials only",notes:"No recall for state officers.",filing:"County Clerk",steps:["Verify target is a local official — state officers CANNOT be recalled","File petition with county clerk alleging incompetence, malfeasance, or gross misconduct","Collect 33% of votes in last election for the office within 90 days","Submit for verification — recall election if certified"]},
+  NY:{name:"New York",hasStateRecall:false,hasLocalRecall:false,notes:"No recall provisions under New York law at any level.",altTools:["Legislative impeachment — Assembly impeaches, Senate tries (Art. VI §24)","Office of the Inspector General","NY JCOPE: jcope.ny.gov","NY AG public corruption unit","Federal prosecution — SDNY and EDNY are aggressive"]},
+  NC:{name:"North Carolina",hasStateRecall:false,hasLocalRecall:false,notes:"No recall provisions under North Carolina law.",altTools:["Legislative removal process","Governor suspension power for cause","NC State Ethics Commission: ethics.nc.gov","Federal prosecution"]},
+  ND:{name:"North Dakota",hasStateRecall:true,hasLocalRecall:true,grounds:"No specific grounds required",signatures:"25% of votes cast in last election for the office",timeframe:"90 days",filing:"North Dakota Secretary of State",steps:["File petition application with Secretary of State","Collect 25% of votes from last election within 90 days","Submit for verification","Recall election held if certified"]},
+  OH:{name:"Ohio",hasStateRecall:false,hasLocalRecall:true,grounds:"Malfeasance, misfeasance, or nonfeasance in office — LOCAL OFFICIALS ONLY",notes:"⚠ IMPORTANT: Ohio has NO recall mechanism for state legislators, the Governor, or any statewide officer. Local officials only — mayors, city council, township trustees, school board members.",filing:"County Board of Elections",steps:["VERIFY: Target must be a LOCAL official — state legislators and statewide officers CANNOT be recalled in Ohio","File petition with County Board of Elections stating specific grounds: malfeasance, misfeasance, or nonfeasance","Collect required signatures from registered voters in the jurisdiction within 90 days","Submit to Board of Elections — 10 days to certify signatures","Recall election held if sufficient signatures verified"]},
+  OK:{name:"Oklahoma",hasStateRecall:false,hasLocalRecall:true,notes:"No statewide recall law. Some municipalities allow recall under charter provisions.",altTools:["Legislative removal process","Oklahoma Ethics Commission: ok.gov/ethics","Attorney General prosecution","Federal referral"]},
+  OR:{name:"Oregon",hasStateRecall:true,hasLocalRecall:true,grounds:"No specific grounds required — official must have served at least 6 months in current term",signatures:"15% of votes cast in last election for the office",timeframe:"90 days",filing:"Oregon Secretary of State",steps:["Verify official has served at least 6 months in current term — required","File prospective petition with Secretary of State","Collect 15% of votes from last election within 90 days","Submit to filing officer for verification — 10 days","Election scheduled no less than 30 days after certification"]},
+  PA:{name:"Pennsylvania",hasStateRecall:false,hasLocalRecall:false,notes:"No recall provisions under Pennsylvania law at any level.",altTools:["Legislative impeachment (Art. VI §6)","Court of Judicial Discipline for judges","PA State Ethics Commission: ethics.pa.gov","Attorney General prosecution — PA AG has an active public corruption unit","Federal prosecution — EDPA and WDPA"]},
+  RI:{name:"Rhode Island",hasStateRecall:true,hasLocalRecall:true,grounds:"Violation of oath of office, incompetence, neglect of duty, or corruption",signatures:"15% of registered voters in the district",timeframe:"90 days",filing:"Rhode Island Secretary of State",steps:["File petition stating specific legal grounds — grounds reviewed for sufficiency","Collect 15% of registered voters in district within 90 days","Submit for verification","Recall election held if certified"]},
+  SC:{name:"South Carolina",hasStateRecall:false,hasLocalRecall:false,notes:"No recall provisions under South Carolina law.",altTools:["Legislative impeachment process","Governor removal power for incapacity","SC State Ethics Commission: ethics.sc.gov","Federal prosecution"]},
+  SD:{name:"South Dakota",hasStateRecall:true,hasLocalRecall:true,grounds:"No specific grounds required",signatures:"25% of votes cast in last election for the office",timeframe:"90 days",filing:"South Dakota Secretary of State",steps:["File petition with Secretary of State","Collect 25% of votes from last election within 90 days","Submit for verification","Recall election held if certified"]},
+  TN:{name:"Tennessee",hasStateRecall:false,hasLocalRecall:false,notes:"No recall provisions under Tennessee law.",altTools:["Legislative impeachment","Governor removal power for cause","TN Ethics Commission: ethics.tn.gov","Federal prosecution"]},
+  TX:{name:"Texas",hasStateRecall:false,hasLocalRecall:true,notes:"No statewide recall law. Some home-rule cities allow recall under their city charters — check your city charter.",altTools:["Legislative impeachment (Art. XV) — applies to Lt. Governor and other officers","Governor removal power for cause","Texas Ethics Commission: ethics.state.tx.us","Texas Rangers public corruption unit","Federal prosecution — active US Attorneys in all districts"]},
+  UT:{name:"Utah",hasStateRecall:false,hasLocalRecall:true,notes:"No statewide recall for state officers. Limited local recall available in some jurisdictions.",altTools:["Governor suspension power","Legislative removal process","Lt. Gov. Elections office","Federal prosecution"]},
+  VT:{name:"Vermont",hasStateRecall:false,hasLocalRecall:true,notes:"No statewide recall law. Some towns allow recall of selectboard members under town charters.",altTools:["Legislative removal process","Vermont Ethics Commission: vermontethics.gov","Attorney General prosecution","Federal referral"]},
+  VA:{name:"Virginia",hasStateRecall:true,hasLocalRecall:true,grounds:"Neglect of duty, misuse of office, or incompetence with material adverse effect on conduct of office",signatures:"COURT PROCESS — no signature petition required",timeframe:"Court scheduled",filing:"Virginia Circuit Court (county/city where official resides)",steps:["FILE IN COURT — Virginia uses a judicial process, not a voter petition","File petition in Circuit Court in the county or city where the official resides","Must allege neglect of duty, misuse of office, or incompetence with material adverse effect","Court schedules hearing — burden is on petitioner to prove allegations","If court finds grounds, official is REMOVED immediately — no public election required","⚡ This is potentially FASTER and more direct than election-based recall in other states"]},
+  WA:{name:"Washington",hasStateRecall:true,hasLocalRecall:true,grounds:"Acts of malfeasance or misfeasance while in office, or violation of oath of office",signatures:"25% of votes cast in last general election for the office",timeframe:"270 days",filing:"Washington Secretary of State / Superior Court",steps:["File in Superior Court in county where officer resides — must state specific charges","Superior Court reviews charges for legal sufficiency — REQUIRED before signatures","If court approves charges, begin collecting 25% of votes from last election within 270 days","Submit for verification","Special recall election held within 45 days of certification"]},
+  WV:{name:"West Virginia",hasStateRecall:false,hasLocalRecall:false,notes:"No recall provisions under West Virginia law.",altTools:["Legislative impeachment process","Governor removal power","WV Ethics Commission: ethics.wv.gov","Federal prosecution"]},
+  WI:{name:"Wisconsin",hasStateRecall:true,hasLocalRecall:true,grounds:"No specific grounds required — official must have served at least 1 year in current term",signatures:"25% of votes cast in last election for governor in the district",timeframe:"60 days",filing:"Wisconsin Elections Commission",steps:["Official must have served at least one year in current term","File Declaration of Intent with Wisconsin Elections Commission","Collect 25% of gubernatorial votes in district within 60 days","Submit to Elections Commission — 31 days to verify signatures","Primary held if multiple challengers, then recall election"]},
+  WY:{name:"Wyoming",hasStateRecall:false,hasLocalRecall:true,notes:"No statewide recall law. Some municipalities allow recall under charter provisions.",altTools:["Legislative removal process","Governor removal power for cause","Wyoming Ethics & Lobbying Commission","Federal prosecution"]}
+};
+
+const federalTools=[
+  {title:"Impeachment",desc:"House votes to impeach (simple majority). Senate holds trial requiring 2/3 to convict and remove. Applies to President, VP, all civil officers. Contact your House rep demanding impeachment proceedings.",url:"https://house.gov"},
+  {title:"Congressional Expulsion",desc:"Each chamber can expel its own members by 2/3 vote. No presidential signature required, no judicial review. File formal demands with Ethics Committee members.",url:"https://ethics.house.gov"},
+  {title:"FEC Complaint",desc:"File campaign finance violations with the Federal Election Commission. Covers illegal donations, PAC violations, foreign contributions, and unreported expenditures. Online filing available — no lawyer required.",url:"https://fec.gov"},
+  {title:"House Ethics Committee",desc:"File complaints about House members for financial impropriety, abuse of power, or rules violations. Citizens have standing to file — you do not need a lawyer or a House member sponsor.",url:"https://ethics.house.gov"},
+  {title:"Senate Ethics Committee",desc:"File complaints about Senators for misconduct, financial violations, or abuse of power. The Select Committee on Ethics investigates and can recommend expulsion.",url:"https://ethics.senate.gov"},
+  {title:"DOJ Public Integrity",desc:"Report federal crimes — bribery, corruption, fraud, FARA violations — to the DOJ Public Integrity Section. This is the primary unit for prosecuting corrupt elected officials.",url:"https://justice.gov/criminal/public-integrity"},
+  {title:"FBI Field Office",desc:"Report public corruption directly to your local FBI field office. The FBI has a dedicated Public Corruption unit. Tip line: tips.fbi.gov. Anonymous tips accepted.",url:"https://tips.fbi.gov"},
+  {title:"SEC Whistleblower",desc:"Report securities violations including congressional insider trading under the STOCK Act. Financial rewards of 10-30% of sanctions collected. Anonymous filing available.",url:"https://sec.gov/whistleblower"},
+  {title:"STOCK Act Violations",desc:"Congress members must report stock trades within 45 days. Failure is a civil violation. Track unreported trades at efts.house.gov and report to Ethics Committee.",url:"https://efts.house.gov"},
+  {title:"FARA Violations",desc:"Unregistered foreign lobbying is a federal crime. Report FARA violations to the DOJ National Security Division. This has successfully prosecuted sitting officials.",url:"https://justice.gov/nsd-fara"},
+  {title:"GAO / IG Referral",desc:"Report waste, fraud, and abuse of federal funds to the Government Accountability Office or the relevant agency Inspector General. Reports are public and go to Congress.",url:"https://gao.gov/about/fraudnet"},
+  {title:"IRS Whistleblower",desc:"Report tax fraud and financial crimes by politicians or their donors. The IRS Whistleblower Office pays 15-30% of collected proceeds for valid tips over $2M.",url:"https://irs.gov/compliance/whistleblower-informant-award"}
+];
+
+const politicians=[
+  {id:1,name:"James R. Williams",party:"D",state:"California",office:"U.S. Senator",level:"federal",since:2012,violations:4,totalDonors:"$4.2M",recallActive:false,threatScore:87,donors:[{name:"TechPAC",amount:"$850,000",industry:"Technology"},{name:"PharmaCorp PAC",amount:"$620,000",industry:"Pharmaceutical"},{name:"FinServ Alliance",amount:"$490,000",industry:"Finance"},{name:"Defense Contractors United",amount:"$380,000",industry:"Defense"}],violations_list:[{type:"Undisclosed Lobbying",desc:"Failed to disclose three meetings with PharmaCorp lobbyists prior to drug pricing vote.",date:"March 2023"},{type:"Campaign Finance",desc:"PAC contributions exceeded legal limits through shell company routing.",date:"November 2022"},{type:"Conflict of Interest",desc:"Voted on legislation directly benefiting spouse's investment portfolio.",date:"June 2021"},{type:"Ethics Violation",desc:"Used campaign funds for personal travel expenses.",date:"January 2020"}]},
+  {id:2,name:"Thomas H. Morrison",party:"R",state:"Ohio",office:"U.S. Representative",level:"federal",since:2016,violations:6,totalDonors:"$2.8M",recallActive:true,threatScore:94,donors:[{name:"Energy Industry PAC",amount:"$720,000",industry:"Energy"},{name:"NRA Political Victory Fund",amount:"$450,000",industry:"Firearms Lobby"},{name:"WallSt Capital PAC",amount:"$310,000",industry:"Finance"},{name:"AgriLobby Alliance",amount:"$280,000",industry:"Agriculture"}],violations_list:[{type:"Bribery Investigation",desc:"Under federal investigation for accepting gifts from energy lobbyists.",date:"Ongoing 2024"},{type:"Campaign Finance",desc:"Misreported $200K in contributions. FEC audit pending.",date:"September 2023"},{type:"Abuse of Power",desc:"Pressured state agency officials to alter environmental report.",date:"April 2023"},{type:"Perjury",desc:"False statements made under oath during House Ethics Committee hearing.",date:"December 2022"},{type:"Misuse of Funds",desc:"Campaign funds used for personal renovations.",date:"August 2021"},{type:"Conflict of Interest",desc:"Voted on energy subsidy bill while holding significant energy stock.",date:"March 2020"}]},
+  {id:3,name:"Sandra K. Davis",party:"D",state:"New York",office:"Governor",level:"state",since:2018,violations:2,totalDonors:"$6.1M",recallActive:false,threatScore:61,donors:[{name:"Real Estate PAC NY",amount:"$1.2M",industry:"Real Estate"},{name:"Teachers Union PAC",amount:"$890,000",industry:"Education"},{name:"Healthcare Alliance",amount:"$670,000",industry:"Healthcare"},{name:"Media Corp PAC",amount:"$540,000",industry:"Media"}],violations_list:[{type:"Ethics Violation",desc:"State contracts awarded to donors without competitive bidding process.",date:"July 2023"},{type:"Failure to Disclose",desc:"Real estate holdings not disclosed on annual financial statement.",date:"February 2022"}]},
+  {id:4,name:"Robert T. Haines",party:"R",state:"Texas",office:"U.S. Senator",level:"federal",since:2010,violations:8,totalDonors:"$9.4M",recallActive:false,threatScore:98,donors:[{name:"Big Oil Alliance PAC",amount:"$2.1M",industry:"Oil & Gas"},{name:"Defense PAC United",amount:"$1.8M",industry:"Defense"},{name:"PharmaCorp PAC",amount:"$980,000",industry:"Pharmaceutical"},{name:"Prison Industry PAC",amount:"$760,000",industry:"Private Prisons"}],violations_list:[{type:"Corruption Investigation",desc:"DOJ investigation into foreign lobbying violations. FARA non-compliance.",date:"Ongoing 2024"},{type:"Campaign Finance",desc:"Multiple FEC violations totaling over $1.2M in unreported contributions.",date:"2023"},{type:"Insider Trading",desc:"SEC referral for trading activity preceding legislative vote.",date:"November 2022"},{type:"Abuse of Power",desc:"Retaliated against whistleblower who reported contract irregularities.",date:"June 2022"},{type:"Bribery",desc:"Received undisclosed consulting fees from defense contractor.",date:"March 2021"},{type:"Ethics Violation",desc:"Failed to recuse from committee vote on legislation benefiting major donor.",date:"2020"},{type:"Misuse of Funds",desc:"Campaign funds disbursed to family members for non-campaign services.",date:"2019"},{type:"Perjury",desc:"False testimony regarding meeting with foreign nationals.",date:"2018"}]},
+  {id:5,name:"Patricia L. Nguyen",party:"D",state:"Washington",office:"State Senator",level:"state",since:2014,violations:3,totalDonors:"$1.9M",recallActive:false,threatScore:72,donors:[{name:"SEIU PAC",amount:"$420,000",industry:"Labor"},{name:"Amazon PAC",amount:"$380,000",industry:"Technology"},{name:"Boeing Employees PAC",amount:"$310,000",industry:"Defense/Aviation"}],violations_list:[{type:"Ethics Violation",desc:"Staff used for campaign activities during state paid hours.",date:"September 2023"},{type:"Conflict of Interest",desc:"Voted on Amazon tax legislation while receiving PAC funds.",date:"March 2022"},{type:"Failure to Disclose",desc:"Failed to report $85,000 in consulting income on financial disclosure.",date:"January 2021"}]},
+  {id:6,name:"Gerald F. Bosworth",party:"R",state:"Florida",office:"State Representative",level:"state",since:2018,violations:5,totalDonors:"$1.4M",recallActive:false,threatScore:83,donors:[{name:"FL Realtors PAC",amount:"$290,000",industry:"Real Estate"},{name:"Corrections Corp PAC",amount:"$240,000",industry:"Private Prisons"},{name:"FL Insurance PAC",amount:"$210,000",industry:"Insurance"},{name:"Sugar Industry Alliance",amount:"$180,000",industry:"Agriculture"}],violations_list:[{type:"Bribery",desc:"Accepted undisclosed payments from private prison lobbyists before sentencing reform vote.",date:"October 2023"},{type:"Campaign Finance",desc:"Illegal coordination between campaign and super PAC.",date:"June 2022"},{type:"Abuse of Power",desc:"Used official office resources for private real estate business.",date:"March 2022"},{type:"Ethics Violation",desc:"Accepted gifts exceeding Florida's gift limits from lobbyists.",date:"December 2021"},{type:"Conflict of Interest",desc:"Failed to recuse on insurance legislation while holding industry stock.",date:"May 2020"}]}
+];
+
+let filteredPoliticians=[...politicians];
+
+function renderCards(){
+  const g=document.getElementById('card-grid');
+  g.innerHTML=filteredPoliticians.map(p=>`
+    <div class="card" onclick="showDetail(${p.id})">
+      <div class="card-header">
+        <div class="card-name">${p.name}</div>
+        <div class="badges">
+          <span class="badge badge-${p.party}">${p.party==='D'?'DEM':p.party==='R'?'REP':'IND'}</span>
+          <span class="badge badge-${p.level}">${p.level.toUpperCase()}</span>
+          ${p.recallActive?'<span class="badge badge-recall">⚡RECALL</span>':''}
+        </div>
+      </div>
+      <div class="card-meta">${p.office} — ${p.state} — Since ${p.since}</div>
+      <div class="card-stats">
+        <div class="stat"><span class="stat-value red">${p.violations}</span><span class="stat-label">Violations</span></div>
+        <div class="stat"><span class="stat-value gold">${p.totalDonors}</span><span class="stat-label">Donors</span></div>
+        <div class="stat"><span class="stat-value ${p.threatScore>=80?'red':p.threatScore>=60?'gold':'green'}">${p.threatScore}</span><span class="stat-label">Threat</span></div>
+      </div>
+    </div>`).join('');
+}
+
+function filterCards(){
+  const q=document.getElementById('search-input').value.toLowerCase();
+  const party=document.getElementById('filter-party').value;
+  const level=document.getElementById('filter-level').value;
+  filteredPoliticians=politicians.filter(p=>{
+    const matchQ=!q||p.name.toLowerCase().includes(q)||p.state.toLowerCase().includes(q)||p.office.toLowerCase().includes(q);
+    const matchP=!party||p.party===party;
+    const matchL=!level||p.level===level;
+    return matchQ&&matchP&&matchL;
+  });
+  renderCards();
+}
+
+function showDetail(id){
+  const p=politicians.find(x=>x.id===id);
+  document.getElementById('list-view').style.display='none';
+  document.getElementById('detail-view').classList.add('active');
+  const stateRecall=recallData[p.state.substring(0,2).toUpperCase()]||null;
+  const legalTags=[];
+  if(p.violations>=2)legalTags.push({t:'Ethics Complaint',a:true});
+  if(p.violations>=4)legalTags.push({t:'Recall Eligible',a:true});
+  if(p.violations>=6)legalTags.push({t:'DOJ Referral',a:true});
+  if(p.violations_list.some(v=>v.type.includes('Finance')))legalTags.push({t:'FEC Complaint',a:true});
+  if(p.violations_list.some(v=>v.type.includes('Bribery')||v.type.includes('Corruption')))legalTags.push({t:'Federal Investigation',a:true});
+  if(p.violations_list.some(v=>v.type.includes('Trading')))legalTags.push({t:'SEC Referral',a:true});
+  if(p.violations_list.some(v=>v.type.includes('Perjury')))legalTags.push({t:'Perjury Referral',a:true});
+  if(p.violations_list.some(v=>v.type.includes('FARA')||v.type.includes('Foreign')))legalTags.push({t:'FARA Violation',a:true});
+  document.getElementById('detail-content').innerHTML=`
+    <div class="detail-header">
+      <div>
+        <div class="detail-name">${p.name}</div>
+        <div class="card-meta" style="margin-top:.3rem">${p.office} — ${p.state} — ${p.party==='D'?'Democrat':p.party==='R'?'Republican':'Independent'} — Since ${p.since}</div>
+        ${p.recallActive?'<div style="color:var(--gold);font-family:IBM Plex Mono,monospace;font-size:10px;margin-top:.4rem;text-transform:uppercase;letter-spacing:.08em">⚡ RECALL PETITION ACTIVE</div>':''}
+      </div>
+      <div class="threat-meter"><span class="threat-label">Threat Score</span><div class="threat-value">${p.threatScore}</div></div>
+    </div>
+    <div class="detail-grid">
+      <div class="detail-section">
+        <p class="section-title">TOP DONORS</p>
+        ${p.donors.map(d=>`<div class="donor-item"><div><div class="donor-name">${d.name}</div><div class="donor-industry">${d.industry}</div></div><div class="donor-amount">${d.amount}</div></div>`).join('')}
+      </div>
+      <div class="detail-section">
+        <p class="section-title">VIOLATIONS (${p.violations_list.length})</p>
+        ${p.violations_list.map(v=>`<div class="violation-item"><div class="violation-type">${v.type}</div><div class="violation-desc">${v.desc}</div><div class="violation-date">${v.date}</div></div>`).join('')}
+      </div>
+    </div>
+    <div class="detail-section" style="margin-bottom:.8rem">
+      <p class="section-title">APPLICABLE LEGAL ACTIONS</p>
+      <div style="margin-top:.5rem">${legalTags.map(t=>`<span class="tag ${t.a?'tag-active':''}">${t.t}</span>`).join('')}</div>
+    </div>
+    ${p.level==='federal'?`
+    <div class="detail-section" style="margin-bottom:.8rem">
+      <p class="section-title">⚠ FEDERAL OFFICIAL — RECALL NOT AVAILABLE</p>
+      <p style="font-size:11px;color:#888;margin:.5rem 0;line-height:1.6">Federal officials cannot be recalled under state law. Available tools: Impeachment, Congressional Expulsion, FEC Complaint, Ethics Committee, DOJ Referral, SEC Whistleblower.</p>
+    </div>`:''}
+    <div class="action-btns">
+      ${p.level==='state'?`<button class="action-btn gold-btn" onclick="showTab('recall',document.querySelector('nav button:nth-child(2)'))">INITIATE RECALL →</button>`:''}
+      <button class="action-btn" onclick="showTab('report',document.querySelector('nav button:nth-child(3)'))">FILE VIOLATION REPORT →</button>
+      ${p.level==='federal'?`<button class="action-btn gold-btn" onclick="showTab('federal',document.querySelector('nav button:nth-child(4)'))">FEDERAL REMOVAL TOOLS →</button>`:''}
+    </div>`;
+}
+
+function showList(){
+  document.getElementById('list-view').style.display='block';
+  document.getElementById('detail-view').classList.remove('active');
+}
+
+function showRecallInfo(){
+  const state=document.getElementById('recall-state').value;
+  const container=document.getElementById('recall-info');
+  if(!state){container.innerHTML='';container.classList.remove('active');return;}
+  const d=recallData[state];
+  if(!d){container.innerHTML='<p style="color:#888;font-size:12px">State data not found.</p>';container.classList.add('active');return;}
+  container.classList.add('active');
+  if(d.hasStateRecall||d.hasLocalRecall){
+    const hasSteps=d.steps&&d.steps.length>0;
+    container.innerHTML=`
+      <div class="recall-requirements">
+        <p class="section-title">RECALL PROVISIONS — ${d.name.toUpperCase()}</p>
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.6rem">
+          ${d.hasStateRecall?'<span class="tag tag-active">STATE OFFICERS: RECALL AVAILABLE</span>':'<span class="tag">STATE OFFICERS: NO RECALL</span>'}
+          ${d.hasLocalRecall?'<span class="tag tag-active">LOCAL OFFICIALS: RECALL AVAILABLE</span>':'<span class="tag">LOCAL OFFICIALS: NO RECALL</span>'}
+        </div>
+        ${d.grounds?`<div class="req-grid">
+          <div class="req-item"><div class="req-label">Grounds Required</div><div class="req-value">${d.grounds}</div></div>
+          ${d.signatures?`<div class="req-item"><div class="req-label">Signatures Required</div><div class="req-value">${d.signatures}</div></div>`:''}
+          ${d.timeframe?`<div class="req-item"><div class="req-label">Collection Timeframe</div><div class="req-value">${d.timeframe}</div></div>`:''}
+          ${d.filing?`<div class="req-item"><div class="req-label">Filing With</div><div class="req-value">${d.filing}</div></div>`:''}
+        </div>`:''}
+        ${d.notes?`<p style="font-size:11px;color:#888;margin-top:.6rem;line-height:1.5">${d.notes}</p>`:''}
+      </div>
+      ${hasSteps?`
+      <p class="section-title">STEP BY STEP PROCESS</p>
+      <div class="recall-steps">
+        ${d.steps.map((s,i)=>`<div class="step"><div class="step-num">${i+1}</div><div><div class="step-desc">${s}</div></div></div>`).join('')}
+      </div>`:''}
+      ${d.altTools&&d.altTools.length?`
+      <div class="no-recall-box" style="border-left-color:var(--gold)">
+        <p class="section-title" style="color:var(--gold);border-color:#7a6000">ADDITIONAL LEGAL TOOLS</p>
+        <div class="alt-tools">
+          ${d.altTools.map(t=>`<div class="alt-tool"><div class="alt-tool-desc">${t}</div></div>`).join('')}
+        </div>
+      </div>`:''}
+      <div style="background:var(--gray);border:1px solid var(--border);padding:.8rem;margin-top:.5rem">
+        <p style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:#444;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.3rem">⚠ LEGAL DISCLAIMER</p>
+        <p style="font-size:10px;color:#555;line-height:1.5">Always verify current requirements with your state's official election authority before proceeding. Requirements change. This information is for educational purposes. Consult an attorney for legal advice.</p>
+      </div>`;
+  } else {
+    container.innerHTML=`
+      <div class="no-recall-box">
+        <p class="section-title" style="color:#666;border-color:#333">NO RECALL AVAILABLE IN ${d.name.toUpperCase()}</p>
+        <p style="font-size:12px;color:#888;margin:.5rem 0;line-height:1.6">${d.notes}</p>
+      </div>
+      <p class="section-title">ALTERNATIVE REMOVAL AND ACCOUNTABILITY TOOLS</p>
+      <div class="alt-tools">
+        ${(d.altTools||[]).map(t=>`<div class="alt-tool"><div class="alt-tool-desc">${t}</div></div>`).join('')}
+      </div>
+      <div style="background:var(--gray);border:1px solid var(--border);border-left:3px solid var(--red);padding:.8rem;margin-top:.8rem">
+        <p class="section-title">DON'T STOP HERE</p>
+        <p style="font-size:11px;color:#888;line-height:1.6">No recall doesn't mean no options. File ethics complaints, demand legislative action, coordinate public pressure, support primary challengers, and use federal tools for federal officials. Punch from every direction simultaneously.</p>
+      </div>`;
+  }
+}
+
+function renderFederalTools(){
+  document.getElementById('federal-tools-grid').innerHTML=federalTools.map(t=>`
+    <a href="${t.url}" target="_blank" class="federal-tool">
+      <div class="federal-tool-title">${t.title}</div>
+      <div class="federal-tool-desc">${t.desc}</div>
+    </a>`).join('');
+}
+
+function showTab(name,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  if(btn)btn.classList.add('active');
+  else{
+    const idx={track:0,recall:1,report:2,federal:3}[name];
+    if(idx!==undefined)document.querySelectorAll('nav button')[idx].classList.add('active');
+  }
+}
+
+function submitReport(){
+  const name=document.getElementById('pol-name').value;
+  const state=document.getElementById('pol-state').value;
+  const type=document.getElementById('viol-type').value;
+  const desc=document.getElementById('viol-desc').value;
+  if(!name||!state||!type||!desc){alert('Please fill in all required fields (*).');return;}
+  document.getElementById('success-msg').style.display='block';
+  ['pol-name','pol-office','viol-desc','viol-evidence','reporter-name'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['pol-state','viol-type','viol-action'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('success-msg').scrollIntoView({behavior:'smooth'});
+}
+
+renderCards();
+renderFederalTools();
+</script></body></html>
