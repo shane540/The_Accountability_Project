@@ -1,8 +1,8 @@
 export default async (req, context) => {
   const apiKey = process.env.MY_API_KEY; 
   
-  // Replace this URL with your actual data API endpoint
-  const apiURL = `https://api.open.fec.gov/v1{apiKey}`;
+  // Fixed: Added the correct FEC endpoint and parameter format
+  const apiURL = `https://api.open.fec.gov/v1/candidates/?api_key=${apiKey}&sort=name&per_page=20`;
 
   try {
     const response = await fetch(apiURL);
