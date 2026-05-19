@@ -28,7 +28,7 @@ const AccountabilityAPI = {
   // CONFIGURATION — REPLACE THESE WITH YOUR REAL API KEYS
   // ============================================================
   config: {
-    FEC_API_KEY: 'YOUR_FEC_API_KEY_HERE',           // Get free key at: https://api.data.gov/signup/
+    FEC_API_KEY: 'pHxYySDziacZ1bXsqmGyJ58p3DtJT1cFEGesetgb',           // Get free key at: https://api.data.gov/signup/
     PROPUBLICA_API_KEY: 'YOUR_PROPUBLICA_KEY_HERE', // Email: apihelp@propublica.org
     FEC_BASE: 'https://api.open.fec.gov/v1',
     PROPUBLICA_BASE: 'https://api.propublica.org',
