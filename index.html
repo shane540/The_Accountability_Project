@@ -409,67 +409,7 @@ function showRecallInfo(){
       ${hasSteps?`
       <p class="section-title">STEP BY STEP PROCESS</p>
       <div class="recall-steps">
-        ${d.steps.map((s,i)=>`<div class="step"><div class="step-num">${i+1}</div><div><div class="step-desc">${s}</div></div></div>`).join('')}
-      </div>`:''}
-      ${d.altTools&&d.altTools.length?`
-      <div class="no-recall-box" style="border-left-color:var(--gold)">
-        <p class="section-title" style="color:var(--gold);border-color:#7a6000">ADDITIONAL LEGAL TOOLS</p>
-        <div class="alt-tools">
-          ${d.altTools.map(t=>`<div class="alt-tool"><div class="alt-tool-desc">${t}</div></div>`).join('')}
-        </div>
-      </div>`:''}
-      <div style="background:var(--gray);border:1px solid var(--border);padding:.8rem;margin-top:.5rem">
-        <p style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:#444;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.3rem">⚠ LEGAL DISCLAIMER</p>
-        <p style="font-size:10px;color:#555;line-height:1.5">Always verify current requirements with your state's official election authority before proceeding. Requirements change. This information is for educational purposes. Consult an attorney for legal advice.</p>
-      </div>`;
-  } else {
-    container.innerHTML=`
-      <div class="no-recall-box">
-        <p class="section-title" style="color:#666;border-color:#333">NO RECALL AVAILABLE IN ${d.name.toUpperCase()}</p>
-        <p style="font-size:12px;color:#888;margin:.5rem 0;line-height:1.6">${d.notes}</p>
-      </div>
-      <p class="section-title">ALTERNATIVE REMOVAL AND ACCOUNTABILITY TOOLS</p>
-      <div class="alt-tools">
-        ${(d.altTools||[]).map(t=>`<div class="alt-tool"><div class="alt-tool-desc">${t}</div></div>`).join('')}
-      </div>
-      <div style="background:var(--gray);border:1px solid var(--border);border-left:3px solid var(--red);padding:.8rem;margin-top:.8rem">
-        <p class="section-title">DON'T STOP HERE</p>
-        <p style="font-size:11px;color:#888;line-height:1.6">No recall doesn't mean no options. File ethics complaints, demand legislative action, coordinate public pressure, support primary challengers, and use federal tools for federal officials. Punch from every direction simultaneously.</p>
-      </div>`;
-  }
-}
-
-function renderFederalTools(){
-  document.getElementById('federal-tools-grid').innerHTML=federalTools.map(t=>`
-    <a href="${t.url}" target="_blank" class="federal-tool">
-      <div class="federal-tool-title">${t.title}</div>
-      <div class="federal-tool-desc">${t.desc}</div>
-    </a>`).join('');
-}
-
-function showTab(name,btn){
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
-  document.getElementById('tab-'+name).classList.add('active');
-  if(btn)btn.classList.add('active');
-  else{
-    const idx={track:0,recall:1,report:2,federal:3}[name];
-    if(idx!==undefined)document.querySelectorAll('nav button')[idx].classList.add('active');
-  }
-}
-
-function submitReport(){
-  const name=document.getElementById('pol-name').value;
-  const state=document.getElementById('pol-state').value;
-  const type=document.getElementById('viol-type').value;
-  const desc=document.getElementById('viol-desc').value;
-  if(!name||!state||!type||!desc){alert('Please fill in all required fields (*).');return;}
-  document.getElementById('success-msg').style.display='block';
-  ['pol-name','pol-office','viol-desc','viol-evidence','reporter-name'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  ['pol-state','viol-type','viol-action'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  document.getElementById('success-msg').scrollIntoView({behavior:'smooth'});
-}
-
+       
 </main>
 <script src="api_integration.js"></script>
 </body>
