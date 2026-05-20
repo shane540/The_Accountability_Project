@@ -1,7 +1,11 @@
 // api/donors.js
-// Fetches top donors for a specific candidate from FEC itemized receipts.
+// Fetches top donors for a specific candidate from FEC.
 //
-// GET /api/donors?candidate_id=H8OH16110
+// Two-step process:
+//   1. Look up the candidate's principal campaign committee ID
+//   2. Pull itemized receipts for that committee
+//
+// GET /api/donors?candidate_id=H8OH12180
 //
 // Environment variables required:
 //   FEC_API_KEY — from api.data.gov
@@ -16,25 +20,27 @@ function formatAmount(dollars) {
   return '$' + abs.toLocaleString();
 }
 
-// Normalize name for deduplication — strips punctuation, extra spaces, inc/llc suffixes
+// Normalize name for deduplication
 function normalizeName(name) {
   return (name || '')
     .toUpperCase()
-    .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '')
-    .replace(/(INC|LLC|LTD|CORP|CO|PAC|JFC)/g, '')
+    .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, '')
+    .replace(/\b(INC|LLC|LTD|CORP|CO|PAC|JFC)\b/g, '')
     .replace(/\s+/g, ' ')
     .trim();
 }
 
-// Filter out inter-committee transfers and obviously non-individual entries
+// Filter out inter-committee transfers and aggregators
 function isRealDonor(r) {
   const name = (r.contributor_name || '').toUpperCase();
-  const type = (r.entity_type || '').toUpperCase();
-  // Exclude other candidate committees, party committees, known aggregators
-  const exclude = ['ACTBLUE', 'WINRED', 'UNITED STATES OF AMERICA', 'FRIENDS OF', 'COMMITTEE FOR', 'COMMITTEE TO'];
+  const type = (r.entity_type_desc || '').toUpperCase();
+  const exclude = [
+    'ACTBLUE', 'WINRED', 'FRIENDS OF', 'COMMITTEE FOR',
+    'COMMITTEE TO', 'CAMPAIGN FOR', 'CITIZENS FOR',
+    'NATIONAL COMMITTEE', 'PARTY COMMITTEE'
+  ];
   if (exclude.some(e => name.includes(e))) return false;
-  // Exclude if entity type is committee
-  if (type === 'COM' || type === 'CCM' || type === 'PTY') return false;
+  if (['COMMITTEE', 'PARTY', 'CANDIDATE'].some(t => type.includes(t))) return false;
   return true;
 }
 
@@ -68,6 +74,24 @@ function groupDonors(receipts) {
     }));
 }
 
+// Step 1 — get the candidate's principal campaign committee ID
+async function getCommitteeId(candidateId, apiKey) {
+  try {
+    const res = await fetch(
+      `${FEC_BASE}/candidate/${candidateId}/committees/?api_key=${apiKey}&designation=P&format=json`
+    );
+    if (!res.ok) return null;
+    const data = await res.json();
+    const committees = data.results || [];
+    // designation P = principal campaign committee
+    const principal = committees.find(c => c.designation === 'P') || committees[0];
+    return principal ? principal.committee_id : null;
+  } catch (err) {
+    console.error('Committee lookup failed:', err.message);
+    return null;
+  }
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
@@ -81,14 +105,25 @@ export default async function handler(req, res) {
   const { candidate_id, cycle } = req.query;
   if (!candidate_id) return res.status(400).json({ error: 'candidate_id is required.' });
 
+  // Step 1 — get committee ID
+  const committeeId = await getCommitteeId(candidate_id, apiKey);
+  if (!committeeId) {
+    return res.status(200).json({
+      candidate_id,
+      total_raw: 0,
+      total_formatted: '—',
+      donors: [],
+      note: 'No principal campaign committee found.'
+    });
+  }
+
+  // Step 2 — pull receipts for that specific committee
   const params = new URLSearchParams({
     api_key:                     apiKey,
-    candidate_id:                candidate_id,
+    committee_id:                committeeId,
     two_year_transaction_period: cycle || new Date().getFullYear(),
     per_page:                    '100',
-    sort:                        '-contribution_receipt_amount',
-    is_individual:               'false',
-    line_number:                 'F3X-11AI'  // itemized individual contributions only
+    sort:                        '-contribution_receipt_amount'
   });
 
   try {
@@ -101,10 +136,13 @@ export default async function handler(req, res) {
     const fecData = await fecRes.json();
     const receipts = fecData.results || [];
     const donors   = groupDonors(receipts);
-    const total    = receipts.reduce((sum, r) => sum + (r.contribution_receipt_amount || 0), 0);
+    const total    = receipts
+      .filter(r => isRealDonor(r))
+      .reduce((sum, r) => sum + (r.contribution_receipt_amount || 0), 0);
 
     return res.status(200).json({
       candidate_id,
+      committee_id:    committeeId,
       total_raw:       total,
       total_formatted: formatAmount(total),
       donors
