@@ -18,27 +18,42 @@ const GOVTRACK_BASE = 'https://www.govtrack.us/api/v2';
 // GovTrack uses their own numeric ID — we find it by searching name
 async function findGovTrackPerson(name, state) {
   try {
-    // Split "LAST, FIRST" FEC format into searchable parts
-    const parts = name.split(',');
+    // FEC format is "LAST, FIRST MIDDLE" in all caps
+    // GovTrack expects lowercase, first name only (no middle)
+    const parts     = name.split(',');
     const lastName  = (parts[0] || '').trim().toLowerCase();
-    const firstName = (parts[1] || '').trim().split(' ')[0].toLowerCase();
+    const firstPart = (parts[1] || '').trim().toLowerCase();
+    const firstName = firstPart.split(' ').filter(Boolean)[0] || '';
 
-    const params = new URLSearchParams({
-      lastname:  lastName,
-      firstname: firstName,
-      current_role: 'true',
-      format: 'json'
-    });
+    // Try full name first
+    const tryFetch = async (params) => {
+      const res = await fetch(`${GOVTRACK_BASE}/person?${params.toString()}`);
+      if (!res.ok) return [];
+      const data = await res.json();
+      return data.objects || [];
+    };
 
-    const res = await fetch(`${GOVTRACK_BASE}/person?${params.toString()}`);
-    if (!res.ok) return null;
-    const data = await res.json();
-    const people = data.objects || [];
+    // Attempt 1: lastname + firstname
+    let people = await tryFetch(new URLSearchParams({
+      lastname: lastName, firstname: firstName,
+      current_role: 'true', format: 'json'
+    }));
 
-    // If state provided, filter by it
+    // Attempt 2: lastname only if no results
+    if (!people.length) {
+      people = await tryFetch(new URLSearchParams({
+        lastname: lastName,
+        current_role: 'true', format: 'json', limit: '5'
+      }));
+    }
+
+    if (!people.length) return null;
+
+    // Filter by state if provided
     if (state && people.length > 1) {
+      const stateUp = state.toUpperCase();
       const stateFiltered = people.filter(p =>
-        p.roles && p.roles.some(r => r.state === state.toUpperCase())
+        p.current_role && p.current_role.state === stateUp
       );
       if (stateFiltered.length > 0) return stateFiltered[0];
     }
