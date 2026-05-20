@@ -126,16 +126,16 @@ main{padding:1.2rem;max-width:1200px;margin:0 auto}
     <a href="judges.html" style="background:none;border:1px solid #2a2a2a;color:#888;padding:.35rem .7rem;font-family:IBM Plex Mono,monospace;font-size:10px;text-transform:uppercase;letter-spacing:.08em;text-decoration:none;" target="_self">JUDGES ↗</a>
   </nav>
 </header>
-<div class="ticker"><span class="ticker-inner">⚠ VIOLATION FILED: Sen. R. Haines (TX) — DOJ Investigation Active &nbsp;&nbsp;&nbsp; ⚡ RECALL ACTIVE: Rep. T. Morrison (OH-12) — 847 signatures collected &nbsp;&nbsp;&nbsp; ⚠ DONOR ALERT: PharmaCorp PAC — $2.4M to 14 legislators &nbsp;&nbsp;&nbsp; ⚠ FEC COMPLAINT: Campaign finance violation — AZ District 3 &nbsp;&nbsp;&nbsp; ⚡ RECALL ACTIVE: CA — petition approved for circulation &nbsp;&nbsp;&nbsp; ⚠ STOCK ACT: 3 unreported trades — Senate Finance Committee &nbsp;&nbsp;&nbsp; ⚠ INSIDER TRADING: SEC referral — energy sector, 2 senators &nbsp;&nbsp;&nbsp;</span></div>
+<div class="ticker"><span class="ticker-inner">⚠ TRACK — Add politicians using the search tool below &nbsp;&nbsp;&nbsp; ⚡ FILE — Submit violation reports directly to federal and state agencies &nbsp;&nbsp;&nbsp; ⚠ RECALL — Find your state's recall process and petition requirements &nbsp;&nbsp;&nbsp; ⚠ FEDERAL — Impeachment, ethics complaints, FEC, SEC, DOJ referral tools &nbsp;&nbsp;&nbsp; ⚡ JUDGES — All 50 state judicial conduct commissions with direct complaint links &nbsp;&nbsp;&nbsp; ⚠ ACCOUNTABILITY — Every official. Every tool. No lawyers required. &nbsp;&nbsp;&nbsp;</span></div>
 <main>
   <!-- TRACK TAB -->
   <div id="tab-track" class="tab active">
     <div id="list-view">
       <div class="stats-bar">
-        <div class="stats-card"><div class="stats-num" id="stat-total">6</div><div class="stats-label">Politicians Tracked</div></div>
-        <div class="stats-card"><div class="stats-num red" id="stat-violations">28</div><div class="stats-label">Total Violations</div></div>
-        <div class="stats-card"><div class="stats-num gold" id="stat-recalls">1</div><div class="stats-label">Active Recalls</div></div>
-        <div class="stats-card"><div class="stats-num" id="stat-donors">$25.8M</div><div class="stats-label">Donor Money Tracked</div></div>
+        <div class="stats-card"><div class="stats-num" id="stat-total">0</div><div class="stats-label">Politicians Tracked</div></div>
+        <div class="stats-card"><div class="stats-num red" id="stat-violations">0</div><div class="stats-label">Total Violations</div></div>
+        <div class="stats-card"><div class="stats-num gold" id="stat-recalls">0</div><div class="stats-label">Active Recalls</div></div>
+        <div class="stats-card"><div class="stats-num" id="stat-donors">—</div><div class="stats-label">Donor Money Tracked</div></div>
       </div>
       <div class="search-row">
         <input type="text" id="search-input" placeholder="Search name, state, office..." oninput="filterCards()">
@@ -176,6 +176,11 @@ main{padding:1.2rem;max-width:1200px;margin:0 auto}
       <div class="form-group"><label class="form-label">Evidence / Source Links</label><input type="text" class="form-input" id="viol-evidence" placeholder="URLs, document references, public record sources, filing numbers"></div>
       <div class="form-group"><label class="form-label">Suggested Legal Action</label><select class="form-select" id="viol-action"><option value="">Select recommended action</option><option>FEC Complaint</option><option>Ethics Committee Complaint</option><option>DOJ Referral</option><option>SEC Whistleblower Report</option><option>State Ethics Commission</option><option>Recall Petition</option><option>IRS Whistleblower</option><option>CFPB Complaint</option><option>Other</option></select></div>
       <div class="form-group"><label class="form-label">Your Name (Optional — Anonymous if blank)</label><input type="text" class="form-input" id="reporter-name" placeholder="Leave blank to submit anonymously"></div>
+      <!-- Honeypot — hidden from real users, bots fill it automatically -->
+      <div style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden" aria-hidden="true" tabindex="-1">
+        <label for="website">Leave this blank</label>
+        <input type="text" id="honeypot-website" name="website" autocomplete="off" tabindex="-1">
+      </div>
       <button class="submit-btn" onclick="submitReport()">SUBMIT VIOLATION REPORT</button>
       <div class="success-msg" id="success-msg">✓ REPORT SUBMITTED — Under review. Cross-referencing public records. If your report contains evidence of federal crimes, consider also filing directly with the DOJ Public Integrity Section at justice.gov/criminal/public-integrity</div>
     </div>
@@ -213,7 +218,9 @@ main{padding:1.2rem;max-width:1200px;margin:0 auto}
     </div>
   </div>
 </main>
+
 <script>
+// DATA
 // Inline recall data and politicians
 const recallData = {
   AL:{name:"Alabama",hasStateRecall:false,hasLocalRecall:true,notes:"No recall for state officers. Local officials only in some municipalities under home rule charters.",altTools:["State Ethics Commission complaint: ethics.alabama.gov","Legislative impeachment process","Attorney General prosecution","Federal DOJ referral for corruption"]},
@@ -283,138 +290,434 @@ const federalTools=[
   {title:"IRS Whistleblower",desc:"Report tax fraud and financial crimes by politicians or their donors. The IRS Whistleblower Office pays 15-30% of collected proceeds for valid tips over $2M.",url:"https://irs.gov/compliance/whistleblower-informant-award"}
 ];
 
-const politicians=[
-  {id:1,name:"James R. Williams",party:"D",state:"California",office:"U.S. Senator",level:"federal",since:2012,violations:4,totalDonors:"$4.2M",recallActive:false,threatScore:87,donors:[{name:"TechPAC",amount:"$850,000",industry:"Technology"},{name:"PharmaCorp PAC",amount:"$620,000",industry:"Pharmaceutical"},{name:"FinServ Alliance",amount:"$490,000",industry:"Finance"},{name:"Defense Contractors United",amount:"$380,000",industry:"Defense"}],violations_list:[{type:"Undisclosed Lobbying",desc:"Failed to disclose three meetings with PharmaCorp lobbyists prior to drug pricing vote.",date:"March 2023"},{type:"Campaign Finance",desc:"PAC contributions exceeded legal limits through shell company routing.",date:"November 2022"},{type:"Conflict of Interest",desc:"Voted on legislation directly benefiting spouse's investment portfolio.",date:"June 2021"},{type:"Ethics Violation",desc:"Used campaign funds for personal travel expenses.",date:"January 2020"}]},
-  {id:2,name:"Thomas H. Morrison",party:"R",state:"Ohio",office:"U.S. Representative",level:"federal",since:2016,violations:6,totalDonors:"$2.8M",recallActive:true,threatScore:94,donors:[{name:"Energy Industry PAC",amount:"$720,000",industry:"Energy"},{name:"NRA Political Victory Fund",amount:"$450,000",industry:"Firearms Lobby"},{name:"WallSt Capital PAC",amount:"$310,000",industry:"Finance"},{name:"AgriLobby Alliance",amount:"$280,000",industry:"Agriculture"}],violations_list:[{type:"Bribery Investigation",desc:"Under federal investigation for accepting gifts from energy lobbyists.",date:"Ongoing 2024"},{type:"Campaign Finance",desc:"Misreported $200K in contributions. FEC audit pending.",date:"September 2023"},{type:"Abuse of Power",desc:"Pressured state agency officials to alter environmental report.",date:"April 2023"},{type:"Perjury",desc:"False statements made under oath during House Ethics Committee hearing.",date:"December 2022"},{type:"Misuse of Funds",desc:"Campaign funds used for personal renovations.",date:"August 2021"},{type:"Conflict of Interest",desc:"Voted on energy subsidy bill while holding significant energy stock.",date:"March 2020"}]},
-  {id:3,name:"Sandra K. Davis",party:"D",state:"New York",office:"Governor",level:"state",since:2018,violations:2,totalDonors:"$6.1M",recallActive:false,threatScore:61,donors:[{name:"Real Estate PAC NY",amount:"$1.2M",industry:"Real Estate"},{name:"Teachers Union PAC",amount:"$890,000",industry:"Education"},{name:"Healthcare Alliance",amount:"$670,000",industry:"Healthcare"},{name:"Media Corp PAC",amount:"$540,000",industry:"Media"}],violations_list:[{type:"Ethics Violation",desc:"State contracts awarded to donors without competitive bidding process.",date:"July 2023"},{type:"Failure to Disclose",desc:"Real estate holdings not disclosed on annual financial statement.",date:"February 2022"}]},
-  {id:4,name:"Robert T. Haines",party:"R",state:"Texas",office:"U.S. Senator",level:"federal",since:2010,violations:8,totalDonors:"$9.4M",recallActive:false,threatScore:98,donors:[{name:"Big Oil Alliance PAC",amount:"$2.1M",industry:"Oil & Gas"},{name:"Defense PAC United",amount:"$1.8M",industry:"Defense"},{name:"PharmaCorp PAC",amount:"$980,000",industry:"Pharmaceutical"},{name:"Prison Industry PAC",amount:"$760,000",industry:"Private Prisons"}],violations_list:[{type:"Corruption Investigation",desc:"DOJ investigation into foreign lobbying violations. FARA non-compliance.",date:"Ongoing 2024"},{type:"Campaign Finance",desc:"Multiple FEC violations totaling over $1.2M in unreported contributions.",date:"2023"},{type:"Insider Trading",desc:"SEC referral for trading activity preceding legislative vote.",date:"November 2022"},{type:"Abuse of Power",desc:"Retaliated against whistleblower who reported contract irregularities.",date:"June 2022"},{type:"Bribery",desc:"Received undisclosed consulting fees from defense contractor.",date:"March 2021"},{type:"Ethics Violation",desc:"Failed to recuse from committee vote on legislation benefiting major donor.",date:"2020"},{type:"Misuse of Funds",desc:"Campaign funds disbursed to family members for non-campaign services.",date:"2019"},{type:"Perjury",desc:"False testimony regarding meeting with foreign nationals.",date:"2018"}]},
-  {id:5,name:"Patricia L. Nguyen",party:"D",state:"Washington",office:"State Senator",level:"state",since:2014,violations:3,totalDonors:"$1.9M",recallActive:false,threatScore:72,donors:[{name:"SEIU PAC",amount:"$420,000",industry:"Labor"},{name:"Amazon PAC",amount:"$380,000",industry:"Technology"},{name:"Boeing Employees PAC",amount:"$310,000",industry:"Defense/Aviation"}],violations_list:[{type:"Ethics Violation",desc:"Staff used for campaign activities during state paid hours.",date:"September 2023"},{type:"Conflict of Interest",desc:"Voted on Amazon tax legislation while receiving PAC funds.",date:"March 2022"},{type:"Failure to Disclose",desc:"Failed to report $85,000 in consulting income on financial disclosure.",date:"January 2021"}]},
-  {id:6,name:"Gerald F. Bosworth",party:"R",state:"Florida",office:"State Representative",level:"state",since:2018,violations:5,totalDonors:"$1.4M",recallActive:false,threatScore:83,donors:[{name:"FL Realtors PAC",amount:"$290,000",industry:"Real Estate"},{name:"Corrections Corp PAC",amount:"$240,000",industry:"Private Prisons"},{name:"FL Insurance PAC",amount:"$210,000",industry:"Insurance"},{name:"Sugar Industry Alliance",amount:"$180,000",industry:"Agriculture"}],violations_list:[{type:"Bribery",desc:"Accepted undisclosed payments from private prison lobbyists before sentencing reform vote.",date:"October 2023"},{type:"Campaign Finance",desc:"Illegal coordination between campaign and super PAC.",date:"June 2022"},{type:"Abuse of Power",desc:"Used official office resources for private real estate business.",date:"March 2022"},{type:"Ethics Violation",desc:"Accepted gifts exceeding Florida's gift limits from lobbyists.",date:"December 2021"},{type:"Conflict of Interest",desc:"Failed to recuse on insurance legislation while holding industry stock.",date:"May 2020"}]}
-];
 
-let filteredPoliticians=[...politicians];
+// ============================================================
+// STATE CODE MAP — needed for recall lookup from full state name
+// ============================================================
+const STATE_CODES = {
+  'Alabama':'AL','Alaska':'AK','Arizona':'AZ','Arkansas':'AR','California':'CA',
+  'Colorado':'CO','Connecticut':'CT','Delaware':'DE','Florida':'FL','Georgia':'GA',
+  'Hawaii':'HI','Idaho':'ID','Illinois':'IL','Indiana':'IN','Iowa':'IA',
+  'Kansas':'KS','Kentucky':'KY','Louisiana':'LA','Maine':'ME','Maryland':'MD',
+  'Massachusetts':'MA','Michigan':'MI','Minnesota':'MN','Mississippi':'MS',
+  'Missouri':'MO','Montana':'MT','Nebraska':'NE','Nevada':'NV',
+  'New Hampshire':'NH','New Jersey':'NJ','New Mexico':'NM','New York':'NY',
+  'North Carolina':'NC','North Dakota':'ND','Ohio':'OH','Oklahoma':'OK',
+  'Oregon':'OR','Pennsylvania':'PA','Rhode Island':'RI','South Carolina':'SC',
+  'South Dakota':'SD','Tennessee':'TN','Texas':'TX','Utah':'UT','Vermont':'VT',
+  'Virginia':'VA','Washington':'WA','West Virginia':'WV','Wisconsin':'WI','Wyoming':'WY'
+};
 
-function renderCards(){
-  const g=document.getElementById('card-grid');
-  g.innerHTML=filteredPoliticians.map(p=>`
+// ============================================================
+// POLITICIANS — starts empty; populated by API or manually
+// ============================================================
+let politicians = [];
+let filteredPoliticians = [];
+
+// ============================================================
+// API INTEGRATION HOOK
+// Replace this function body when Vercel proxy is live.
+// Expected shape per politician:
+// { id, name, party, state, office, level, since, violations,
+//   totalDonors, recallActive, threatScore,
+//   donors: [{name, amount, industry}],
+//   violations_list: [{type, desc, date}] }
+// ============================================================
+// ============================================================
+// API CONFIG
+// Set DEFAULT_STATE to pre-load a state on page open, or leave
+// blank to start empty and let the user search.
+// ============================================================
+const API_CONFIG = {
+  DEFAULT_STATE: '',    // e.g. 'OH' to pre-load Ohio on page open
+  DEFAULT_CYCLE: new Date().getFullYear()
+};
+
+async function loadPoliticiansFromAPI(state, name) {
+  const params = new URLSearchParams({ cycle: API_CONFIG.DEFAULT_CYCLE });
+  if (state) params.set('state', state);
+  if (name)  params.set('name', name);
+
+  try {
+    const res = await fetch('/api/politicians?' + params.toString());
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      console.error('API error:', res.status, err);
+      return;
+    }
+    const data = await res.json();
+    politicians = data;
+    filteredPoliticians = [...politicians];
+    updateStats();
+    renderCards();
+  } catch (err) {
+    console.error('Failed to reach /api/politicians:', err);
+  }
+}
+
+// Called when a politician card is expanded and donors haven't loaded yet
+async function loadDonors(politicianId) {
+  const p = politicians.find(x => x.id === politicianId);
+  if (!p || !p.fec_candidate_id || p.donors.length > 0) return;
+
+  try {
+    const res = await fetch('/api/donors?candidate_id=' + p.fec_candidate_id);
+    if (!res.ok) return;
+    const data = await res.json();
+    p.donors = data.donors || [];
+    p.totalDonors = data.total_formatted || '—';
+    updateStats();
+    // Re-render detail if this politician is currently displayed
+    const detail = document.getElementById('detail-view');
+    if (detail && detail.classList.contains('active')) {
+      showDetail(politicianId);
+    }
+  } catch (err) {
+    console.error('Failed to load donors:', err);
+  }
+}
+
+// Search bar in TRACK tab triggers this
+async function searchPoliticians() {
+  const q = document.getElementById('search-input').value.trim();
+  const state = document.getElementById('filter-state') 
+    ? document.getElementById('filter-state').value 
+    : '';
+  await loadPoliticiansFromAPI(state || undefined, q || undefined);
+}
+
+// ============================================================
+// STATS BAR — driven by live data, never hardcoded
+// ============================================================
+function updateStats() {
+  const total = politicians.length;
+  const violations = politicians.reduce((sum, p) => sum + (p.violations || 0), 0);
+  const recalls = politicians.filter(p => p.recallActive).length;
+
+  // Parse donor totals — handles "$4.2M", "$850,000", etc.
+  let donorTotal = 0;
+  politicians.forEach(p => {
+    if (!p.totalDonors) return;
+    const raw = p.totalDonors.replace(/[$,]/g, '');
+    const val = raw.endsWith('M')
+      ? parseFloat(raw) * 1e6
+      : raw.endsWith('B')
+        ? parseFloat(raw) * 1e9
+        : parseFloat(raw) || 0;
+    donorTotal += val;
+  });
+  const donorDisplay = donorTotal >= 1e9
+    ? '$' + (donorTotal / 1e9).toFixed(1) + 'B'
+    : donorTotal >= 1e6
+      ? '$' + (donorTotal / 1e6).toFixed(1) + 'M'
+      : donorTotal > 0
+        ? '$' + donorTotal.toLocaleString()
+        : '—';
+
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-violations').textContent = violations;
+  document.getElementById('stat-recalls').textContent = recalls;
+  document.getElementById('stat-donors').textContent = donorDisplay;
+}
+
+// ============================================================
+// RENDER CARDS
+// ============================================================
+function renderCards() {
+  const g = document.getElementById('card-grid');
+  if (!g) return;
+
+  if (filteredPoliticians.length === 0) {
+    g.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:3rem 1rem;border:1px solid var(--border);color:#666;">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.8rem;color:var(--red)">NO RECORDS LOADED</div>
+      <div style="font-size:12px;line-height:1.8;max-width:420px;margin:0 auto;">
+        Connect your FEC API key to load live politician data, or add records manually via the violation report form.<br><br>
+        <span style="color:#888">API key → Vercel environment variables → <code style="color:var(--gold)">FEC_API_KEY</code></span>
+      </div>
+    </div>`;
+    return;
+  }
+
+  g.innerHTML = filteredPoliticians.map(p => `
     <div class="card" onclick="showDetail(${p.id})">
       <div class="card-header">
         <div class="card-name">${p.name}</div>
         <div class="badges">
-          <span class="badge badge-${p.party}">${p.party==='D'?'DEM':p.party==='R'?'REP':'IND'}</span>
+          <span class="badge badge-${p.party}">${p.party === 'D' ? 'DEM' : p.party === 'R' ? 'REP' : 'IND'}</span>
           <span class="badge badge-${p.level}">${p.level.toUpperCase()}</span>
-          ${p.recallActive?'<span class="badge badge-recall">⚡RECALL</span>':''}
+          ${p.recallActive ? '<span class="badge badge-recall">⚡RECALL</span>' : ''}
         </div>
       </div>
       <div class="card-meta">${p.office} — ${p.state} — Since ${p.since}</div>
       <div class="card-stats">
-        <div class="stat"><span class="stat-value red">${p.violations}</span><span class="stat-label">Violations</span></div>
-        <div class="stat"><span class="stat-value gold">${p.totalDonors}</span><span class="stat-label">Donors</span></div>
-        <div class="stat"><span class="stat-value ${p.threatScore>=80?'red':p.threatScore>=60?'gold':'green'}">${p.threatScore}</span><span class="stat-label">Threat</span></div>
+        <div class="stat"><span class="stat-value red">${p.violations || 0}</span><span class="stat-label">Violations</span></div>
+        <div class="stat"><span class="stat-value gold">${p.totalDonors || '—'}</span><span class="stat-label">Donors</span></div>
+        <div class="stat"><span class="stat-value ${(p.threatScore||0) >= 80 ? 'red' : (p.threatScore||0) >= 60 ? 'gold' : 'green'}">${p.threatScore || '—'}</span><span class="stat-label">Threat</span></div>
       </div>
     </div>`).join('');
 }
 
-function filterCards(){
-  const q=document.getElementById('search-input').value.toLowerCase();
-  const party=document.getElementById('filter-party').value;
-  const level=document.getElementById('filter-level').value;
-  filteredPoliticians=politicians.filter(p=>{
-    const matchQ=!q||p.name.toLowerCase().includes(q)||p.state.toLowerCase().includes(q)||p.office.toLowerCase().includes(q);
-    const matchP=!party||p.party===party;
-    const matchL=!level||p.level===level;
-    return matchQ&&matchP&&matchL;
+// ============================================================
+// FILTER CARDS
+// ============================================================
+function filterCards() {
+  const q = document.getElementById('search-input').value.toLowerCase();
+  const party = document.getElementById('filter-party').value;
+  const level = document.getElementById('filter-level').value;
+  filteredPoliticians = politicians.filter(p => {
+    const matchQ = !q ||
+      (p.name || '').toLowerCase().includes(q) ||
+      (p.state || '').toLowerCase().includes(q) ||
+      (p.office || '').toLowerCase().includes(q);
+    const matchP = !party || p.party === party;
+    const matchL = !level || p.level === level;
+    return matchQ && matchP && matchL;
   });
   renderCards();
 }
 
-function showDetail(id){
-  const p=politicians.find(x=>x.id===id);
-  document.getElementById('list-view').style.display='none';
+// ============================================================
+// SHOW DETAIL
+// ============================================================
+function showDetail(id) {
+  const p = politicians.find(x => x.id === id);
+  if (!p) return;
+
+  document.getElementById('list-view').style.display = 'none';
   document.getElementById('detail-view').classList.add('active');
-  const stateRecall=recallData[p.state.substring(0,2).toUpperCase()]||null;
-  const legalTags=[];
-  if(p.violations>=2)legalTags.push({t:'Ethics Complaint',a:true});
-  if(p.violations>=4)legalTags.push({t:'Recall Eligible',a:true});
-  if(p.violations>=6)legalTags.push({t:'DOJ Referral',a:true});
-  if(p.violations_list.some(v=>v.type.includes('Finance')))legalTags.push({t:'FEC Complaint',a:true});
-  if(p.violations_list.some(v=>v.type.includes('Bribery')||v.type.includes('Corruption')))legalTags.push({t:'Federal Investigation',a:true});
-  if(p.violations_list.some(v=>v.type.includes('Trading')))legalTags.push({t:'SEC Referral',a:true});
-  if(p.violations_list.some(v=>v.type.includes('Perjury')))legalTags.push({t:'Perjury Referral',a:true});
-  if(p.violations_list.some(v=>v.type.includes('FARA')||v.type.includes('Foreign')))legalTags.push({t:'FARA Violation',a:true});
-  document.getElementById('detail-content').innerHTML=`
+
+  // Safe state code lookup — handles both "Ohio" and "OH"
+  const stateCode = STATE_CODES[p.state] || (p.state && p.state.length === 2 ? p.state.toUpperCase() : null);
+  const stateRecall = stateCode ? recallData[stateCode] : null;
+
+  const donors = Array.isArray(p.donors) ? p.donors : [];
+  const vlist = Array.isArray(p.violations_list) ? p.violations_list : [];
+
+  const legalTags = [];
+  if ((p.violations || 0) >= 2) legalTags.push({ t: 'Ethics Complaint', a: true });
+  if ((p.violations || 0) >= 4) legalTags.push({ t: 'Recall Eligible', a: true });
+  if ((p.violations || 0) >= 6) legalTags.push({ t: 'DOJ Referral', a: true });
+  if (vlist.some(v => v.type && v.type.includes('Finance'))) legalTags.push({ t: 'FEC Complaint', a: true });
+  if (vlist.some(v => v.type && (v.type.includes('Bribery') || v.type.includes('Corruption')))) legalTags.push({ t: 'Federal Investigation', a: true });
+  if (vlist.some(v => v.type && v.type.includes('Trading'))) legalTags.push({ t: 'SEC Referral', a: true });
+  if (vlist.some(v => v.type && v.type.includes('Perjury'))) legalTags.push({ t: 'Perjury Referral', a: true });
+  if (vlist.some(v => v.type && (v.type.includes('FARA') || v.type.includes('Foreign')))) legalTags.push({ t: 'FARA Violation', a: true });
+
+  const donorsHTML = donors.length
+    ? donors.map(d => `<div class="donor-item"><div><div class="donor-name">${d.name || '—'}</div><div class="donor-industry">${d.industry || ''}</div></div><div class="donor-amount">${d.amount || '—'}</div></div>`).join('')
+    : '<div style="font-size:11px;color:#555;padding:.4rem 0">No donor data loaded.</div>';
+
+  const vlistHTML = vlist.length
+    ? vlist.map(v => `<div class="violation-item"><div class="violation-type">${v.type || ''}</div><div class="violation-desc">${v.desc || ''}</div><div class="violation-date">${v.date || ''}</div></div>`).join('')
+    : '<div style="font-size:11px;color:#555;padding:.4rem 0">No violations on record.</div>';
+
+  document.getElementById('detail-content').innerHTML = `
     <div class="detail-header">
       <div>
         <div class="detail-name">${p.name}</div>
-        <div class="card-meta" style="margin-top:.3rem">${p.office} — ${p.state} — ${p.party==='D'?'Democrat':p.party==='R'?'Republican':'Independent'} — Since ${p.since}</div>
-        ${p.recallActive?'<div style="color:var(--gold);font-family:IBM Plex Mono,monospace;font-size:10px;margin-top:.4rem;text-transform:uppercase;letter-spacing:.08em">⚡ RECALL PETITION ACTIVE</div>':''}
+        <div class="card-meta" style="margin-top:.3rem">${p.office} — ${p.state} — ${p.party === 'D' ? 'Democrat' : p.party === 'R' ? 'Republican' : 'Independent'} — Since ${p.since}</div>
+        ${p.recallActive ? '<div style="color:var(--gold);font-family:IBM Plex Mono,monospace;font-size:10px;margin-top:.4rem;text-transform:uppercase;letter-spacing:.08em">⚡ RECALL PETITION ACTIVE</div>' : ''}
       </div>
-      <div class="threat-meter"><span class="threat-label">Threat Score</span><div class="threat-value">${p.threatScore}</div></div>
+      <div class="threat-meter"><span class="threat-label">Threat Score</span><div class="threat-value">${p.threatScore || '—'}</div></div>
     </div>
     <div class="detail-grid">
       <div class="detail-section">
         <p class="section-title">TOP DONORS</p>
-        ${p.donors.map(d=>`<div class="donor-item"><div><div class="donor-name">${d.name}</div><div class="donor-industry">${d.industry}</div></div><div class="donor-amount">${d.amount}</div></div>`).join('')}
+        ${donorsHTML}
       </div>
       <div class="detail-section">
-        <p class="section-title">VIOLATIONS (${p.violations_list.length})</p>
-        ${p.violations_list.map(v=>`<div class="violation-item"><div class="violation-type">${v.type}</div><div class="violation-desc">${v.desc}</div><div class="violation-date">${v.date}</div></div>`).join('')}
+        <p class="section-title">VIOLATIONS (${vlist.length})</p>
+        ${vlistHTML}
       </div>
     </div>
     <div class="detail-section" style="margin-bottom:.8rem">
       <p class="section-title">APPLICABLE LEGAL ACTIONS</p>
-      <div style="margin-top:.5rem">${legalTags.map(t=>`<span class="tag ${t.a?'tag-active':''}">${t.t}</span>`).join('')}</div>
+      <div style="margin-top:.5rem">${legalTags.length ? legalTags.map(t => `<span class="tag ${t.a ? 'tag-active' : ''}">${t.t}</span>`).join('') : '<span style="font-size:11px;color:#555">None flagged.</span>'}</div>
     </div>
-    ${p.level==='federal'?`
+    ${p.level === 'federal' ? `
     <div class="detail-section" style="margin-bottom:.8rem">
       <p class="section-title">⚠ FEDERAL OFFICIAL — RECALL NOT AVAILABLE</p>
       <p style="font-size:11px;color:#888;margin:.5rem 0;line-height:1.6">Federal officials cannot be recalled under state law. Available tools: Impeachment, Congressional Expulsion, FEC Complaint, Ethics Committee, DOJ Referral, SEC Whistleblower.</p>
-    </div>`:''}
+    </div>` : ''}
     <div class="action-btns">
-      ${p.level==='state'?`<button class="action-btn gold-btn" onclick="showTab('recall',document.querySelector('nav button:nth-child(2)'))">INITIATE RECALL →</button>`:''}
-      <button class="action-btn" onclick="showTab('report',document.querySelector('nav button:nth-child(3)'))">FILE VIOLATION REPORT →</button>
-      ${p.level==='federal'?`<button class="action-btn gold-btn" onclick="showTab('federal',document.querySelector('nav button:nth-child(4)'))">FEDERAL REMOVAL TOOLS →</button>`:''}
+      ${p.level === 'state' ? `<button class="action-btn gold-btn" onclick="showTab('recall', document.querySelectorAll('nav button')[1])">INITIATE RECALL →</button>` : ''}
+      <button class="action-btn" onclick="showTab('report', document.querySelectorAll('nav button')[2])">FILE VIOLATION REPORT →</button>
+      ${p.level === 'federal' ? `<button class="action-btn gold-btn" onclick="showTab('federal', document.querySelectorAll('nav button')[3])">FEDERAL REMOVAL TOOLS →</button>` : ''}
     </div>`;
 }
 
-function showList(){
-  document.getElementById('list-view').style.display='block';
+// ============================================================
+// SHOW LIST — return to card grid from detail view
+// ============================================================
+function showList() {
+  document.getElementById('list-view').style.display = '';
   document.getElementById('detail-view').classList.remove('active');
 }
 
-function showRecallInfo(){
-  const state=document.getElementById('recall-state').value;
-  const container=document.getElementById('recall-info');
-  if(!state){container.innerHTML='';container.classList.remove('active');return;}
-  const d=recallData[state];
-  if(!d){container.innerHTML='<p style="color:#888;font-size:12px">State data not found.</p>';container.classList.add('active');return;}
+// ============================================================
+// RECALL TAB
+// ============================================================
+function showRecallInfo() {
+  const state = document.getElementById('recall-state').value;
+  const container = document.getElementById('recall-info');
+  if (!state) { container.innerHTML = ''; container.classList.remove('active'); return; }
+  const d = recallData[state];
+  if (!d) { container.innerHTML = '<p style="color:#888;font-size:12px">State data not found.</p>'; container.classList.add('active'); return; }
   container.classList.add('active');
-  if(d.hasStateRecall||d.hasLocalRecall){
-    const hasSteps=d.steps&&d.steps.length>0;
-    container.innerHTML=`
+
+  if (d.hasStateRecall || d.hasLocalRecall) {
+    const hasSteps = d.steps && d.steps.length > 0;
+    container.innerHTML = `
       <div class="recall-requirements">
         <p class="section-title">RECALL PROVISIONS — ${d.name.toUpperCase()}</p>
         <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.6rem">
-          ${d.hasStateRecall?'<span class="tag tag-active">STATE OFFICERS: RECALL AVAILABLE</span>':'<span class="tag">STATE OFFICERS: NO RECALL</span>'}
-          ${d.hasLocalRecall?'<span class="tag tag-active">LOCAL OFFICIALS: RECALL AVAILABLE</span>':'<span class="tag">LOCAL OFFICIALS: NO RECALL</span>'}
+          ${d.hasStateRecall ? '<span class="tag tag-active">STATE OFFICERS: RECALL AVAILABLE</span>' : '<span class="tag">STATE OFFICERS: NO RECALL</span>'}
+          ${d.hasLocalRecall ? '<span class="tag tag-active">LOCAL OFFICIALS: RECALL AVAILABLE</span>' : '<span class="tag">LOCAL OFFICIALS: NO RECALL</span>'}
         </div>
-        ${d.grounds?`<div class="req-grid">
+        ${d.grounds ? `<div class="req-grid">
           <div class="req-item"><div class="req-label">Grounds Required</div><div class="req-value">${d.grounds}</div></div>
-          ${d.signatures?`<div class="req-item"><div class="req-label">Signatures Required</div><div class="req-value">${d.signatures}</div></div>`:''}
-          ${d.timeframe?`<div class="req-item"><div class="req-label">Collection Timeframe</div><div class="req-value">${d.timeframe}</div></div>`:''}
-          ${d.filing?`<div class="req-item"><div class="req-label">Filing With</div><div class="req-value">${d.filing}</div></div>`:''}
-        </div>`:''}
-        ${d.notes?`<p style="font-size:11px;color:#888;margin-top:.6rem;line-height:1.5">${d.notes}</p>`:''}
+          ${d.signatures ? `<div class="req-item"><div class="req-label">Signatures Required</div><div class="req-value">${d.signatures}</div></div>` : ''}
+          ${d.timeframe ? `<div class="req-item"><div class="req-label">Collection Timeframe</div><div class="req-value">${d.timeframe}</div></div>` : ''}
+          ${d.filing ? `<div class="req-item"><div class="req-label">Filing With</div><div class="req-value">${d.filing}</div></div>` : ''}
+        </div>` : ''}
+        ${d.notes ? `<p style="font-size:11px;color:#888;margin-top:.6rem;line-height:1.5">${d.notes}</p>` : ''}
       </div>
-      ${hasSteps?`
+      ${hasSteps ? `
       <p class="section-title">STEP BY STEP PROCESS</p>
       <div class="recall-steps">
-  container.innerHTML = `<p style="color:#888;font-size:12px">State details loading...</p>`;
-                                }
-                            }
-                        }
-</script>
-</main>
-<script src="api_integration.js"></script>
-</body>
-</html>
+        ${d.steps.map((s, i) => `<div class="step"><div class="step-num">${i + 1}</div><div><div class="step-desc">${s}</div></div></div>`).join('')}
+      </div>` : ''}
+      ${d.altTools && d.altTools.length ? `
+      <div class="no-recall-box" style="border-left-color:var(--gold)">
+        <p class="section-title" style="color:var(--gold);border-color:#7a6000">ADDITIONAL LEGAL TOOLS</p>
+        <div class="alt-tools">
+          ${d.altTools.map(t => `<div class="alt-tool"><div class="alt-tool-desc">${t}</div></div>`).join('')}
+        </div>
+      </div>` : ''}
+      <div style="background:var(--gray);border:1px solid var(--border);padding:.8rem;margin-top:.5rem">
+        <p style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:#444;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.3rem">⚠ LEGAL DISCLAIMER</p>
+        <p style="font-size:10px;color:#555;line-height:1.5">Always verify current requirements with your state's official election authority before proceeding. Requirements change. This information is for educational purposes. Consult an attorney for legal advice.</p>
+      </div>`;
+  } else {
+    container.innerHTML = `
+      <div class="no-recall-box">
+        <p class="section-title" style="color:#666;border-color:#333">NO RECALL AVAILABLE IN ${d.name.toUpperCase()}</p>
+        <p style="font-size:12px;color:#888;margin:.5rem 0;line-height:1.6">${d.notes}</p>
+      </div>
+      <p class="section-title">ALTERNATIVE REMOVAL AND ACCOUNTABILITY TOOLS</p>
+      <div class="alt-tools">
+        ${(d.altTools || []).map(t => `<div class="alt-tool"><div class="alt-tool-desc">${t}</div></div>`).join('')}
+      </div>
+      <div style="background:var(--gray);border:1px solid var(--border);border-left:3px solid var(--red);padding:.8rem;margin-top:.8rem">
+        <p class="section-title">DON'T STOP HERE</p>
+        <p style="font-size:11px;color:#888;line-height:1.6">No recall doesn't mean no options. File ethics complaints, demand legislative action, coordinate public pressure, support primary challengers, and use federal tools for federal officials. Punch from every direction simultaneously.</p>
+      </div>`;
+  }
+}
+
+// ============================================================
+// FEDERAL TOOLS
+// ============================================================
+function renderFederalTools() {
+  const grid = document.getElementById('federal-tools-grid');
+  if (!grid) return;
+  grid.innerHTML = federalTools.map(t => `
+    <a href="${t.url}" target="_blank" rel="noopener noreferrer" class="federal-tool">
+      <div class="federal-tool-title">${t.title}</div>
+      <div class="federal-tool-desc">${t.desc}</div>
+    </a>`).join('');
+}
+
+// ============================================================
+// TAB SWITCHER
+// ============================================================
+function showTab(name, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  const tab = document.getElementById('tab-' + name);
+  if (tab) tab.classList.add('active');
+  if (btn) {
+    btn.classList.add('active');
+  } else {
+    const idx = { track: 0, recall: 1, report: 2, federal: 3 }[name];
+    if (idx !== undefined) {
+      const navBtns = document.querySelectorAll('nav button');
+      if (navBtns[idx]) navBtns[idx].classList.add('active');
+    }
+  }
+}
+
+// ============================================================
+// REPORT FORM — logs to console, ready for Vercel endpoint
+// ============================================================
+function submitReport() {
+  const name = (document.getElementById('pol-name').value || '').trim();
+  const state = (document.getElementById('pol-state').value || '').trim();
+  const type = (document.getElementById('viol-type').value || '').trim();
+  const desc = (document.getElementById('viol-desc').value || '').trim();
+
+  if (!name || !state || !type || !desc) {
+    alert('Please fill in all required fields (*).');
+    return;
+  }
+
+  const report = {
+    politician: name,
+    office: (document.getElementById('pol-office').value || '').trim(),
+    state,
+    violationType: type,
+    description: desc,
+    evidence: (document.getElementById('viol-evidence').value || '').trim(),
+    suggestedAction: (document.getElementById('viol-action').value || '').trim(),
+    reporter: (document.getElementById('reporter-name').value || '').trim() || 'Anonymous',
+    website: (document.getElementById('honeypot-website').value || '').trim()  // honeypot
+    submitted: new Date().toISOString()
+  };
+
+  // When Vercel endpoint is ready, replace console.log with:
+  fetch('/api/report', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(report)
+  })
+    .then(r => {
+      if (!r.ok) throw new Error('Submit failed: ' + r.status);
+      showReportSuccess();
+    })
+    .catch(err => {
+      console.error('Report submit error:', err);
+      alert('Submission failed. Check your connection and try again.');
+    });
+}
+
+function showReportSuccess() {
+  const msg = document.getElementById('success-msg');
+  if (msg) {
+    msg.style.display = 'block';
+    msg.scrollIntoView({ behavior: 'smooth' });
+  }
+  ['pol-name', 'pol-office', 'viol-desc', 'viol-evidence', 'reporter-name', 'honeypot-website'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  ['pol-state', 'viol-type', 'viol-action'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+}
+
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', function () {
+  filteredPoliticians = [...politicians];
+  updateStats();
+  renderCards();
+  renderFederalTools();
+  // Pre-load a state if DEFAULT_STATE is set
+  if (API_CONFIG.DEFAULT_STATE) {
+    loadPoliticiansFromAPI(API_CONFIG.DEFAULT_STATE);
+  }
+});
+
+</script></body></html>
