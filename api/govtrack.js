@@ -21,7 +21,8 @@ async function findGovTrackPerson(bioguide_id, name, state) {
     // Prefer bioguide_id lookup — most reliable cross-reference
     if (bioguide_id) {
       const res = await fetch(
-        `${GOVTRACK_BASE}/person?bioguideid=${bioguide_id}&format=json`
+        `${GOVTRACK_BASE}/person?bioguideid=${bioguide_id}&format=json`,
+        { headers: { 'User-Agent': 'TheAccountabilityProject/1.0 (https://the-accountability-project.vercel.app)' } }
       );
       if (res.ok) {
         const data = await res.json();
@@ -37,7 +38,8 @@ async function findGovTrackPerson(bioguide_id, name, state) {
     const q         = (firstName + ' ' + lastName).trim();
 
     const res2 = await fetch(
-      `${GOVTRACK_BASE}/person?q=${encodeURIComponent(q)}&current_role=true&format=json&limit=5`
+      `${GOVTRACK_BASE}/person?q=${encodeURIComponent(q)}&current_role=true&format=json&limit=5`,
+      { headers: { 'User-Agent': 'TheAccountabilityProject/1.0 (https://the-accountability-project.vercel.app)' } }
     );
     if (!res2.ok) return null;
     const data2 = await res2.json();
@@ -62,7 +64,8 @@ async function findGovTrackPerson(bioguide_id, name, state) {
 async function fetchVotingStats(personId) {
   try {
     const res = await fetch(
-      `${GOVTRACK_BASE}/person/${personId}?format=json`
+      `${GOVTRACK_BASE}/person/${personId}?format=json`,
+      { headers: { 'User-Agent': 'TheAccountabilityProject/1.0 (https://the-accountability-project.vercel.app)' } }
     );
     if (!res.ok) return null;
     const data = await res.json();
@@ -91,7 +94,8 @@ async function fetchSponsoredBills(personId, role = 'sponsor') {
       order_by: '-introduced_date'
     });
 
-    const res = await fetch(`${GOVTRACK_BASE}/bill?${params.toString()}`);
+    const res = await fetch(`${GOVTRACK_BASE}/bill?${params.toString()}`,
+      { headers: { 'User-Agent': 'TheAccountabilityProject/1.0 (https://the-accountability-project.vercel.app)' } });
     if (!res.ok) return [];
     const data = await res.json();
 
@@ -119,7 +123,8 @@ async function fetchCosponsoredBills(personId) {
       order_by: '-introduced_date'
     });
 
-    const res = await fetch(`${GOVTRACK_BASE}/bill?${params.toString()}`);
+    const res = await fetch(`${GOVTRACK_BASE}/bill?${params.toString()}`,
+      { headers: { 'User-Agent': 'TheAccountabilityProject/1.0 (https://the-accountability-project.vercel.app)' } });
     if (!res.ok) return [];
     const data = await res.json();
 
