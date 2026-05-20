@@ -1,142 +1,75 @@
 // api/govtrack.js
-// Fetches legislative stats for a member from GovTrack.us
-// No API key required.
+// Fetches legislative data from Congress.gov API.
+// Renamed govtrack.js to avoid frontend changes — same endpoint, different source.
 //
-// GET /api/govtrack?name=Jordan&state=OH
-// GET /api/govtrack?bioguide_id=J000289
+// GET /api/govtrack?bioguide_id=B001306
 //
 // Returns:
-//   missedVotesPct      — % of votes missed
-//   votesWithPartyPct   — % voted with own party
-//   votesAgainstPartyPct — % voted against own party
-//   billsSponsored      — list of bills sponsored [{id, title, status, url}]
-//   billsCosponsored    — list of bills cosponsored [{id, title, status, url}]
+//   billsSponsored      — recent bills sponsored [{id, title, status, url}]
+//   billsCosponsored    — recent bills cosponsored [{id, title, status, url}]
+//   missedVotesPct      — null (not available from Congress.gov — field reserved)
+//   votesWithPartyPct   — null (not available from Congress.gov — field reserved)
+//   votesAgainstPartyPct — null (not available from Congress.gov — field reserved)
+//
+// Environment variables required:
+//   CONGRESS_API_KEY — from api.congress.gov/sign-up/
 
-const GOVTRACK_BASE = 'https://www.govtrack.us/api/v2';
+const CONGRESS_BASE = 'https://api.congress.gov/v3';
+const CURRENT_CONGRESS = '119';
 
-// Maps Congress.gov bioguide ID to GovTrack person ID
-// GovTrack uses their own numeric ID — we find it by searching name
-async function findGovTrackPerson(bioguide_id, name, state) {
-  try {
-    // Prefer bioguide_id lookup — most reliable cross-reference
-    if (bioguide_id) {
-      const res = await fetch(
-        `${GOVTRACK_BASE}/person?bioguideid=${bioguide_id}&format=json`,
-        { headers: { 'User-Agent': 'TheAccountabilityProject/1.0 (https://the-accountability-project.vercel.app)' } }
-      );
-      if (res.ok) {
-        const data = await res.json();
-        const people = data.objects || [];
-        if (people.length) return people[0];
-      }
-    }
-
-    // Fallback: name-based search using q= parameter (GovTrack full-text search)
-    const parts     = (name || '').split(',');
-    const lastName  = (parts[0] || '').trim();
-    const firstName = ((parts[1] || '').trim().split(' ').filter(Boolean)[0] || '');
-    const q         = (firstName + ' ' + lastName).trim();
-
-    const res2 = await fetch(
-      `${GOVTRACK_BASE}/person?q=${encodeURIComponent(q)}&current_role=true&format=json&limit=5`,
-      { headers: { 'User-Agent': 'TheAccountabilityProject/1.0 (https://the-accountability-project.vercel.app)' } }
-    );
-    if (!res2.ok) return null;
-    const data2 = await res2.json();
-    let people = data2.objects || [];
-
-    // Filter by state
-    if (state && people.length > 1) {
-      const stateFiltered = people.filter(p =>
-        p.current_role && p.current_role.state === state.toUpperCase()
-      );
-      if (stateFiltered.length) return stateFiltered[0];
-    }
-
-    return people[0] || null;
-  } catch (err) {
-    console.error('GovTrack person lookup failed:', err.message);
-    return null;
-  }
+function billTypeLabel(typeCode) {
+  const map = {
+    hr: 'H.R.', s: 'S.', hjres: 'H.J.Res.', sjres: 'S.J.Res.',
+    hconres: 'H.Con.Res.', sconres: 'S.Con.Res.', hres: 'H.Res.', sres: 'S.Res.'
+  };
+  return map[(typeCode || '').toLowerCase()] || (typeCode || '').toUpperCase();
 }
 
-// Fetches voting stats for a GovTrack person ID
-async function fetchVotingStats(personId) {
-  try {
-    const res = await fetch(
-      `${GOVTRACK_BASE}/person/${personId}?format=json`,
-      { headers: { 'User-Agent': 'TheAccountabilityProject/1.0 (https://the-accountability-project.vercel.app)' } }
-    );
-    if (!res.ok) return null;
-    const data = await res.json();
-
-    // GovTrack stores stats in current_role
-    const role = data.current_role || {};
-    return {
-      missedVotesPct:       role.missed_votes_pct       ?? null,
-      votesWithPartyPct:    role.votes_with_party_pct   ?? null,
-      votesAgainstPartyPct: role.votes_against_party_pct ?? null
-    };
-  } catch (err) {
-    console.error('GovTrack voting stats failed:', err.message);
-    return null;
-  }
+function statusLabel(bill) {
+  const actions = bill.latestAction;
+  if (!actions) return '—';
+  return actions.text ? actions.text.slice(0, 80) : '—';
 }
 
-// Fetches sponsored bills for a GovTrack person ID
-async function fetchSponsoredBills(personId, role = 'sponsor') {
+function shapeBill(bill) {
+  const type   = bill.type || '';
+  const number = bill.number || '';
+  const congress = bill.congress || CURRENT_CONGRESS;
+  return {
+    id:         `${billTypeLabel(type)} ${number}`,
+    title:      bill.title || 'Untitled',
+    status:     statusLabel(bill),
+    introduced: bill.introducedDate || '—',
+    url:        `https://www.congress.gov/bill/${congress}th-congress/${(type || '').toLowerCase().replace('res', '-resolution').replace('conres', 'concurrent-resolution').replace('jres', 'joint-resolution')}/${number}`
+  };
+}
+
+async function fetchLegislation(bioguideId, type, apiKey) {
+  // type: 'sponsored-legislation' or 'cosponsored-legislation'
   try {
     const params = new URLSearchParams({
-      sponsor: personId,
-      congress: '119',   // current 119th Congress
-      format: 'json',
-      limit: '10',
-      order_by: '-introduced_date'
+      api_key: apiKey,
+      format:  'json',
+      limit:   '10',
+      sort:    'updateDate+desc'
     });
 
-    const res = await fetch(`${GOVTRACK_BASE}/bill?${params.toString()}`,
-      { headers: { 'User-Agent': 'TheAccountabilityProject/1.0 (https://the-accountability-project.vercel.app)' } });
-    if (!res.ok) return [];
+    const url = `${CONGRESS_BASE}/member/${bioguideId}/${type}?${params.toString()}`;
+    const res = await fetch(url);
+
+    if (!res.ok) {
+      console.error(`Congress.gov ${type} error: ${res.status}`);
+      return [];
+    }
+
     const data = await res.json();
+    // Response key is either 'sponsoredLegislation' or 'cosponsoredLegislation'
+    const key  = type === 'sponsored-legislation' ? 'sponsoredLegislation' : 'cosponsoredLegislation';
+    const bills = data[key] || [];
 
-    return (data.objects || []).map(b => ({
-      id:     b.bill_type_label + ' ' + b.number,
-      title:  b.title_without_number || b.title || 'Untitled',
-      status: b.current_status_description || b.current_status || '—',
-      introduced: b.introduced_date || '—',
-      url:    `https://www.govtrack.us/congress/bills/${b.congress}/${b.bill_type}${b.number}`
-    }));
+    return bills.map(shapeBill);
   } catch (err) {
-    console.error('GovTrack bills fetch failed:', err.message);
-    return [];
-  }
-}
-
-// Fetches cosponsored bills for a GovTrack person ID
-async function fetchCosponsoredBills(personId) {
-  try {
-    const params = new URLSearchParams({
-      cosponsor: personId,
-      congress: '119',
-      format: 'json',
-      limit: '10',
-      order_by: '-introduced_date'
-    });
-
-    const res = await fetch(`${GOVTRACK_BASE}/bill?${params.toString()}`,
-      { headers: { 'User-Agent': 'TheAccountabilityProject/1.0 (https://the-accountability-project.vercel.app)' } });
-    if (!res.ok) return [];
-    const data = await res.json();
-
-    return (data.objects || []).map(b => ({
-      id:     b.bill_type_label + ' ' + b.number,
-      title:  b.title_without_number || b.title || 'Untitled',
-      status: b.current_status_description || b.current_status || '—',
-      introduced: b.introduced_date || '—',
-      url:    `https://www.govtrack.us/congress/bills/${b.congress}/${b.bill_type}${b.number}`
-    }));
-  } catch (err) {
-    console.error('GovTrack cosponsored bills fetch failed:', err.message);
+    console.error(`fetchLegislation(${type}) failed:`, err.message);
     return [];
   }
 }
@@ -144,37 +77,43 @@ async function fetchCosponsoredBills(personId) {
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Cache-Control', 's-maxage=7200'); // cache 2 hours
+  res.setHeader('Cache-Control', 's-maxage=7200');
 
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  const { name, state, bioguide_id } = req.query;
-
-  if (!name && !bioguide_id) {
-    return res.status(400).json({ error: 'name or bioguide_id parameter required.' });
+  const apiKey = process.env.CONGRESS_API_KEY;
+  if (!apiKey) {
+    return res.status(500).json({ error: 'CONGRESS_API_KEY not configured.' });
   }
 
-  // Step 1 — find the person
-  const person = await findGovTrackPerson(bioguide_id, name, state);
-  if (!person) {
-    return res.status(404).json({ error: 'Member not found on GovTrack.', name, state });
+  const { bioguide_id, name, state } = req.query;
+
+  if (!bioguide_id) {
+    // No bioguide_id means this person wasn't matched to Congress.gov
+    // Return empty but valid response so frontend doesn't error
+    return res.status(200).json({
+      bioguide_id:          null,
+      name:                 name || '—',
+      missedVotesPct:       null,
+      votesWithPartyPct:    null,
+      votesAgainstPartyPct: null,
+      billsSponsored:       [],
+      billsCosponsored:     []
+    });
   }
 
-  const personId = person.id;
-
-  // Step 2 — fetch all data in parallel
-  const [votingStats, billsSponsored, billsCosponsored] = await Promise.all([
-    fetchVotingStats(personId),
-    fetchSponsoredBills(personId),
-    fetchCosponsoredBills(personId)
+  // Fetch sponsored and cosponsored in parallel
+  const [billsSponsored, billsCosponsored] = await Promise.all([
+    fetchLegislation(bioguide_id, 'sponsored-legislation',   apiKey),
+    fetchLegislation(bioguide_id, 'cosponsored-legislation', apiKey)
   ]);
 
   return res.status(200).json({
-    govtrack_id:          personId,
-    name:                 person.name || name,
-    missedVotesPct:       votingStats?.missedVotesPct       ?? null,
-    votesWithPartyPct:    votingStats?.votesWithPartyPct    ?? null,
-    votesAgainstPartyPct: votingStats?.votesAgainstPartyPct ?? null,
+    bioguide_id,
+    name:                 name || '—',
+    missedVotesPct:       null,
+    votesWithPartyPct:    null,
+    votesAgainstPartyPct: null,
     billsSponsored,
     billsCosponsored
   });
