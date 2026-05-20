@@ -460,7 +460,7 @@ function renderCards() {
       <div class="card-stats">
         <div class="stat"><span class="stat-value red">${p.violations || 0}</span><span class="stat-label">Violations</span></div>
         <div class="stat"><span class="stat-value gold">${p.totalDonors || '—'}</span><span class="stat-label">Donors</span></div>
-        <div class="stat"><span class="stat-value ${(p.threatScore||0) >= 80 ? 'red' : (p.threatScore||0) >= 60 ? 'gold' : 'green'}">${p.threatScore || '—'}</span><span class="stat-label">Threat</span></div>
+
       </div>
     </div>`).join('');
 }
@@ -582,10 +582,13 @@ function showDetail(id) {
     <div class="detail-header">
       <div>
         <div class="detail-name">${p.name}</div>
-        <div class="card-meta" style="margin-top:.3rem">${p.office} — ${p.state} — ${p.party === 'D' ? 'Democrat' : p.party === 'R' ? 'Republican' : 'Independent'} — Since ${p.since}${p.missedVotesPct ? ' — <span style="color:var(--gold)">' + p.missedVotesPct + '% missed votes</span>' : ''}</div>
+        <div class="card-meta" style="margin-top:.3rem">${p.office} — ${p.state} — ${p.party === 'D' ? 'Democrat' : p.party === 'R' ? 'Republican' : 'Independent'} — Since ${p.since}</div>
         ${p.recallActive ? '<div style="color:var(--gold);font-family:IBM Plex Mono,monospace;font-size:10px;margin-top:.4rem;text-transform:uppercase;letter-spacing:.08em">⚡ RECALL PETITION ACTIVE</div>' : ''}
       </div>
-      <div class="threat-meter"><span class="threat-label">Threat Score</span><div class="threat-value">${p.threatScore || '—'}</div></div>
+      <div style="text-align:right">
+        <a href="https://discord.gg/enWsF7aw9" target="_blank" rel="noopener noreferrer" style="display:inline-block;background:var(--gray);border:1px solid var(--border);color:var(--gold);font-family:'IBM Plex Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.08em;padding:.4rem .8rem;text-decoration:none">⚡ VIEW COMPLAINTS ON DISCORD →</a>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:8px;color:#444;margin-top:.3rem;text-transform:uppercase">discord.gg/enWsF7aw9</div>
+      </div>
     </div>
     <div class="detail-grid">
       <div class="detail-section">
@@ -602,14 +605,6 @@ function showDetail(id) {
       <div style="margin-top:.5rem">${legalTags.length ? legalTags.map(t => `<span class="tag ${t.a ? 'tag-active' : ''}">${t.t}</span>`).join('') : '<span style="font-size:11px;color:#555">None flagged.</span>'}</div>
     </div>
     ${p.govtrackLoaded ? `
-    <div class="detail-section" style="margin-bottom:.8rem">
-      <p class="section-title">VOTING RECORD</p>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.4rem;margin-top:.5rem">
-        <div class="stat" style="padding:.5rem"><span class="stat-value ${(p.missedVotesPct||0)>10?'red':(p.missedVotesPct||0)>5?'gold':'green'}">${p.missedVotesPct !== null ? p.missedVotesPct + '%' : '—'}</span><span class="stat-label">Missed Votes</span></div>
-        <div class="stat" style="padding:.5rem"><span class="stat-value gold">${p.votesWithPartyPct !== null ? p.votesWithPartyPct + '%' : '—'}</span><span class="stat-label">With Party</span></div>
-        <div class="stat" style="padding:.5rem"><span class="stat-value red">${p.votesAgainstPartyPct !== null ? p.votesAgainstPartyPct + '%' : '—'}</span><span class="stat-label">Against Party</span></div>
-      </div>
-    </div>
     ${p.billsSponsored && p.billsSponsored.length ? `
     <div class="detail-section" style="margin-bottom:.8rem">
       <p class="section-title">BILLS SPONSORED (119TH CONGRESS)</p>
@@ -633,7 +628,7 @@ function showDetail(id) {
             <div style="font-size:9px;color:#555;font-family:'IBM Plex Mono',monospace">${b.status} — <a href="${b.url}" target="_blank" style="color:var(--red)">VIEW →</a></div>
           </div>`).join('')}
       </div>
-    </div>` : ''}` : '<div style="font-size:11px;color:#444;padding:.5rem 0;font-family:IBM Plex Mono,monospace">Loading legislative data...</div>'}
+    </div>` : ''}` : '<div style="font-size:11px;color:#444;padding:.5rem 0;font-family:IBM Plex Mono,monospace">Loading bill data...</div>'}
     ${p.level === 'federal' ? `
     <div class="detail-section" style="margin-bottom:.8rem">
       <p class="section-title">⚠ FEDERAL OFFICIAL — RECALL NOT AVAILABLE</p>
