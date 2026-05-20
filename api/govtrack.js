@@ -16,46 +16,39 @@ const GOVTRACK_BASE = 'https://www.govtrack.us/api/v2';
 
 // Maps Congress.gov bioguide ID to GovTrack person ID
 // GovTrack uses their own numeric ID — we find it by searching name
-async function findGovTrackPerson(name, state) {
+async function findGovTrackPerson(bioguide_id, name, state) {
   try {
-    // FEC format is "LAST, FIRST MIDDLE" in all caps
-    // GovTrack expects lowercase, first name only (no middle)
-    const parts     = name.split(',');
-    const lastName  = (parts[0] || '').trim().toLowerCase();
-    const firstPart = (parts[1] || '').trim().toLowerCase();
-    const firstName = firstPart.split(' ').filter(Boolean)[0] || '';
-
-    // Try full name first
-    const tryFetch = async (params) => {
-      const res = await fetch(`${GOVTRACK_BASE}/person?${params.toString()}`);
-      if (!res.ok) return [];
-      const data = await res.json();
-      return data.objects || [];
-    };
-
-    // Attempt 1: lastname + firstname
-    let people = await tryFetch(new URLSearchParams({
-      lastname: lastName, firstname: firstName,
-      current_role: 'true', format: 'json'
-    }));
-
-    // Attempt 2: lastname only if no results
-    if (!people.length) {
-      people = await tryFetch(new URLSearchParams({
-        lastname: lastName,
-        current_role: 'true', format: 'json', limit: '5'
-      }));
+    // Prefer bioguide_id lookup — most reliable cross-reference
+    if (bioguide_id) {
+      const res = await fetch(
+        `${GOVTRACK_BASE}/person?bioguideid=${bioguide_id}&format=json`
+      );
+      if (res.ok) {
+        const data = await res.json();
+        const people = data.objects || [];
+        if (people.length) return people[0];
+      }
     }
 
-    if (!people.length) return null;
+    // Fallback: name-based search using q= parameter (GovTrack full-text search)
+    const parts     = (name || '').split(',');
+    const lastName  = (parts[0] || '').trim();
+    const firstName = ((parts[1] || '').trim().split(' ').filter(Boolean)[0] || '');
+    const q         = (firstName + ' ' + lastName).trim();
 
-    // Filter by state if provided
+    const res2 = await fetch(
+      `${GOVTRACK_BASE}/person?q=${encodeURIComponent(q)}&current_role=true&format=json&limit=5`
+    );
+    if (!res2.ok) return null;
+    const data2 = await res2.json();
+    let people = data2.objects || [];
+
+    // Filter by state
     if (state && people.length > 1) {
-      const stateUp = state.toUpperCase();
       const stateFiltered = people.filter(p =>
-        p.current_role && p.current_role.state === stateUp
+        p.current_role && p.current_role.state === state.toUpperCase()
       );
-      if (stateFiltered.length > 0) return stateFiltered[0];
+      if (stateFiltered.length) return stateFiltered[0];
     }
 
     return people[0] || null;
@@ -150,14 +143,14 @@ export default async function handler(req, res) {
 
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  const { name, state } = req.query;
+  const { name, state, bioguide_id } = req.query;
 
-  if (!name) {
-    return res.status(400).json({ error: 'name parameter required.' });
+  if (!name && !bioguide_id) {
+    return res.status(400).json({ error: 'name or bioguide_id parameter required.' });
   }
 
   // Step 1 — find the person
-  const person = await findGovTrackPerson(name, state);
+  const person = await findGovTrackPerson(bioguide_id, name, state);
   if (!person) {
     return res.status(404).json({ error: 'Member not found on GovTrack.', name, state });
   }
