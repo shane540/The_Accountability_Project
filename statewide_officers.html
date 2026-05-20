@@ -59,7 +59,7 @@ main{padding:1.2rem;max-width:1100px;margin:0 auto}
 <header>
   <div class="logo">THE <span>ACCOUNTABILITY</span> PROJECT — <span>STATEWIDE OFFICERS</span></div>
   <a href="index.html" class="back-link">← MAIN</a>
-  <a href="index.html" class="back-link">FEDERAL</a>
+  <a href="federal_officers.html" class="back-link">FEDERAL</a>
   <a href="judges.html" class="back-link">JUDGES</a>
 </header>
 <main>
@@ -409,12 +409,175 @@ const stateData = [
 
   {code:"SD",name:"South Dakota",hasRecall:true,
    recallSigs:"25% of votes in last election",recallTime:"90 days",recallGrounds:"No specific grounds required",recallFiling:"South Dakota Secretary of State",
-   container.innerHTML = `<p style="color:#888;font-size:12px">State details loading...</p>`;
-                                }
-                            }
-                        }
+   officers:["Governor","Lieutenant Governor","Secretary of State","State Auditor","State Treasurer","Attorney General","Commissioner of School and Public Lands","Superintendent of Public Instruction","Commissioner of Agriculture","Public Utilities Commissioners"],
+   impeachGround:"Crimes, misdemeanors, or malfeasance in office",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict",
+   ethicsBody:"SD Government Accountability Board — sdsob.sd.gov",
+   otherTools:["Recall election","Legislative impeachment","AG prosecution","Federal charges"]},
+
+  {code:"TN",name:"Tennessee",hasRecall:false,recallNote:"No recall provisions in Tennessee.",
+   officers:["Governor","Secretary of State (elected by Legislature)","State Treasurer (elected by Legislature)","Comptroller (elected by Legislature)","Attorney General (appointed by Supreme Court — unique)"],
+   impeachGround:"Crimes, misdemeanors, or malfeasance in office",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict",
+   impeachNote:"Tennessee's AG is appointed by the Supreme Court, not elected — unique removal dynamic. The Court could theoretically remove the AG.",
+   ethicsBody:"Tennessee Ethics Commission — tn.gov/ethics",
+   otherTools:["Legislative impeachment","Governor removal power","AG prosecution (if not AG being targeted)","Federal charges"]},
+
+  {code:"TX",name:"Texas",hasRecall:false,recallNote:"No statewide recall law. Some home-rule cities allow local recall only.",
+   officers:["Governor","Lieutenant Governor","Attorney General","Comptroller","Land Commissioner","Agriculture Commissioner","Railroad Commissioners","State Board of Education"],
+   impeachGround:"Crimes, misdemeanors, or corrupt conduct in office",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict",
+   impeachNote:"Texas actually impeached AG Ken Paxton in 2023 — he was acquitted by the Senate. Shows the process works and is used.",
+   ethicsBody:"Texas Ethics Commission — ethics.state.tx.us",
+   otherTools:["Legislative impeachment (used in 2023)","Governor removal power for cause","AG prosecution (if not AG being targeted)","Federal charges","Texas Rangers corruption unit","Special grand juries"]},
+
+  {code:"UT",name:"Utah",hasRecall:false,recallNote:"No statewide recall for state officers. Limited local recall in some jurisdictions.",
+   officers:["Governor","Lieutenant Governor","Attorney General","State Treasurer","State Auditor"],
+   impeachGround:"High crimes, misdemeanors, or malfeasance in office",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict",
+   ethicsBody:"Utah Independent Legislative Ethics Commission — le.utah.gov/lrgsc/uthethics.htm",
+   otherTools:["Legislative impeachment","Governor removal/suspension power","AG prosecution","Federal charges"]},
+
+  {code:"VT",name:"Vermont",hasRecall:false,recallNote:"No statewide recall law. Some towns allow recall of selectboard members only.",
+   officers:["Governor","Lieutenant Governor","Secretary of State","State Treasurer","Auditor","Attorney General"],
+   impeachGround:"Maladministration, corruption, delinquency, or malfeasance in office",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict",
+   ethicsBody:"Vermont Ethics Commission — vermontethics.gov",
+   otherTools:["Legislative impeachment","AG prosecution","Federal charges"]},
+
+  {code:"VA",name:"Virginia",hasRecall:true,
+   recallSigs:"COURT PROCESS — no petition required",recallTime:"Court scheduled",recallGrounds:"Neglect of duty, misuse of office, or incompetence with material adverse effect on conduct of office",recallFiling:"Virginia Circuit Court",
+   officers:["Governor","Lieutenant Governor","Attorney General","All elected state officers"],
+   impeachGround:"Malfeasance in office, corruption, neglect of duty, or other high crimes",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict",
+   impeachNote:"Virginia has BOTH a court-based recall process AND impeachment — two separate legal paths. The circuit court recall is potentially faster.",
+   ethicsBody:"Virginia Conflict of Interest and Ethics Advisory Council — ethics.dls.virginia.gov",
+   otherTools:["Circuit Court removal process (potentially fastest)","Legislative impeachment","AG prosecution","Federal charges"]},
+
+  {code:"WA",name:"Washington",hasRecall:true,
+   recallSigs:"25% of votes in last general election",recallTime:"270 days",recallGrounds:"Malfeasance, misfeasance, or violation of oath of office",recallFiling:"Washington Secretary of State / Superior Court",
+   officers:["Governor","Lieutenant Governor","Secretary of State","State Treasurer","State Auditor","Attorney General","Superintendent of Public Instruction","Commissioner of Public Lands","Insurance Commissioner"],
+   impeachGround:"High crimes and misdemeanors or malfeasance in office",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict",
+   impeachNote:"Washington requires Superior Court review BEFORE recall signatures can be collected — adds a legal sufficiency check.",
+   ethicsBody:"Washington State Executive Ethics Board — ethics.wa.gov",
+   otherTools:["Recall election (court-reviewed)","Legislative impeachment","AG prosecution","Federal charges"]},
+
+  {code:"WV",name:"West Virginia",hasRecall:false,recallNote:"No recall provisions in West Virginia.",
+   officers:["Governor","Secretary of State","State Auditor","State Treasurer","Attorney General","Commissioner of Agriculture"],
+   impeachGround:"Malfeasance, incompetence, gross immorality, or neglect of duty",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict",
+   ethicsBody:"WV Ethics Commission — ethics.wv.gov",
+   otherTools:["Legislative impeachment","Governor removal power","AG prosecution","Federal charges"]},
+
+  {code:"WI",name:"Wisconsin",hasRecall:true,
+   recallSigs:"25% of votes cast in last election for governor in the district",recallTime:"60 days",recallGrounds:"No specific grounds required (must have served 1 year)",recallFiling:"Wisconsin Elections Commission",
+   officers:["Governor","Lieutenant Governor","Secretary of State","State Treasurer","Attorney General","Superintendent of Public Instruction","All elected state officers"],
+   impeachGround:"Corrupt conduct in office, or crime or misdemeanor",
+   impeachVote:"Majority of Assembly to impeach; 2/3 of Senate to convict",
+   impeachNote:"Wisconsin has one of the shortest recall windows — 60 days — but no grounds required. Governor Scott Walker survived a recall in 2012.",
+   ethicsBody:"Wisconsin Ethics Commission — ethics.wi.gov",
+   otherTools:["Recall election (60 days — fast)","Legislative impeachment","AG prosecution","Federal charges","Wisconsin DOJ Division of Criminal Investigation"]},
+
+  {code:"WY",name:"Wyoming",hasRecall:false,recallNote:"No statewide recall law. Some municipalities allow recall under charter.",
+   officers:["Governor","Secretary of State","State Auditor","State Treasurer","Superintendent of Public Instruction","Attorney General (appointed)"],
+   impeachGround:"High crimes, misdemeanors, or malfeasance in office",
+   impeachVote:"Majority of House to impeach; 2/3 of Senate to convict",
+   ethicsBody:"Wyoming Ethics and Lobbying Commission — wyoleg.gov",
+   otherTools:["Legislative impeachment","Governor removal power","AG prosecution (if not AG being targeted)","Federal charges"]}
+];
+
+let filtered=[...stateData];
+
+function renderStates(){
+  const g=document.getElementById('state-grid');
+  g.innerHTML=filtered.map(s=>`
+    <div class="state-card ${s.hasRecall?'has-recall':'no-recall'}" id="card-${s.code}">
+      <div class="state-header" onclick="toggle('${s.code}')">
+        <div style="display:flex;align-items:center;gap:.8rem">
+          <div class="state-name">${s.name}</div>
+          <div class="state-badges">
+            ${s.hasRecall?'<span class="sbadge sbadge-recall">⚡ RECALL</span>':'<span class="sbadge sbadge-norecall">NO RECALL</span>'}
+            <span class="sbadge sbadge-imp">IMPEACH</span>
+            ${s.code==='VA'?'<span class="sbadge" style="border-color:#4a9eff;color:#4a9eff">COURT REMOVAL</span>':''}
+          </div>
+        </div>
+        <span class="expand-icon" id="icon-${s.code}">▼</span>
+      </div>
+      <div class="state-body" id="body-${s.code}">
+        <p class="section-label">STATEWIDE OFFICERS COVERED</p>
+        <div class="officers-list">${s.officers.map(o=>`<span class="officer-tag">${o}</span>`).join('')}</div>
+        
+        ${s.hasRecall?`
+        <p class="section-label">RECALL PROCESS</p>
+        <div class="tools-grid">
+          ${s.recallGrounds?`<div class="tool-block"><div class="tool-title">Grounds Required</div><div class="tool-body">${s.recallGrounds}</div></div>`:''}
+          ${s.recallSigs?`<div class="tool-block"><div class="tool-title">Signatures Required</div><div class="tool-body">${s.recallSigs}</div></div>`:''}
+          ${s.recallTime?`<div class="tool-block"><div class="tool-title">Collection Window</div><div class="tool-body">${s.recallTime}</div></div>`:''}
+          ${s.recallFiling?`<div class="tool-block"><div class="tool-title">File With</div><div class="tool-body">${s.recallFiling}</div></div>`:''}
+        </div>`:`
+        <div class="warning-box">⚠ ${s.recallNote}</div>`}
+        
+        <p class="section-label">IMPEACHMENT PROCESS</p>
+        <div class="tools-grid">
+          <div class="tool-block"><div class="tool-title">Grounds for Impeachment</div><div class="tool-body">${s.impeachGround}</div></div>
+          <div class="tool-block"><div class="tool-title">Vote Required</div><div class="tool-body">${s.impeachVote}</div></div>
+          ${s.impeachNote?`<div class="tool-block" style="grid-column:1/-1"><div class="tool-title">⚡ Key Note</div><div class="tool-body">${s.impeachNote}</div></div>`:''}
+        </div>
+        
+        <p class="section-label">ADDITIONAL REMOVAL TOOLS</p>
+        <div class="tools-grid">
+          <div class="tool-block"><div class="tool-title">Ethics Body</div><div class="tool-body">${s.ethicsBody}</div></div>
+          ${s.agPower?`<div class="tool-block"><div class="tool-title">Governor/Executive Power</div><div class="tool-body">${s.agPower}</div></div>`:''}
+          <div class="tool-block" style="grid-column:1/-1"><div class="tool-title">All Available Tools</div><div class="tool-body"><ul>${s.otherTools.map(t=>`<li>${t}</li>`).join('')}</ul></div></div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+
+
+function toggle(code) {
+  const body = document.getElementById('body-' + code);
+  const icon = document.getElementById('icon-' + code);
+  if (!body || !icon) return;
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open');
+  icon.textContent = isOpen ? '▼' : '▲';
+}
+
+function expandAll() {
+  filtered.forEach(s => {
+    const b = document.getElementById('body-' + s.code);
+    const i = document.getElementById('icon-' + s.code);
+    if (b) b.classList.add('open');
+    if (i) i.textContent = '▲';
+  });
+}
+
+function collapseAll() {
+  filtered.forEach(s => {
+    const b = document.getElementById('body-' + s.code);
+    const i = document.getElementById('icon-' + s.code);
+    if (b) b.classList.remove('open');
+    if (i) i.textContent = '▼';
+  });
+}
+
+function filterStates() {
+  const q = document.getElementById('state-search').value.toLowerCase();
+  const r = document.getElementById('filter-recall').value;
+  filtered = stateData.filter(s => {
+    const matchQ = !q || s.name.toLowerCase().includes(q) || s.code.toLowerCase().includes(q);
+    const matchR = !r || (r === 'recall' && s.hasRecall) || (r === 'norecall' && !s.hasRecall);
+    return matchQ && matchR;
+  });
+  renderStates();
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  renderStates();
+});
 </script>
-</main>
-<script src="api_integration.js"></script>
 </body>
 </html>
