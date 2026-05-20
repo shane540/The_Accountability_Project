@@ -489,6 +489,7 @@ async function loadGovTrack(politicianId) {
 
   try {
     const params = new URLSearchParams({ name: p.name, state: p.state });
+    if (p.bioguide_id) params.set('bioguide_id', p.bioguide_id);
     const res = await fetch('/api/govtrack?' + params.toString());
     if (!res.ok) return;
     const data = await res.json();
