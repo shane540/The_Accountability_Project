@@ -211,16 +211,19 @@ main{padding:1.2rem;max-width:1100px;margin:0 auto}
     <p class="section-title">HOW TO PUNCH FROM EVERY DIRECTION SIMULTANEOUSLY</p>
     <div class="strategy-grid">
         <div class="strategy-step">
-            <div class="step-num">1</div>
-            <div>
-                <div class="step-title">File Simultaneously</div>
-                <div class="step-body">Do not file one complaint and wait. File with the OIG, the DOJ, and the relevant ethics committees on the exact same day.</div>
-            </div>
-        </div>
-    </div>
 </div>
 </main>
 <script>
+function showTab(tabId, btn) {
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + tabId).classList.add('active');
+    btn.classList.add('active');
+}
+</script>
+<script src="api_integration.js"></script>
+</body>
+</html>
 function showTab(tabId, btn) {
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
