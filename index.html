@@ -366,6 +366,7 @@ async function loadDonors(politicianId) {
     const data = await res.json();
     p.donors     = data.donors || [];
     p.totalDonors = data.total_formatted || '—';
+    p._donorRaw   = data.total_raw || 0;
 
     // Recalculate threat score now that we have donor data
     const donorScore   = Math.min((data.total_raw / 5000000) * 40, 40);
@@ -481,6 +482,44 @@ function filterCards() {
   renderCards();
 }
 
+// Loads GovTrack stats for a politician — fires on card click
+async function loadGovTrack(politicianId) {
+  const p = politicians.find(x => x.id === politicianId);
+  if (!p || p.govtrackLoaded) return;
+
+  try {
+    const params = new URLSearchParams({ name: p.name, state: p.state });
+    const res = await fetch('/api/govtrack?' + params.toString());
+    if (!res.ok) return;
+    const data = await res.json();
+
+    p.govtrackLoaded       = true;
+    p.govtrack_id          = data.govtrack_id;
+    p.missedVotesPct       = data.missedVotesPct;
+    p.votesWithPartyPct    = data.votesWithPartyPct;
+    p.votesAgainstPartyPct = data.votesAgainstPartyPct;
+    p.billsSponsored       = data.billsSponsored   || [];
+    p.billsCosponsored     = data.billsCosponsored || [];
+
+    // Recalculate threat score with missed votes now available
+    const donorRaw   = p._donorRaw || 0;
+    const missed     = p.missedVotesPct || 0;
+    const violations = p.violations || 0;
+    const donorScore  = Math.min((donorRaw / 5000000) * 40, 40);
+    const missedScore = Math.min((missed / 100) * 40, 40);
+    const violScore   = Math.min(violations * 5, 20);
+    p.threatScore = Math.round(donorScore + missedScore + violScore);
+
+    // Re-render detail if open
+    const detail = document.getElementById('detail-view');
+    if (detail && detail.classList.contains('active')) {
+      showDetail(politicianId);
+    }
+  } catch (err) {
+    console.error('GovTrack load failed:', err);
+  }
+}
+
 // Called when state dropdown changes — fetches from API
 async function searchByState() {
   const state = document.getElementById('filter-state').value;
@@ -506,8 +545,9 @@ function showDetail(id) {
   const p = politicians.find(x => x.id === id);
   if (!p) return;
 
-  // Fire donor load in background — will re-render when done
+  // Fire donor and GovTrack loads in background — will re-render when done
   loadDonors(id);
+  loadGovTrack(id);
 
   document.getElementById('list-view').style.display = 'none';
   document.getElementById('detail-view').classList.add('active');
@@ -560,6 +600,39 @@ function showDetail(id) {
       <p class="section-title">APPLICABLE LEGAL ACTIONS</p>
       <div style="margin-top:.5rem">${legalTags.length ? legalTags.map(t => `<span class="tag ${t.a ? 'tag-active' : ''}">${t.t}</span>`).join('') : '<span style="font-size:11px;color:#555">None flagged.</span>'}</div>
     </div>
+    ${p.govtrackLoaded ? `
+    <div class="detail-section" style="margin-bottom:.8rem">
+      <p class="section-title">VOTING RECORD</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.4rem;margin-top:.5rem">
+        <div class="stat" style="padding:.5rem"><span class="stat-value ${(p.missedVotesPct||0)>10?'red':(p.missedVotesPct||0)>5?'gold':'green'}">${p.missedVotesPct !== null ? p.missedVotesPct + '%' : '—'}</span><span class="stat-label">Missed Votes</span></div>
+        <div class="stat" style="padding:.5rem"><span class="stat-value gold">${p.votesWithPartyPct !== null ? p.votesWithPartyPct + '%' : '—'}</span><span class="stat-label">With Party</span></div>
+        <div class="stat" style="padding:.5rem"><span class="stat-value red">${p.votesAgainstPartyPct !== null ? p.votesAgainstPartyPct + '%' : '—'}</span><span class="stat-label">Against Party</span></div>
+      </div>
+    </div>
+    ${p.billsSponsored && p.billsSponsored.length ? `
+    <div class="detail-section" style="margin-bottom:.8rem">
+      <p class="section-title">BILLS SPONSORED (119TH CONGRESS)</p>
+      <div style="margin-top:.5rem">
+        ${p.billsSponsored.map(b => `
+          <div style="padding:.45rem 0;border-bottom:1px solid var(--border)">
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--gold);text-transform:uppercase;letter-spacing:.06em">${b.id} — ${b.introduced}</div>
+            <div style="font-size:11px;margin:.2rem 0;line-height:1.4">${b.title}</div>
+            <div style="font-size:9px;color:#555;font-family:'IBM Plex Mono',monospace">${b.status} — <a href="${b.url}" target="_blank" style="color:var(--red)">VIEW →</a></div>
+          </div>`).join('')}
+      </div>
+    </div>` : ''}
+    ${p.billsCosponsored && p.billsCosponsored.length ? `
+    <div class="detail-section" style="margin-bottom:.8rem">
+      <p class="section-title">BILLS COSPONSORED (119TH CONGRESS)</p>
+      <div style="margin-top:.5rem">
+        ${p.billsCosponsored.map(b => `
+          <div style="padding:.45rem 0;border-bottom:1px solid var(--border)">
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--gold);text-transform:uppercase;letter-spacing:.06em">${b.id} — ${b.introduced}</div>
+            <div style="font-size:11px;margin:.2rem 0;line-height:1.4">${b.title}</div>
+            <div style="font-size:9px;color:#555;font-family:'IBM Plex Mono',monospace">${b.status} — <a href="${b.url}" target="_blank" style="color:var(--red)">VIEW →</a></div>
+          </div>`).join('')}
+      </div>
+    </div>` : ''}` : '<div style="font-size:11px;color:#444;padding:.5rem 0;font-family:IBM Plex Mono,monospace">Loading legislative data...</div>'}
     ${p.level === 'federal' ? `
     <div class="detail-section" style="margin-bottom:.8rem">
       <p class="section-title">⚠ FEDERAL OFFICIAL — RECALL NOT AVAILABLE</p>
