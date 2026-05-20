@@ -604,6 +604,21 @@ function showDetail(id) {
       <p class="section-title">APPLICABLE LEGAL ACTIONS</p>
       <div style="margin-top:.5rem">${legalTags.length ? legalTags.map(t => `<span class="tag ${t.a ? 'tag-active' : ''}">${t.t}</span>`).join('') : '<span style="font-size:11px;color:#555">None flagged.</span>'}</div>
     </div>
+    <div class="detail-section" style="margin-bottom:.8rem">
+      <p class="section-title">RESEARCH TOOLS</p>
+      <div style="display:grid;gap:.5rem;margin-top:.5rem">
+        <div style="background:var(--black);border:1px solid var(--border);padding:.7rem">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.3rem">FEC DONOR DATABASE</div>
+          <div style="font-size:11px;color:#aaa;line-height:1.5;margin-bottom:.4rem">Every PAC, committee, and individual contribution over $200 is legally required to be reported to the FEC. Search any donor name you see above — you can find who controls them, their treasurer, and every other candidate they fund.</div>
+          <a href="https://www.fec.gov/data/receipts/" target="_blank" rel="noopener noreferrer" style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--red);text-transform:uppercase;letter-spacing:.06em">SEARCH FEC DONOR DATA → fec.gov/data/receipts</a>
+        </div>
+        <div style="background:var(--black);border:1px solid var(--border);padding:.7rem">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.3rem">GOVTRACK — VOTING RECORDS & MISSED VOTES</div>
+          <div style="font-size:11px;color:#aaa;line-height:1.5;margin-bottom:.4rem">GovTrack tracks every roll call vote, missed vote percentage, party-line voting, and legislative activity for every member of Congress. Search by name to find your rep's full record.</div>
+          <a href="https://www.govtrack.us/congress/members" target="_blank" rel="noopener noreferrer" style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--red);text-transform:uppercase;letter-spacing:.06em">FIND YOUR REP ON GOVTRACK → govtrack.us/congress/members</a>
+        </div>
+      </div>
+    </div>
     ${p.govtrackLoaded ? `
     ${p.billsSponsored && p.billsSponsored.length ? `
     <div class="detail-section" style="margin-bottom:.8rem">
