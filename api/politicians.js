@@ -127,7 +127,6 @@ export default async function handler(req, res) {
     api_key:          fecKey,
     is_active_candidate: 'true',
     candidate_status: 'C',
-    election_year:    cycle || new Date().getFullYear(),
     per_page:         '100',
     sort:             'name'
   });
