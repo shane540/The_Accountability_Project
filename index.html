@@ -355,7 +355,7 @@ async function loadPoliticiansFromAPI(state, name) {
   }
 }
 
-// Called when a politician card is expanded and donors haven't loaded yet
+// Called when a card is clicked — loads donors and recalculates threat score
 async function loadDonors(politicianId) {
   const p = politicians.find(x => x.id === politicianId);
   if (!p || !p.fec_candidate_id || p.donors.length > 0) return;
@@ -364,10 +364,17 @@ async function loadDonors(politicianId) {
     const res = await fetch('/api/donors?candidate_id=' + p.fec_candidate_id);
     if (!res.ok) return;
     const data = await res.json();
-    p.donors = data.donors || [];
+    p.donors     = data.donors || [];
     p.totalDonors = data.total_formatted || '—';
+
+    // Recalculate threat score now that we have donor data
+    const donorScore   = Math.min((data.total_raw / 5000000) * 40, 40);
+    const missedScore  = Math.min(((p.missedVotesPct || 0) / 100) * 40, 40);
+    const violScore    = Math.min((p.violations || 0) * 5, 20);
+    p.threatScore = Math.round(donorScore + missedScore + violScore);
+
     updateStats();
-    // Re-render detail if this politician is currently displayed
+    // Re-render detail view with fresh data
     const detail = document.getElementById('detail-view');
     if (detail && detail.classList.contains('active')) {
       showDetail(politicianId);
@@ -499,6 +506,9 @@ function showDetail(id) {
   const p = politicians.find(x => x.id === id);
   if (!p) return;
 
+  // Fire donor load in background — will re-render when done
+  loadDonors(id);
+
   document.getElementById('list-view').style.display = 'none';
   document.getElementById('detail-view').classList.add('active');
 
@@ -531,7 +541,7 @@ function showDetail(id) {
     <div class="detail-header">
       <div>
         <div class="detail-name">${p.name}</div>
-        <div class="card-meta" style="margin-top:.3rem">${p.office} — ${p.state} — ${p.party === 'D' ? 'Democrat' : p.party === 'R' ? 'Republican' : 'Independent'} — Since ${p.since}</div>
+        <div class="card-meta" style="margin-top:.3rem">${p.office} — ${p.state} — ${p.party === 'D' ? 'Democrat' : p.party === 'R' ? 'Republican' : 'Independent'} — Since ${p.since}${p.missedVotesPct ? ' — <span style="color:var(--gold)">' + p.missedVotesPct + '% missed votes</span>' : ''}</div>
         ${p.recallActive ? '<div style="color:var(--gold);font-family:IBM Plex Mono,monospace;font-size:10px;margin-top:.4rem;text-transform:uppercase;letter-spacing:.08em">⚡ RECALL PETITION ACTIVE</div>' : ''}
       </div>
       <div class="threat-meter"><span class="threat-label">Threat Score</span><div class="threat-value">${p.threatScore || '—'}</div></div>
