@@ -686,7 +686,7 @@ function submitReport() {
     evidence: (document.getElementById('viol-evidence').value || '').trim(),
     suggestedAction: (document.getElementById('viol-action').value || '').trim(),
     reporter: (document.getElementById('reporter-name').value || '').trim() || 'Anonymous',
-    website: (document.getElementById('honeypot-website').value || '').trim()  // honeypot
+    website: (document.getElementById('honeypot-website').value || '').trim(),  // honeypot
     submitted: new Date().toISOString()
   };
 
