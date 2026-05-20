@@ -16,13 +16,36 @@ function formatAmount(dollars) {
   return '$' + abs.toLocaleString();
 }
 
+// Normalize name for deduplication — strips punctuation, extra spaces, inc/llc suffixes
+function normalizeName(name) {
+  return (name || '')
+    .toUpperCase()
+    .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '')
+    .replace(/(INC|LLC|LTD|CORP|CO|PAC|JFC)/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+// Filter out inter-committee transfers and obviously non-individual entries
+function isRealDonor(r) {
+  const name = (r.contributor_name || '').toUpperCase();
+  const type = (r.entity_type || '').toUpperCase();
+  // Exclude other candidate committees, party committees, known aggregators
+  const exclude = ['ACTBLUE', 'WINRED', 'UNITED STATES OF AMERICA', 'FRIENDS OF', 'COMMITTEE FOR', 'COMMITTEE TO'];
+  if (exclude.some(e => name.includes(e))) return false;
+  // Exclude if entity type is committee
+  if (type === 'COM' || type === 'CCM' || type === 'PTY') return false;
+  return true;
+}
+
 function groupDonors(receipts) {
   const map = {};
   for (const r of receipts) {
-    const key = r.contributor_name || 'Unknown';
+    if (!isRealDonor(r)) continue;
+    const key = normalizeName(r.contributor_name || 'Unknown');
     if (!map[key]) {
       map[key] = {
-        name:     key,
+        name:     r.contributor_name || 'Unknown',
         rawTotal: 0,
         industry: r.contributor_employer || r.contributor_occupation || 'Unknown',
         city:     r.contributor_city  || '',
@@ -33,6 +56,7 @@ function groupDonors(receipts) {
   }
 
   return Object.values(map)
+    .filter(d => d.rawTotal > 0)
     .sort((a, b) => b.rawTotal - a.rawTotal)
     .slice(0, 10)
     .map(d => ({
@@ -63,7 +87,8 @@ export default async function handler(req, res) {
     two_year_transaction_period: cycle || new Date().getFullYear(),
     per_page:                    '100',
     sort:                        '-contribution_receipt_amount',
-    is_individual:               'false'
+    is_individual:               'false',
+    line_number:                 'F3X-11AI'  // itemized individual contributions only
   });
 
   try {
