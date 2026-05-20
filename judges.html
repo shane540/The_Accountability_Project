@@ -100,12 +100,12 @@ main{padding:1.2rem;max-width:1100px;margin:0 auto}
 </head>
 <body>
 <header>
-    <div class="logo">THE <span>ACCOUNTABILITY</span> PROJECT — <span>JUDICIAL</span></div>
-    <div class="nav-links">
-        <a href="index.html" class="nav-link">← MAIN</a>
-        <a href="statewide_officers.html" class="nav-link">STATE OFFICERS</a>
-        <a href="federal_officers.html" class="nav-link">FEDERAL</a>
-    </div>
+  <div class="logo">THE <span>ACCOUNTABILITY</span> PROJECT — <span>JUDICIAL</span></div>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link">← MAIN</a>
+    <a href="statewide_officers.html" class="nav-link">STATE OFFICERS</a>
+    <a href="federal_officers.html" class="nav-link">FEDERAL</a>
+  </div>
 </header>
 <div class="ticker"><span class="ticker-inner">⚠ FEDERAL: File judicial misconduct at uscourts.gov/judges-judgeships/judicial-conduct-disability &nbsp;&nbsp;&nbsp; ⚡ ALL 50 STATES have judicial conduct commissions — anyone can file &nbsp;&nbsp;&nbsp; ⚠ RETENTION ELECTIONS: Organized campaigns have removed state supreme court justices &nbsp;&nbsp;&nbsp; ⚡ 15 federal judges impeached in U.S. history — 8 removed &nbsp;&nbsp;&nbsp; ⚠ IOWA 2010: Three Supreme Court justices removed via retention election &nbsp;&nbsp;&nbsp;</span></div>
 <main>
@@ -393,16 +393,17 @@ function filterStates(){
   renderJudgeStates();
 }
 
-function showTab(name, btn){
-  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('tab-'+name).classList.add('active');
-  if(btn) btn.classList.add('active');
+function showTab(name, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  const tab = document.getElementById('tab-' + name);
+  if (tab) tab.classList.add('active');
+  if (btn) btn.classList.add('active');
 }
 
-renderJudgeStates();
+document.addEventListener('DOMContentLoaded', function () {
+  renderJudgeStates();
+});
 </script>
-</main>
-<script src="api_integration.js"></script>
 </body>
 </html>
